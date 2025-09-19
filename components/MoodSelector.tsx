@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 16,
     paddingHorizontal: 20,
+    paddingVertical: 20
   },
   moodButton: {
     alignItems: 'center',
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderWidth: 2,
-    borderColor: 'rgba(139, 123, 216, 0.3)',
+    borderColor: 'rgba(20, 10, 72, 0.3)',
   },
   selectedMood: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',

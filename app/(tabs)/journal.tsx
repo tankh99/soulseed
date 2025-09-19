@@ -6,6 +6,7 @@ import {
   TextInput, 
   TouchableOpacity, 
   ScrollView,
+  FlatList,
   Animated,
   Alert,
   ActivityIndicator,
@@ -14,6 +15,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Sparkles, Send } from 'lucide-react-native';
+import ScreenLayout from '../../components/ScreenLayout';
 import { MoodSelector } from '../../components/MoodSelector';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 
@@ -285,26 +287,17 @@ export default function JournalScreen() {
   }
 
   return (
-    <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => {
-            if (currentStep === 'journal') {
-              setCurrentStep('mood');
-            }
-          }}
-        >
-          <ArrowLeft size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>
-          {conversationMode ? 'Reflection Conversation' : 
-           currentStep === 'mood' ? 'How are you feeling?' : 'Journal Entry'}
-        </Text>
-        <View style={styles.placeholder} />
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+    <ScreenLayout
+      title={conversationMode ? 'Reflection Conversation' : 
+             currentStep === 'mood' ? 'How are you feeling?' : 'Journal Entry'}
+      showBackButton={currentStep === 'journal'}
+      onBackPress={() => {
+        if (currentStep === 'journal') {
+          setCurrentStep('mood');
+        }
+      }}
+      showKeyboardAvoiding={false}
+    >
         {/* Always visible soulseed at the top */}
         <View style={styles.topSoulseedContainer}>
           <SoulseedDisplay 
@@ -396,33 +389,34 @@ export default function JournalScreen() {
           <KeyboardAvoidingView 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.conversationContainer}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
           >
             <View style={styles.conversationSection}>
               {/* Conversation History */}
-              <ScrollView style={styles.conversationHistory} showsVerticalScrollIndicator={false}>
-                {conversationThread.map((message, index) => (
-                  <View key={index} style={[
+              <FlatList
+                style={styles.conversationHistory}
+                data={[
+                  ...conversationThread,
+                  ...(currentQuestion ? [{ role: 'assistant' as const, content: currentQuestion, id: 'current-question' }] : [])
+                ]}
+                keyExtractor={(item, index) => ('id' in item ? item.id : `message-${index}`)}
+                renderItem={({ item }) => (
+                  <View style={[
                     styles.messageContainer,
-                    message.role === 'user' ? styles.userMessage : styles.assistantMessage
+                    item.role === 'user' ? styles.userMessage : styles.assistantMessage
                   ]}>
                     <Text style={[
                       styles.messageText,
-                      message.role === 'user' ? styles.userMessageText : styles.assistantMessageText
+                      item.role === 'user' ? styles.userMessageText : styles.assistantMessageText
                     ]}>
-                      {message.content}
-                    </Text>
-                  </View>
-                ))}
-                
-                {/* Current Question */}
-                {currentQuestion && (
-                  <View style={[styles.messageContainer, styles.assistantMessage]}>
-                    <Text style={styles.assistantMessageText}>
-                      {currentQuestion}
+                      {item.content}
                     </Text>
                   </View>
                 )}
-              </ScrollView>
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="interactive"
+              />
 
               {/* Answer Input */}
               <View style={styles.answerInputContainer}>
@@ -443,7 +437,7 @@ export default function JournalScreen() {
                     onPress={handleEndConversation}
                     disabled={isWaitingForResponse}
                   >
-                    <Text style={styles.endConversationText}>End Conversation</Text>
+                    <Text style={styles.endConversationText}>Finish</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity 
@@ -463,8 +457,7 @@ export default function JournalScreen() {
             </View>
           </KeyboardAvoidingView>
         )}
-      </ScrollView>
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 

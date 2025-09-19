@@ -158,24 +158,27 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
     if (currentTime - lastTapTime > 1000) {
       setTapCount(1);
     } else {
-      setTapCount(prev => prev + 1);
+      setTapCount(prev => {
+        const newCount = prev + 1;
+        
+        // If this is the 3rd tap (tapCount was 2, now becomes 3), trigger petting
+        if (newCount === 3) {
+          setIsPetted(true);
+          playRandomSound();
+          
+          // Return to base image after 2 seconds
+          setTimeout(() => {
+            setIsPetted(false);
+          }, 2000);
+          
+          return 0; // Reset tap count after triggering
+        }
+        
+        return newCount;
+      });
     }
     
     setLastTapTime(currentTime);
-    
-    // If 3 taps within 1 second, trigger petting effect
-    if (tapCount >= 2) { // tapCount will be 2 when this is the 3rd tap
-      setIsPetted(true);
-      playRandomSound();
-      
-      // Reset tap count
-      setTapCount(0);
-      
-      // Return to base image after 2 seconds
-      setTimeout(() => {
-        setIsPetted(false);
-      }, 2000);
-    }
   };
 
   useEffect(() => {
