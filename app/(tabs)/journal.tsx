@@ -681,6 +681,7 @@ const styles = StyleSheet.create({
   },
   assistantMessageText: {
     color: '#FFFFFF',
+    fontSize: 16
   },
   answerInputContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
