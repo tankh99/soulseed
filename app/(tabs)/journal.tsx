@@ -7,7 +7,8 @@ import {
   TouchableOpacity, 
   ScrollView,
   Animated,
-  Alert
+  Alert,
+  ActivityIndicator
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Sparkles, Send } from 'lucide-react-native';
@@ -20,6 +21,7 @@ export default function JournalScreen() {
   const [journalText, setJournalText] = useState('');
   const [showUnpackIt, setShowUnpackIt] = useState(false);
   const [unpackSuggestions, setUnpackSuggestions] = useState<string[]>([]);
+  const [isUnpacking, setIsUnpacking] = useState(false);
 
   const moods = [
     { id: 'happy', emoji: '😊', label: 'Happy', color: '#4ADE80' },
@@ -36,22 +38,89 @@ export default function JournalScreen() {
     }, 300);
   };
 
-  const handleUnpackIt = () => {
+  // Mock API call to unpack thoughts based on mood and journal content
+  const mockUnpackAPI = async (mood: string, journalText: string): Promise<string[]> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Mood-specific question templates
+    const moodQuestions = {
+      happy: [
+        "What made this moment so special for you?",
+        "How can you recreate this feeling in other parts of your life?",
+        "What does this happiness teach you about what you value?",
+        "How can you share this joy with others around you?"
+      ],
+      surprised: [
+        "What caught you off guard about this situation?",
+        "How does this surprise challenge your expectations?",
+        "What new possibilities does this reveal to you?",
+        "How might this change your perspective going forward?"
+      ],
+      sad: [
+        "What specifically is making you feel this way?",
+        "What support do you need right now?",
+        "What would comfort you in this moment?",
+        "How can you be gentle with yourself today?"
+      ],
+      angry: [
+        "What triggered this feeling for you?",
+        "What boundary might need to be set here?",
+        "How can you channel this energy constructively?",
+        "What would help you feel heard and understood?"
+      ],
+      neutral: [
+        "What's really going on beneath the surface?",
+        "How are you feeling physically right now?",
+        "What does your body need today?",
+        "What small action could bring you more clarity?"
+      ]
+    };
+
+    // Get mood-specific questions
+    const baseQuestions = moodQuestions[mood as keyof typeof moodQuestions] || moodQuestions.neutral;
+    
+    // Add some general reflection questions
+    const generalQuestions = [
+      "What patterns do you notice in how you're responding?",
+      "What would you tell a close friend in this situation?",
+      "What's one small step you could take today?",
+      "How does this connect to your bigger goals?"
+    ];
+
+    // Mix mood-specific and general questions
+    const allQuestions = [...baseQuestions, ...generalQuestions];
+    
+    // Return 3-4 questions (simulate AI selection based on journal content)
+    const selectedQuestions = allQuestions.slice(0, 4);
+    
+    return selectedQuestions;
+  };
+
+  const handleUnpackIt = async () => {
     if (!journalText.trim()) {
       Alert.alert('Empty Journal', 'Please write something first before unpacking your thoughts.');
       return;
     }
 
-    // Simulate LLM response
-    const suggestions = [
-      "What specific moment today made you feel this way?",
-      "How does this feeling compare to yesterday?",
-      "What would you tell a friend feeling the same way?",
-      "What's one small thing that might help right now?"
-    ];
+    if (!selectedMood) {
+      Alert.alert('No Mood Selected', 'Please select a mood first to get personalized questions.');
+      return;
+    }
+
+    setIsUnpacking(true);
     
-    setUnpackSuggestions(suggestions);
-    setShowUnpackIt(true);
+    try {
+      // Mock API call with mood and journal content
+      const suggestions = await mockUnpackAPI(selectedMood, journalText);
+      
+      setUnpackSuggestions(suggestions);
+      setShowUnpackIt(true);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to generate reflection questions. Please try again.');
+    } finally {
+      setIsUnpacking(false);
+    }
   };
 
   const handleSubmit = () => {
@@ -175,11 +244,18 @@ export default function JournalScreen() {
 
             <View style={styles.actionButtons}>
               <TouchableOpacity 
-                style={styles.unpackButton}
+                style={[styles.unpackButton, isUnpacking && styles.unpackButtonDisabled]}
                 onPress={handleUnpackIt}
+                disabled={isUnpacking}
               >
-                <Sparkles size={20} color="#FFD700" />
-                <Text style={styles.unpackButtonText}>Unpack It</Text>
+                {isUnpacking ? (
+                  <ActivityIndicator size="small" color="#FFD700" />
+                ) : (
+                  <Sparkles size={20} color="#FFD700" />
+                )}
+                <Text style={styles.unpackButtonText}>
+                  {isUnpacking ? 'Analyzing...' : 'Unpack It'}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity 
@@ -303,6 +379,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderWidth: 1,
     borderColor: 'rgba(255, 215, 0, 0.3)',
+  },
+  unpackButtonDisabled: {
+    opacity: 0.6,
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
   },
   unpackButtonText: {
     color: '#FFD700',
