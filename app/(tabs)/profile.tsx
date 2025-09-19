@@ -31,7 +31,7 @@ export default function ProfileScreen() {
     conscientiousness: 0.6,
     extroversion: 0.7,
     agreeableness: 0.9,
-    neuroticism: 0.3,
+    resilience: 0.7,
   };
 
   return (

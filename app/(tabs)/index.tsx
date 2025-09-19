@@ -20,7 +20,7 @@ export default function HomeScreen() {
   const [streak, setStreak] = useState(7);
   const [totalPoints, setTotalPoints] = useState(1250);
   const [weeklyProgress, setWeeklyProgress] = useState(5);
-  const [soulseedLevel, setSoulseedLevel] = useState(2);
+  const [soulseedLevel, setSoulseedLevel] = useState(1);
   
   const fadeAnim = new Animated.Value(0);
 
@@ -88,7 +88,7 @@ export default function HomeScreen() {
               conscientiousness: 0.6,
               extroversion: 0.7,
               agreeableness: 0.9,
-              neuroticism: 0.3,
+              resilience: 0.7,
             }}
           />
           <Text style={styles.soulseedName}>Your Cosmic Companion</Text>

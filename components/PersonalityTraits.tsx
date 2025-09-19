@@ -7,7 +7,7 @@ interface PersonalityScores {
   conscientiousness: number;
   extroversion: number;
   agreeableness: number;
-  neuroticism: number;
+  resilience: number;
 }
 
 interface PersonalityTraitsProps {
@@ -45,11 +45,11 @@ export function PersonalityTraits({ scores }: PersonalityTraitsProps) {
       description: 'Cooperation & trust'
     },
     {
-      name: 'Neuroticism',
-      score: scores.neuroticism,
+      name: 'Resilience',
+      score: scores.resilience,
       color: '#06B6D4',
       icon: '🧘',
-      description: 'Emotional sensitivity'
+      description: 'Emotional stability'
     },
   ];
 

@@ -67,7 +67,7 @@ export default function DiscoverScreen() {
       ]
     },
     {
-      name: 'Neuroticism',
+      name: 'Resilience',
       score: 0.3,
       description: 'Your emotional stability and stress response',
       color: '#06B6D4',
@@ -193,7 +193,7 @@ export default function DiscoverScreen() {
             <View style={styles.tipCard}>
               <Text style={styles.tipTitle}>🧘 Emotional Balance</Text>
               <Text style={styles.tipText}>
-                Your low neuroticism (30%) means you handle stress well! Use this strength to 
+                Your high resilience (30%) means you handle stress well! Use this strength to 
                 support friends and be a calming presence in challenging situations.
               </Text>
             </View>

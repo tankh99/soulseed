@@ -81,7 +81,7 @@ export default function JournalScreen() {
             conscientiousness: 0.6,
             extroversion: 0.7,
             agreeableness: 0.9,
-            neuroticism: 0.3,
+            resilience: 0.7,
           }} />
           <Text style={styles.completeTitle}>Journal Saved! ✨</Text>
           <Text style={styles.completeSubtext}>
@@ -125,7 +125,7 @@ export default function JournalScreen() {
                   conscientiousness: 0.6,
                   extroversion: 0.7,
                   agreeableness: 0.9,
-                  neuroticism: 0.3,
+                  resilience: 0.7,
                 }}
                 size="small"
               />

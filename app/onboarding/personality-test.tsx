@@ -6,31 +6,36 @@ import { Colors } from '../../constants/colors';
 
 const { width } = Dimensions.get('window');
 
-// Placeholder questions for Big Five personality test
+// Big Five personality test questions
 const questions = [
-  { id: 1, text: "I am the life of the party", trait: "extroversion" },
-  { id: 2, text: "I feel comfortable around people", trait: "extroversion" },
-  { id: 3, text: "I start conversations", trait: "extroversion" },
-  { id: 4, text: "I am interested in people", trait: "openness" },
-  { id: 5, text: "I have a rich vocabulary", trait: "openness" },
-  { id: 6, text: "I have excellent ideas", trait: "openness" },
-  { id: 7, text: "I am always prepared", trait: "conscientiousness" },
-  { id: 8, text: "I pay attention to details", trait: "conscientiousness" },
-  { id: 9, text: "I get chores done right away", trait: "conscientiousness" },
-  { id: 10, text: "I am interested in others", trait: "agreeableness" },
-  { id: 11, text: "I feel others' emotions", trait: "agreeableness" },
-  { id: 12, text: "I have a soft heart", trait: "agreeableness" },
-  { id: 13, text: "I handle stress and challenges well", trait: "resilience" },
-  { id: 14, text: "I bounce back quickly from setbacks", trait: "resilience" },
-  { id: 15, text: "I stay calm under pressure", trait: "resilience" },
+  { id: 1, text: "I am the life of the party", trait: "extroversion", reversed: false },
+  { id: 2, text: "I sympathize with others' feelings", trait: "agreeableness", reversed: false },
+  { id: 3, text: "I get chores done right away", trait: "conscientiousness", reversed: false },
+  { id: 4, text: "I have frequent mood swings", trait: "resilience", reversed: true },
+  { id: 5, text: "I have a vivid imagination", trait: "openness", reversed: false },
+  { id: 6, text: "I don't talk a lot", trait: "extroversion", reversed: true },
+  { id: 7, text: "I am not interested in other people's problems", trait: "agreeableness", reversed: true },
+  { id: 8, text: "I often forget to put things back in their proper place", trait: "conscientiousness", reversed: true },
+  { id: 9, text: "I am relaxed most of the time", trait: "resilience", reversed: false },
+  { id: 10, text: "I am not interested in abstract ideas", trait: "openness", reversed: true },
+  { id: 11, text: "I talk to a lot of different people at parties", trait: "extroversion", reversed: false },
+  { id: 12, text: "I feel others' emotions", trait: "agreeableness", reversed: false },
+  { id: 13, text: "I like order", trait: "conscientiousness", reversed: false },
+  { id: 14, text: "I get upset easily", trait: "resilience", reversed: true },
+  { id: 15, text: "I have difficulty understanding abstract ideas", trait: "openness", reversed: true },
+  { id: 16, text: "I keep in the background", trait: "extroversion", reversed: true },
+  { id: 17, text: "I am not really interested in others", trait: "agreeableness", reversed: true },
+  { id: 18, text: "I make a mess of things", trait: "conscientiousness", reversed: true },
+  { id: 19, text: "I seldom feel blue", trait: "resilience", reversed: false },
+  { id: 20, text: "I do not have a good imagination", trait: "openness", reversed: true },
 ];
 
 const scaleOptions = [
-  { value: 1, label: "Strongly Disagree" },
-  { value: 2, label: "Disagree" },
-  { value: 3, label: "Neutral" },
-  { value: 4, label: "Agree" },
-  { value: 5, label: "Strongly Agree" },
+  { value: 1, label: "Very inaccurate" },
+  { value: 2, label: "Moderately inaccurate" },
+  { value: 3, label: "Neither inaccurate nor accurate" },
+  { value: 4, label: "Moderately accurate" },
+  { value: 5, label: "Very accurate" },
 ];
 
 export default function PersonalityTestPage() {
@@ -74,12 +79,14 @@ export default function PersonalityTestPage() {
     questions.forEach(question => {
       const answer = answers[question.id];
       if (answer) {
-        scores[question.trait as keyof typeof scores] += answer;
+        // Handle reversed items (invert the score: 6 - answer)
+        const adjustedAnswer = question.reversed ? (6 - answer) : answer;
+        scores[question.trait as keyof typeof scores] += adjustedAnswer;
         traitCounts[question.trait as keyof typeof traitCounts]++;
       }
     });
 
-    // Calculate averages
+    // Calculate averages and normalize to 0-1
     Object.keys(scores).forEach(trait => {
       if (traitCounts[trait as keyof typeof traitCounts] > 0) {
         scores[trait as keyof typeof scores] = 
@@ -117,6 +124,16 @@ export default function PersonalityTestPage() {
               />
             </View>
           </View>
+
+          {/* Instructions */}
+          {currentQuestion === 0 && (
+            <View style={styles.instructionsContainer}>
+              <Text style={styles.instructionsText}>
+                Please use the rating scale below to describe how accurately each statement describes you.
+                Describe yourself as you generally are now, not as you wish to be in the future.
+              </Text>
+            </View>
+          )}
 
           {/* Current Question */}
           <View style={styles.questionContainer}>
@@ -222,6 +239,20 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: Colors.accent,
     borderRadius: 3,
+  },
+  instructionsContainer: {
+    backgroundColor: Colors.surface,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  instructionsText: {
+    fontSize: 16,
+    color: Colors.textPrimary,
+    textAlign: 'center',
+    lineHeight: 24,
   },
   questionContainer: {
     backgroundColor: Colors.surface,
