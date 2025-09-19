@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Image } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, Button } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AudioPlayer, useAudioPlayer } from 'expo-audio';
 
 const { width } = Dimensions.get('window');
 
@@ -19,6 +20,13 @@ interface SoulseedDisplayProps {
 export function SoulseedDisplay({ level, personality, size = 'large' }: SoulseedDisplayProps) {
   const [sparkleAnim] = useState(new Animated.Value(0));
   const [glowAnim] = useState(new Animated.Value(0));
+  const [isPetted, setIsPetted] = useState(false);
+  const [tapCount, setTapCount] = useState(0);
+  const [lastTapTime, setLastTapTime] = useState(0);
+  
+  // Audio players for the two petted sounds
+  const player1 = useAudioPlayer(require('../assets/sounds/petted_1.m4a'));
+  const player2 = useAudioPlayer(require('../assets/sounds/petted_2.m4a'));
   
   const sizeConfig = {
     small: { width: 80, height: 80 },
@@ -27,6 +35,21 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
   };
 
   const currentSize = sizeConfig[size];
+
+  const playRandomSound = () => {
+    const randomPlayer = Math.random() < 0.5 ? player1 : player2;
+    randomPlayer.seekTo(0)
+    randomPlayer.play();
+  };
+
+  const handlePetSoulseed = () => {
+    setIsPetted(true);
+    // Return to base image after 2 seconds
+    playRandomSound()
+    setTimeout(() => {
+      setIsPetted(false);
+    }, 2000);
+  };
 
   useEffect(() => {
     // Sparkle animation
@@ -73,6 +96,7 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
       personality[a[0] as keyof typeof personality] > personality[b[0] as keyof typeof personality] ? a : b
     );
 
+    
     switch (dominantTrait[0]) {
       case 'openness':
         return 'https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=300'; // Starry/cosmic
@@ -87,7 +111,7 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
     }
   };
 
-  const getAuraColor = () => {
+  const getAuraColor = (): [string, string] => {
     const { openness, extroversion, agreeableness } = personality;
     
     if (openness > 0.7) return ['rgba(139, 123, 216, 0.6)', 'rgba(139, 123, 216, 0.1)'];
@@ -119,14 +143,22 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
       </Animated.View>
 
       {/* Main Soulseed */}
-      <View style={[styles.soulseed, currentSize]}>
-        <LinearGradient
+      <TouchableOpacity 
+        style={[styles.soulseed, currentSize]} 
+        onPress={handlePetSoulseed}
+        activeOpacity={0.8}
+      >
+        <Image 
+          source={isPetted ? require('../assets/images/petted.png') : require('../assets/images/openness.png')}
+          style={styles.soulseedImage} 
+          resizeMode='contain' 
+        />
+        {/* <LinearGradient
           colors={level > 1 ? ['#8B7BD8', '#6366F1'] : ['#F5E6A3', '#D4AF37']}
           style={styles.soulseedGradient}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
         >
-          {/* Cute face */}
           <View style={styles.face}>
             <View style={styles.eyes}>
               <View style={[styles.eye, { backgroundColor: '#1A0B3D' }]} />
@@ -134,8 +166,8 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
             </View>
             <View style={[styles.mouth, { backgroundColor: '#1A0B3D' }]} />
           </View>
-        </LinearGradient>
-      </View>
+        </LinearGradient> */}
+      </TouchableOpacity>
 
       {/* Sparkle Effects */}
       {level > 1 && (
@@ -250,4 +282,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     opacity: 0.8,
   },
+  soulseedImage: {
+    flex: 1,
+    width: "100%",
+    // width: 40
+  }
 });
