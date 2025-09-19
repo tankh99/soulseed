@@ -54,13 +54,31 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
     if (isPlayingSound) {
       return;
     }
+
+    const currentTime = Date.now();
     
-    setIsPetted(true);
-    // Return to base image after 2 seconds
-    playRandomSound();
-    setTimeout(() => {
-      setIsPetted(false);
-    }, 2000);
+    // Reset tap count if more than 1 second has passed since last tap
+    if (currentTime - lastTapTime > 1000) {
+      setTapCount(1);
+    } else {
+      setTapCount(prev => prev + 1);
+    }
+    
+    setLastTapTime(currentTime);
+    
+    // If 3 taps within 1 second, trigger petting effect
+    if (tapCount >= 2) { // tapCount will be 2 when this is the 3rd tap
+      setIsPetted(true);
+      playRandomSound();
+      
+      // Reset tap count
+      setTapCount(0);
+      
+      // Return to base image after 2 seconds
+      setTimeout(() => {
+        setIsPetted(false);
+      }, 2000);
+    }
   };
 
   useEffect(() => {
