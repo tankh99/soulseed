@@ -110,7 +110,7 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
       case 'happy':
         return require('../assets/images/reactions/openness/happy.png'); // Placeholder
       case 'sad':
-        return require('../assets/images/reactions/openness/sad.png'); // Placeholder
+        return require('../assets/images/reactions/openness/cry.png'); // Placeholder
       case 'angry':
         return require('../assets/images/reactions/openness/angry.png'); // Placeholder
       case 'surprised':
