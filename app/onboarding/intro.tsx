@@ -11,6 +11,11 @@ export default function IntroPage() {
     router.push('/onboarding/personality-test');
   };
 
+  const handleSkipOnboarding = () => {
+    // Navigate directly to main app tabs
+    router.push('/(tabs)');
+  };
+
   return (
     <LinearGradient
       colors={Colors.gradientBackground}
@@ -40,17 +45,23 @@ export default function IntroPage() {
           </Text>
         </View>
 
-        {/* Start Button */}
-        <TouchableOpacity style={styles.startButton} onPress={handleStartJourney}>
-          <LinearGradient
-            colors={Colors.gradientAccent}
-            style={styles.buttonGradient}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Text style={styles.buttonText}>Start Your Journey</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        {/* Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.startButton} onPress={handleStartJourney}>
+            <LinearGradient
+              colors={Colors.gradientAccent}
+              style={styles.buttonGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Text style={styles.buttonText}>Start Your Journey</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.skipButton} onPress={handleSkipOnboarding}>
+            <Text style={styles.skipButtonText}>Skip for Now</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </LinearGradient>
   );
@@ -140,5 +151,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: Colors.primary,
     textAlign: 'center',
+  },
+  buttonContainer: {
+    width: '100%',
+    alignItems: 'center',
+    gap: 16,
+  },
+  skipButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+  },
+  skipButtonText: {
+    fontSize: 16,
+    color: Colors.textMuted,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 });
