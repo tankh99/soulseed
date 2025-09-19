@@ -33,11 +33,11 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
   const player2 = useAudioPlayer(require('../assets/sounds/petted_2.m4a'));
   
   // Audio players for mood reactions (placeholder - will be replaced with actual sounds)
-  const moodHappyPlayer = useAudioPlayer(require('../assets/sounds/petted_1.m4a')); // Placeholder
-  const moodSadPlayer = useAudioPlayer(require('../assets/sounds/petted_2.m4a')); // Placeholder
-  const moodAngryPlayer = useAudioPlayer(require('../assets/sounds/petted_1.m4a')); // Placeholder
-  const moodSurprisedPlayer = useAudioPlayer(require('../assets/sounds/petted_2.m4a')); // Placeholder
-  const moodNeutralPlayer = useAudioPlayer(require('../assets/sounds/petted_1.m4a')); // Placeholder
+  const moodHappyPlayer = useAudioPlayer(require('../assets/sounds/happy_1.m4a')); // Placeholder
+  const moodSadPlayer = useAudioPlayer(require('../assets/sounds/sad_1.m4a')); // Placeholder
+  const moodAngryPlayer = useAudioPlayer(require('../assets/sounds/angry_1.m4a')); // Placeholder
+  const moodSurprisedPlayer = useAudioPlayer(require('../assets/sounds/surprise_1.m4a')); // Placeholder
+  const moodNeutralPlayer = useAudioPlayer(require('../assets/sounds/neutral_1.m4a')); // Placeholder
   
   const sizeConfig = {
     small: { width: 80, height: 80 },
