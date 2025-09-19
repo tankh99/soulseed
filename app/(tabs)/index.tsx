@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Flame, Star, Gift, CircleCheck as CheckCircle, PenTool } from 'lucide-react-native';
+import { router } from 'expo-router';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
@@ -60,8 +61,8 @@ export default function HomeScreen() {
   ];
 
   const handleCheckIn = () => {
-    // Navigate to journal flow
-    console.log('Starting journal check-in');
+    // Navigate to journal tab
+    router.push('/(tabs)/journal');
   };
 
   return (

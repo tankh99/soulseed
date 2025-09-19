@@ -49,14 +49,15 @@ const genderOptions = [
 export default function RegisterPage() {
   const { soulseedName, soulseedStatement, sessionId } = useLocalSearchParams();
   
+  // Mock data for development - remove in production
   const [formData, setFormData] = useState<RegistrationData>({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    birthday: new Date(2005, 0, 1), // Default to 18 years old
-    schoolYear: '',
-    ethnicity: '',
-    gender: '',
+    email: 'testuser@soulseed.com',
+    password: 'password123',
+    confirmPassword: 'password123',
+    birthday: new Date(2005, 5, 15), // June 15, 2005 (18 years old)
+    schoolYear: 'JC Year 2',
+    ethnicity: 'Chinese',
+    gender: 'Female',
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);

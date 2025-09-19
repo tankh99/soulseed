@@ -16,19 +16,28 @@ interface SoulseedDisplayProps {
     resilience: number;
   };
   size?: 'small' | 'medium' | 'large';
+  selectedMood?: string;
 }
 
-export function SoulseedDisplay({ level, personality, size = 'large' }: SoulseedDisplayProps) {
+export function SoulseedDisplay({ level, personality, size = 'large', selectedMood }: SoulseedDisplayProps) {
   const [sparkleAnim] = useState(new Animated.Value(0));
   const [glowAnim] = useState(new Animated.Value(0));
   const [isPetted, setIsPetted] = useState(false);
   const [tapCount, setTapCount] = useState(0);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [isPlayingSound, setIsPlayingSound] = useState(false);
+  const [currentMoodImage, setCurrentMoodImage] = useState<string | null>(null);
   
   // Audio players for the two petted sounds
   const player1 = useAudioPlayer(require('../assets/sounds/petted_1.m4a'));
   const player2 = useAudioPlayer(require('../assets/sounds/petted_2.m4a'));
+  
+  // Audio players for mood reactions (placeholder - will be replaced with actual sounds)
+  const moodHappyPlayer = useAudioPlayer(require('../assets/sounds/petted_1.m4a')); // Placeholder
+  const moodSadPlayer = useAudioPlayer(require('../assets/sounds/petted_2.m4a')); // Placeholder
+  const moodAngryPlayer = useAudioPlayer(require('../assets/sounds/petted_1.m4a')); // Placeholder
+  const moodSurprisedPlayer = useAudioPlayer(require('../assets/sounds/petted_2.m4a')); // Placeholder
+  const moodNeutralPlayer = useAudioPlayer(require('../assets/sounds/petted_1.m4a')); // Placeholder
   
   const sizeConfig = {
     small: { width: 80, height: 80 },
@@ -37,6 +46,19 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
   };
 
   const currentSize = sizeConfig[size];
+
+  // Handle mood changes
+  useEffect(() => {
+    if (selectedMood) {
+      setCurrentMoodImage(getMoodImage(selectedMood));
+      playMoodSound(selectedMood);
+      
+      // Reset mood image after 2 seconds
+      setTimeout(() => {
+        setCurrentMoodImage(null);
+      }, 2000);
+    }
+  }, [selectedMood]);
 
   const playRandomSound = () => {
     const randomPlayer = Math.random() < 0.5 ? player1 : player2;
@@ -48,6 +70,56 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
     setTimeout(() => {
       setIsPlayingSound(false);
     }, 2500); // Slightly longer than the visual petting effect
+  };
+
+  const playMoodSound = (mood: string) => {
+    let player;
+    switch (mood) {
+      case 'happy':
+        player = moodHappyPlayer;
+        break;
+      case 'sad':
+        player = moodSadPlayer;
+        break;
+      case 'angry':
+        player = moodAngryPlayer;
+        break;
+      case 'surprised':
+        player = moodSurprisedPlayer;
+        break;
+      case 'neutral':
+        player = moodNeutralPlayer;
+        break;
+      default:
+        return;
+    }
+    
+    player.seekTo(0);
+    player.play();
+    
+    // Set playing state and reset after sound duration
+    setIsPlayingSound(true);
+    setTimeout(() => {
+      setIsPlayingSound(false);
+    }, 2000);
+  };
+
+  const getMoodImage = (mood: string): string => {
+    // Placeholder - will be replaced with actual mood-specific images
+    switch (mood) {
+      case 'happy':
+        return require('../assets/images/reactions/openness/happy.png'); // Placeholder
+      case 'sad':
+        return require('../assets/images/reactions/openness/sad.png'); // Placeholder
+      case 'angry':
+        return require('../assets/images/reactions/openness/angry.png'); // Placeholder
+      case 'surprised':
+        return require('../assets/images/reactions/openness/surprised.png'); // Placeholder
+      case 'neutral':
+        return require('../assets/images/reactions/openness/neutral.png'); // Placeholder
+      default:
+        return require('../assets/images/openness.png');
+    }
   };
 
   const handlePetSoulseed = () => {
@@ -156,6 +228,7 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
     <View style={[styles.container, currentSize]}>
       {/* Glow Effect */}
       <Animated.View
+        pointerEvents="none"
         style={[
           styles.glowContainer,
           {
@@ -174,7 +247,7 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
       </Animated.View>
 
       {/* Main Soulseed */}
-      <TouchableWithoutFeedback 
+      <TouchableWithoutFeedback
         style={[
           styles.soulseed, 
           currentSize,
@@ -185,7 +258,11 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
         disabled={isPlayingSound}
       >
         <Image 
-          source={isPetted ? require('../assets/images/petted.png') : require('../assets/images/openness.png')}
+          source={
+            currentMoodImage ? currentMoodImage : 
+            isPetted ? require('../assets/images/petted.png') : 
+            require('../assets/images/openness.png')
+          }
           style={styles.soulseedImage} 
           resizeMode='contain' 
         />
@@ -208,6 +285,7 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
       {/* Sparkle Effects */}
       {level > 1 && (
         <Animated.View
+          pointerEvents="none"
           style={[
             styles.sparklesContainer,
             {

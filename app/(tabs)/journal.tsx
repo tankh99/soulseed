@@ -115,21 +115,24 @@ export default function JournalScreen() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Always visible soulseed at the top */}
+        <View style={styles.topSoulseedContainer}>
+          <SoulseedDisplay 
+            level={2} 
+            personality={{
+              openness: 0.8,
+              conscientiousness: 0.6,
+              extroversion: 0.7,
+              agreeableness: 0.9,
+              resilience: 0.7,
+            }}
+            size="medium"
+            selectedMood={selectedMood}
+          />
+        </View>
+
         {currentStep === 'mood' && (
           <View style={styles.moodSection}>
-            <View style={styles.soulseedPreview}>
-              <SoulseedDisplay 
-                level={2} 
-                personality={{
-                  openness: 0.8,
-                  conscientiousness: 0.6,
-                  extroversion: 0.7,
-                  agreeableness: 0.9,
-                  resilience: 0.7,
-                }}
-                size="small"
-              />
-            </View>
             <Text style={styles.moodPrompt}>
               Your soulseed is curious about your current mood
             </Text>
@@ -220,6 +223,11 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 24,
+  },
+  topSoulseedContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+    paddingVertical: 16,
   },
   moodSection: {
     alignItems: 'center',
