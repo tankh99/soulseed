@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { Colors } from '../../constants/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -19,9 +20,9 @@ const questions = [
   { id: 10, text: "I am interested in others", trait: "agreeableness" },
   { id: 11, text: "I feel others' emotions", trait: "agreeableness" },
   { id: 12, text: "I have a soft heart", trait: "agreeableness" },
-  { id: 13, text: "I get stressed out easily", trait: "neuroticism" },
-  { id: 14, text: "I worry about things", trait: "neuroticism" },
-  { id: 15, text: "I am easily disturbed", trait: "neuroticism" },
+  { id: 13, text: "I handle stress and challenges well", trait: "resilience" },
+  { id: 14, text: "I bounce back quickly from setbacks", trait: "resilience" },
+  { id: 15, text: "I stay calm under pressure", trait: "resilience" },
 ];
 
 const scaleOptions = [
@@ -58,7 +59,7 @@ export default function PersonalityTestPage() {
       conscientiousness: 0,
       extroversion: 0,
       agreeableness: 0,
-      neuroticism: 0,
+      resilience: 0,
     };
 
     // Count questions per trait and calculate averages
@@ -67,7 +68,7 @@ export default function PersonalityTestPage() {
       conscientiousness: 0,
       extroversion: 0,
       agreeableness: 0,
-      neuroticism: 0,
+      resilience: 0,
     };
 
     questions.forEach(question => {
@@ -97,7 +98,7 @@ export default function PersonalityTestPage() {
 
   return (
     <LinearGradient
-      colors={['#F8F9FF', '#E8EDFF', '#D6E3FF']}
+      colors={Colors.gradientBackground}
       style={styles.container}
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -206,36 +207,38 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 16,
-    color: '#6366F1',
+    color: Colors.textAccent,
     textAlign: 'center',
     marginBottom: 10,
     fontWeight: '600',
   },
   progressBar: {
     height: 6,
-    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+    backgroundColor: Colors.primaryAlpha20,
     borderRadius: 3,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#6366F1',
+    backgroundColor: Colors.accent,
     borderRadius: 3,
   },
   questionContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
     borderRadius: 20,
     padding: 30,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 4,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   questionText: {
     fontSize: 22,
     fontWeight: '600',
-    color: '#1A0B3D',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 40,
     lineHeight: 30,
@@ -250,32 +253,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 12,
     borderRadius: 12,
-    backgroundColor: '#F8F9FF',
+    backgroundColor: Colors.surfaceLight,
     borderWidth: 2,
     borderColor: 'transparent',
   },
   scaleOptionSelected: {
-    backgroundColor: '#E8EDFF',
-    borderColor: '#6366F1',
+    backgroundColor: Colors.secondaryAlpha20,
+    borderColor: Colors.secondary,
   },
   scaleValue: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#6366F1',
+    color: Colors.secondary,
     width: 30,
     textAlign: 'center',
   },
   scaleValueSelected: {
-    color: '#4F46E5',
+    color: Colors.textAccent,
   },
   scaleLabel: {
     fontSize: 16,
-    color: '#6B7280',
+    color: Colors.textMuted,
     marginLeft: 16,
     flex: 1,
   },
   scaleLabelSelected: {
-    color: '#1F2937',
+    color: Colors.textPrimary,
     fontWeight: '500',
   },
   navigationContainer: {
@@ -287,26 +290,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 12,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: Colors.surfaceLight,
     borderWidth: 1,
-    borderColor: '#D1D5DB',
+    borderColor: Colors.border,
   },
   navButtonPrimary: {
-    backgroundColor: '#6366F1',
-    borderColor: '#6366F1',
+    backgroundColor: Colors.secondary,
+    borderColor: Colors.secondary,
   },
   navButtonText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: Colors.textMuted,
     fontWeight: '500',
   },
   navButtonTextPrimary: {
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
   },
   submitButton: {
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#6366F1',
+    shadowColor: Colors.secondary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -320,6 +323,6 @@ const styles = StyleSheet.create({
   submitButtonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
   },
 });

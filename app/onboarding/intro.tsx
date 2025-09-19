@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { Colors } from '../../constants/colors';
 
 const { width, height } = Dimensions.get('window');
 
@@ -12,7 +13,7 @@ export default function IntroPage() {
 
   return (
     <LinearGradient
-      colors={['#8B7BD8', '#6366F1', '#4F46E5']}
+      colors={Colors.gradientBackground}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -42,7 +43,7 @@ export default function IntroPage() {
         {/* Start Button */}
         <TouchableOpacity style={styles.startButton} onPress={handleStartJourney}>
           <LinearGradient
-            colors={['#F5E6A3', '#D4AF37']}
+            colors={Colors.gradientAccent}
             style={styles.buttonGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -75,12 +76,12 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: Colors.secondaryAlpha20,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    shadowColor: '#000',
+    borderColor: Colors.secondaryAlpha30,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 16,
@@ -100,30 +101,30 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 16,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowColor: Colors.shadow,
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
   },
   subtitle: {
     fontSize: 18,
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 20,
     lineHeight: 24,
   },
   description: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.8)',
+    color: Colors.textMuted,
     textAlign: 'center',
     lineHeight: 22,
   },
   startButton: {
     borderRadius: 25,
     overflow: 'hidden',
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1A0B3D',
+    color: Colors.primary,
     textAlign: 'center',
   },
 });

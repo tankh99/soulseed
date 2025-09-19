@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Activi
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SoulseedDisplay } from '@/components/SoulseedDisplay';
+import { Colors } from '../../constants/colors';
 
 interface SoulseedData {
   name: string;
@@ -13,7 +14,7 @@ interface SoulseedData {
     conscientiousness: number;
     extroversion: number;
     agreeableness: number;
-    neuroticism: number;
+    resilience: number;
   };
   trait: string;
   scar: string;
@@ -103,11 +104,11 @@ export default function SoulseedResultPage() {
   if (isLoading) {
     return (
       <LinearGradient
-        colors={['#8B7BD8', '#6366F1']}
+        colors={Colors.gradientBackground}
         style={styles.container}
       >
         <View style={styles.loadingContent}>
-          <ActivityIndicator size="large" color="#FFFFFF" />
+          <ActivityIndicator size="large" color={Colors.textPrimary} />
           <Text style={styles.loadingText}>Creating your Soulseed...</Text>
         </View>
       </LinearGradient>
@@ -117,7 +118,7 @@ export default function SoulseedResultPage() {
   if (!soulseedData) {
     return (
       <LinearGradient
-        colors={['#F8F9FF', '#E8EDFF']}
+        colors={Colors.gradientPrimary}
         style={styles.container}
       >
         <View style={styles.errorContent}>
@@ -129,7 +130,7 @@ export default function SoulseedResultPage() {
 
   return (
     <LinearGradient
-      colors={['#F8F9FF', '#E8EDFF', '#D6E3FF']}
+      colors={Colors.gradientPrimary}
       style={styles.container}
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -278,7 +279,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1A0B3D',
+    color: 'white',
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -297,18 +298,18 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#374151',
+    color: Colors.textPrimary,
     marginBottom: 8,
   },
   inputField: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 16,
     borderWidth: 2,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderColor: Colors.border,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
   },
@@ -317,7 +318,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 16,
-    color: '#1F2937',
+    color: Colors.textPrimary,
     padding: 0,
   },
   textAreaInput: {
@@ -326,29 +327,31 @@ const styles = StyleSheet.create({
   },
   inputText: {
     fontSize: 16,
-    color: '#1F2937',
+    color: Colors.textPrimary,
     lineHeight: 22,
   },
   editHint: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     marginTop: 4,
   },
   traitsContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 20,
     marginBottom: 40,
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   traitsTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1F2937',
+    color: Colors.textPrimary,
     marginBottom: 16,
     textAlign: 'center',
   },
@@ -363,32 +366,32 @@ const styles = StyleSheet.create({
   traitName: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#6B7280',
+    color: Colors.textMuted,
     width: 100,
   },
   traitBar: {
     flex: 1,
     height: 8,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 4,
     overflow: 'hidden',
   },
   traitFill: {
     height: '100%',
-    backgroundColor: '#8B7BD8',
+    backgroundColor: Colors.secondary,
     borderRadius: 4,
   },
   traitValue: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#374151',
+    color: Colors.textPrimary,
     width: 40,
     textAlign: 'right',
   },
   continueButton: {
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#8B7BD8',
+    shadowColor: Colors.secondary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

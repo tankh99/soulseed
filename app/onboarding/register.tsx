@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Colors } from '../../constants/colors';
 // import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface RegistrationData {
@@ -156,7 +157,7 @@ export default function RegisterPage() {
 
   return (
     <LinearGradient
-      colors={['#F8F9FF', '#E8EDFF', '#D6E3FF']}
+      colors={Colors.gradientPrimary}
       style={styles.container}
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -425,13 +426,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1A0B3D',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#6B7280',
+    color: Colors.textMuted,
     textAlign: 'center',
     lineHeight: 22,
   },
@@ -444,48 +445,48 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#374151',
+    color: Colors.textPrimary,
     marginBottom: 8,
   },
   textInput: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
-    color: '#1F2937',
+    color: Colors.textPrimary,
     borderWidth: 2,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderColor: Colors.border,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
   },
   pickerButton: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 16,
     borderWidth: 2,
-    borderColor: '#E5E7EB',
-    shadowColor: '#000',
+    borderColor: Colors.border,
+    shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 2,
   },
   pickerButtonText: {
     fontSize: 16,
-    color: '#1F2937',
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   pickerHint: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: Colors.textMuted,
   },
   submitButton: {
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#8B7BD8',
+    shadowColor: Colors.secondary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -507,7 +508,7 @@ const styles = StyleSheet.create({
   },
   termsText: {
     fontSize: 12,
-    color: '#9CA3AF',
+    color: Colors.textMuted,
     textAlign: 'center',
     lineHeight: 16,
   },
@@ -517,23 +518,25 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: Colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   pickerContent: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 20,
     maxHeight: '70%',
     width: '100%',
     maxWidth: 400,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   pickerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1F2937',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -544,23 +547,23 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: Colors.border,
   },
   pickerOptionText: {
     fontSize: 16,
-    color: '#374151',
+    color: Colors.textPrimary,
     textAlign: 'center',
   },
   pickerCancel: {
     marginTop: 20,
     paddingVertical: 12,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 12,
     alignItems: 'center',
   },
   pickerCancelText: {
     fontSize: 16,
-    color: '#6B7280',
+    color: Colors.textMuted,
     fontWeight: '500',
   },
 });

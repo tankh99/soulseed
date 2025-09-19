@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, Button, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AudioPlayer, useAudioPlayer } from 'expo-audio';
+import { Colors } from '../constants/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -12,7 +13,7 @@ interface SoulseedDisplayProps {
     conscientiousness: number;
     extroversion: number;
     agreeableness: number;
-    neuroticism: number;
+    resilience: number;
   };
   size?: 'small' | 'medium' | 'large';
 }
@@ -144,11 +145,11 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
   const getAuraColor = (): [string, string] => {
     const { openness, extroversion, agreeableness } = personality;
     
-    if (openness > 0.7) return ['rgba(139, 123, 216, 0.6)', 'rgba(139, 123, 216, 0.1)'];
-    if (extroversion > 0.7) return ['rgba(255, 215, 0, 0.6)', 'rgba(255, 215, 0, 0.1)'];
-    if (agreeableness > 0.8) return ['rgba(236, 72, 153, 0.6)', 'rgba(236, 72, 153, 0.1)'];
+    if (openness > 0.7) return [Colors.secondaryAlpha30, Colors.secondaryAlpha10];
+    if (extroversion > 0.7) return [Colors.accentAlpha30, Colors.accentAlpha10];
+    if (agreeableness > 0.8) return [Colors.secondaryAlpha30, Colors.secondaryAlpha10];
     
-    return ['rgba(139, 123, 216, 0.6)', 'rgba(139, 123, 216, 0.1)'];
+    return [Colors.soulseedAura, Colors.secondaryAlpha10];
   };
 
   return (
@@ -264,7 +265,7 @@ const styles = StyleSheet.create({
     borderRadius: 1000,
     overflow: 'hidden',
     elevation: 8,
-    shadowColor: '#8B7BD8',
+    shadowColor: Colors.secondary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
   sparkleInner: {
     width: 8,
     height: 8,
-    backgroundColor: '#FFD700',
+    backgroundColor: Colors.accent,
     borderRadius: 4,
     opacity: 0.8,
   },

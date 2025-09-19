@@ -69,10 +69,10 @@ export function determineSoulseedType(personality: {
   conscientiousness: number;
   extroversion: number;
   agreeableness: number;
-  neuroticism: number;
+  resilience: number;
 }): string {
-  // Convert neuroticism to resilience (inverse relationship)
-  const resilience = 1 - personality.neuroticism;
+  // Use resilience directly (no conversion needed)
+  const resilience = personality.resilience;
   
   const traits = [
     { name: 'openness', value: personality.openness },
@@ -101,7 +101,7 @@ export function getSoulseedByPersonality(personality: {
   conscientiousness: number;
   extroversion: number;
   agreeableness: number;
-  neuroticism: number;
+  resilience: number;
 }): SoulseedData {
   const trait = determineSoulseedType(personality);
   return getSoulseedByTrait(trait);
@@ -122,5 +122,5 @@ export const TRAIT_MAPPINGS = {
   conscientiousness: 'conscientiousness',
   extroversion: 'extroversion',
   agreeableness: 'agreeableness',
-  neuroticism: 'resilience' // Neuroticism maps to resilience
+  resilience: 'resilience' // Resilience trait
 } as const;

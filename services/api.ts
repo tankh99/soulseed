@@ -8,7 +8,7 @@ export interface PersonalityScores {
   conscientiousness: number;
   extroversion: number;
   agreeableness: number;
-  neuroticism: number;
+  resilience: number;
 }
 
 export interface SoulseedData {

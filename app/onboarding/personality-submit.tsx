@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Colors } from '../../constants/colors';
 
 export default function PersonalitySubmitPage() {
   const { scores } = useLocalSearchParams();
@@ -65,7 +66,7 @@ export default function PersonalitySubmitPage() {
   if (error) {
     return (
       <LinearGradient
-        colors={['#F8F9FF', '#E8EDFF']}
+        colors={Colors.gradientPrimary}
         style={styles.container}
       >
         <View style={styles.content}>
@@ -77,7 +78,7 @@ export default function PersonalitySubmitPage() {
 
   return (
     <LinearGradient
-      colors={['#8B7BD8', '#6366F1', '#4F46E5']}
+      colors={Colors.gradientBackground}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
