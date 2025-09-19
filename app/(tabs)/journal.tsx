@@ -8,7 +8,9 @@ import {
   ScrollView,
   Animated,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Sparkles, Send } from 'lucide-react-native';
@@ -22,6 +24,14 @@ export default function JournalScreen() {
   const [showUnpackIt, setShowUnpackIt] = useState(false);
   const [unpackSuggestions, setUnpackSuggestions] = useState<string[]>([]);
   const [isUnpacking, setIsUnpacking] = useState(false);
+  
+  // Conversation flow state
+  const [conversationMode, setConversationMode] = useState(false);
+  const [conversationThread, setConversationThread] = useState<Array<{role: 'user' | 'assistant', content: string}>>([]);
+  const [currentQuestion, setCurrentQuestion] = useState<string>('');
+  const [currentAnswer, setCurrentAnswer] = useState<string>('');
+  const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
+  const [conversationStep, setConversationStep] = useState(0);
 
   const moods = [
     { id: 'happy', emoji: '😊', label: 'Happy', color: '#4ADE80' },
@@ -38,63 +48,71 @@ export default function JournalScreen() {
     }, 300);
   };
 
-  // Mock API call to unpack thoughts based on mood and journal content
-  const mockUnpackAPI = async (mood: string, journalText: string): Promise<string[]> => {
+  // Mock API call to get next question in conversation
+  const mockGetNextQuestion = async (
+    mood: string, 
+    journalText: string, 
+    conversationHistory: Array<{role: 'user' | 'assistant', content: string}>,
+    step: number
+  ): Promise<string> => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Mood-specific question templates
+    // Mood-specific question templates for different conversation steps
     const moodQuestions = {
-      happy: [
-        "What made this moment so special for you?",
-        "How can you recreate this feeling in other parts of your life?",
-        "What does this happiness teach you about what you value?",
-        "How can you share this joy with others around you?"
-      ],
-      surprised: [
-        "What caught you off guard about this situation?",
-        "How does this surprise challenge your expectations?",
-        "What new possibilities does this reveal to you?",
-        "How might this change your perspective going forward?"
-      ],
-      sad: [
-        "What specifically is making you feel this way?",
-        "What support do you need right now?",
-        "What would comfort you in this moment?",
-        "How can you be gentle with yourself today?"
-      ],
-      angry: [
-        "What triggered this feeling for you?",
-        "What boundary might need to be set here?",
-        "How can you channel this energy constructively?",
-        "What would help you feel heard and understood?"
-      ],
-      neutral: [
-        "What's really going on beneath the surface?",
-        "How are you feeling physically right now?",
-        "What does your body need today?",
-        "What small action could bring you more clarity?"
-      ]
+      happy: {
+        0: "What made this moment so special for you?",
+        1: "How can you recreate this feeling in other parts of your life?",
+        2: "What does this happiness teach you about what you value?",
+        3: "How can you share this joy with others around you?"
+      },
+      surprised: {
+        0: "What caught you off guard about this situation?",
+        1: "How does this surprise challenge your expectations?",
+        2: "What new possibilities does this reveal to you?",
+        3: "How might this change your perspective going forward?"
+      },
+      sad: {
+        0: "What specifically is making you feel this way?",
+        1: "What support do you need right now?",
+        2: "What would comfort you in this moment?",
+        3: "How can you be gentle with yourself today?"
+      },
+      angry: {
+        0: "What triggered this feeling for you?",
+        1: "What boundary might need to be set here?",
+        2: "How can you channel this energy constructively?",
+        3: "What would help you feel heard and understood?"
+      },
+      neutral: {
+        0: "What's really going on beneath the surface?",
+        1: "How are you feeling physically right now?",
+        2: "What does your body need today?",
+        3: "What small action could bring you more clarity?"
+      }
     };
 
-    // Get mood-specific questions
-    const baseQuestions = moodQuestions[mood as keyof typeof moodQuestions] || moodQuestions.neutral;
+    // Get question for current step
+    const moodQuestionSet = moodQuestions[mood as keyof typeof moodQuestions] || moodQuestions.neutral;
+    const question = moodQuestionSet[step as keyof typeof moodQuestionSet] || "Thank you for sharing. Is there anything else you'd like to reflect on?";
     
-    // Add some general reflection questions
-    const generalQuestions = [
-      "What patterns do you notice in how you're responding?",
-      "What would you tell a close friend in this situation?",
-      "What's one small step you could take today?",
-      "How does this connect to your bigger goals?"
-    ];
+    return question;
+  };
 
-    // Mix mood-specific and general questions
-    const allQuestions = [...baseQuestions, ...generalQuestions];
+  // Mock API call to send conversation to backend
+  const mockSendConversationToBackend = async (conversationThread: Array<{role: 'user' | 'assistant', content: string}>): Promise<boolean> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    // Return 3-4 questions (simulate AI selection based on journal content)
-    const selectedQuestions = allQuestions.slice(0, 4);
+    // Convert conversation to string format
+    const conversationString = conversationThread
+      .map(msg => `${msg.role.toUpperCase()}: ${msg.content}`)
+      .join('\n\n');
     
-    return selectedQuestions;
+    console.log('Sending conversation to backend:', conversationString);
+    
+    // Simulate successful submission
+    return true;
   };
 
   const handleUnpackIt = async () => {
@@ -111,15 +129,117 @@ export default function JournalScreen() {
     setIsUnpacking(true);
     
     try {
-      // Mock API call with mood and journal content
-      const suggestions = await mockUnpackAPI(selectedMood, journalText);
+      // Initialize conversation thread with journal entry
+      const initialThread = [
+        { role: 'user' as const, content: journalText }
+      ];
       
-      setUnpackSuggestions(suggestions);
-      setShowUnpackIt(true);
+      // Get first question from LLM
+      const firstQuestion = await mockGetNextQuestion(selectedMood, journalText, initialThread, 0);
+      
+      // Set up conversation state
+      setConversationThread(initialThread);
+      setCurrentQuestion(firstQuestion);
+      setConversationStep(1);
+      setConversationMode(true);
+      
     } catch (error) {
-      Alert.alert('Error', 'Failed to generate reflection questions. Please try again.');
+      Alert.alert('Error', 'Failed to start conversation. Please try again.');
     } finally {
       setIsUnpacking(false);
+    }
+  };
+
+  // Handle sending answer to current question
+  const handleSendAnswer = async () => {
+    if (!currentAnswer.trim()) {
+      Alert.alert('Empty Answer', 'Please write something before sending your response.');
+      return;
+    }
+
+    setIsWaitingForResponse(true);
+
+    try {
+      // Add user's answer to conversation thread
+      const updatedThread = [
+        ...conversationThread,
+        { role: 'assistant' as const, content: currentQuestion },
+        { role: 'user' as const, content: currentAnswer }
+      ];
+
+      setConversationThread(updatedThread);
+
+      // Check if we should end conversation (after 3 questions)
+      if (conversationStep >= 3) {
+        // Send entire conversation to backend
+        await mockSendConversationToBackend(updatedThread);
+        
+        // End conversation and show completion
+        setConversationMode(false);
+        setCurrentStep('complete');
+        
+        setTimeout(() => {
+          // Reset for next session
+          setCurrentStep('mood');
+          setSelectedMood('');
+          setJournalText('');
+          setShowUnpackIt(false);
+          setUnpackSuggestions([]);
+          setConversationThread([]);
+          setCurrentQuestion('');
+          setCurrentAnswer('');
+          setConversationStep(0);
+        }, 3000);
+      } else {
+        // Get next question
+        const nextQuestion = await mockGetNextQuestion(
+          selectedMood, 
+          journalText, 
+          updatedThread, 
+          conversationStep
+        );
+        
+        setCurrentQuestion(nextQuestion);
+        setCurrentAnswer('');
+        setConversationStep(prev => prev + 1);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to send response. Please try again.');
+    } finally {
+      setIsWaitingForResponse(false);
+    }
+  };
+
+  // Handle ending conversation early
+  const handleEndConversation = async () => {
+    if (conversationThread.length === 0) return;
+
+    setIsWaitingForResponse(true);
+
+    try {
+      // Send current conversation to backend
+      await mockSendConversationToBackend(conversationThread);
+      
+      // End conversation
+      setConversationMode(false);
+      setCurrentStep('complete');
+      
+      setTimeout(() => {
+        // Reset for next session
+        setCurrentStep('mood');
+        setSelectedMood('');
+        setJournalText('');
+        setShowUnpackIt(false);
+        setUnpackSuggestions([]);
+        setConversationThread([]);
+        setCurrentQuestion('');
+        setCurrentAnswer('');
+        setConversationStep(0);
+      }, 3000);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to end conversation. Please try again.');
+    } finally {
+      setIsWaitingForResponse(false);
     }
   };
 
@@ -178,7 +298,8 @@ export default function JournalScreen() {
           <ArrowLeft size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>
-          {currentStep === 'mood' ? 'How are you feeling?' : 'Journal Entry'}
+          {conversationMode ? 'Reflection Conversation' : 
+           currentStep === 'mood' ? 'How are you feeling?' : 'Journal Entry'}
         </Text>
         <View style={styles.placeholder} />
       </View>
@@ -221,13 +342,14 @@ export default function JournalScreen() {
             
             <View style={styles.inputContainer}>
               <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, conversationMode && styles.textInputDisabled]}
                 multiline
                 placeholder="I feel really good today. My school life is great and I have plenty of friends, but I still feel so lonely. It feels like everything might come crashing down on me one day and I can't do anything about it..."
                 placeholderTextColor="rgba(255, 255, 255, 0.4)"
                 value={journalText}
                 onChangeText={setJournalText}
                 textAlignVertical="top"
+                editable={!conversationMode}
               />
             </View>
 
@@ -267,6 +389,79 @@ export default function JournalScreen() {
               </TouchableOpacity>
             </View>
           </View>
+        )}
+
+        {/* Conversation Mode */}
+        {conversationMode && (
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.conversationContainer}
+          >
+            <View style={styles.conversationSection}>
+              {/* Conversation History */}
+              <ScrollView style={styles.conversationHistory} showsVerticalScrollIndicator={false}>
+                {conversationThread.map((message, index) => (
+                  <View key={index} style={[
+                    styles.messageContainer,
+                    message.role === 'user' ? styles.userMessage : styles.assistantMessage
+                  ]}>
+                    <Text style={[
+                      styles.messageText,
+                      message.role === 'user' ? styles.userMessageText : styles.assistantMessageText
+                    ]}>
+                      {message.content}
+                    </Text>
+                  </View>
+                ))}
+                
+                {/* Current Question */}
+                {currentQuestion && (
+                  <View style={[styles.messageContainer, styles.assistantMessage]}>
+                    <Text style={styles.assistantMessageText}>
+                      {currentQuestion}
+                    </Text>
+                  </View>
+                )}
+              </ScrollView>
+
+              {/* Answer Input */}
+              <View style={styles.answerInputContainer}>
+                <TextInput
+                  style={styles.answerInput}
+                  multiline
+                  placeholder="Share your thoughts..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  value={currentAnswer}
+                  onChangeText={setCurrentAnswer}
+                  textAlignVertical="top"
+                  editable={!isWaitingForResponse}
+                />
+                
+                <View style={styles.conversationActions}>
+                  <TouchableOpacity 
+                    style={styles.endConversationButton}
+                    onPress={handleEndConversation}
+                    disabled={isWaitingForResponse}
+                  >
+                    <Text style={styles.endConversationText}>End Conversation</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity 
+                    style={[styles.sendAnswerButton, isWaitingForResponse && styles.sendAnswerButtonDisabled]}
+                    onPress={handleSendAnswer}
+                    disabled={isWaitingForResponse || !currentAnswer.trim()}
+                  >
+                    {isWaitingForResponse ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <Send size={20} color="#FFFFFF" />
+                    )}
+                    <Text style={styles.sendAnswerText}>Send</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
         )}
       </ScrollView>
     </LinearGradient>
@@ -340,6 +535,10 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     padding: 20,
     minHeight: 200,
+  },
+  textInputDisabled: {
+    opacity: 0.6,
+    backgroundColor: 'rgba(255, 255, 255, 0.02)',
   },
   unpackSection: {
     marginBottom: 24,
@@ -439,5 +638,96 @@ const styles = StyleSheet.create({
     color: '#FFD700',
     fontSize: 16,
     fontWeight: '600',
+  },
+  
+  // Conversation styles
+  conversationContainer: {
+    flex: 1,
+    paddingHorizontal: 0,
+  },
+  conversationSection: {
+    flex: 1,
+  },
+  conversationHistory: {
+    flex: 1,
+    maxHeight: 300,
+    marginBottom: 16,
+  },
+  messageContainer: {
+    marginBottom: 12,
+    padding: 16,
+    borderRadius: 16,
+  },
+  userMessage: {
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.3)',
+    alignSelf: 'flex-end',
+    marginLeft: 50,
+  },
+  assistantMessage: {
+    backgroundColor: 'rgba(139, 123, 216, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 123, 216, 0.3)',
+    alignSelf: 'flex-start',
+    marginRight: 50,
+  },
+  messageText: {
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  userMessageText: {
+    color: '#FFFFFF',
+  },
+  assistantMessageText: {
+    color: '#FFFFFF',
+  },
+  answerInputContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 123, 216, 0.3)',
+    padding: 16,
+    marginBottom: 16,
+  },
+  answerInput: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    lineHeight: 24,
+    minHeight: 80,
+    maxHeight: 120,
+  },
+  conversationActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 16,
+  },
+  endConversationButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+  },
+  endConversationText: {
+    color: '#8B8FA5',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  sendAnswerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#8B7BD8',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  sendAnswerButtonDisabled: {
+    opacity: 0.6,
+    backgroundColor: '#6B5B9A',
+  },
+  sendAnswerText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
 });
