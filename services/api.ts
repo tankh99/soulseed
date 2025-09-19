@@ -1,6 +1,8 @@
 // API Service for Soulseed App
 // This file contains mock API functions that would be replaced with actual API calls
 
+import { getSoulseedByPersonality, SoulseedData as SoulseedDataType } from '../data/soulseeds';
+
 export interface PersonalityScores {
   openness: number;
   conscientiousness: number;
@@ -11,10 +13,15 @@ export interface PersonalityScores {
 
 export interface SoulseedData {
   name: string;
-  tagline: string;
+  statement: string;
   level: number;
   personality: PersonalityScores;
   imageUrl?: string;
+  trait: string;
+  scar: string;
+  variationSlots: string[];
+  growthExpression: string[];
+  palette: string[];
 }
 
 export interface RegistrationData {
@@ -172,15 +179,23 @@ export async function registerUser(
 
 /**
  * Generate mock soulseed based on personality traits
- * Currently defaults to openness soulseed for all users
+ * Uses the soulseed data from the data file
  */
 function generateMockSoulseed(personality: PersonalityScores): SoulseedData {
-  // Default to openness soulseed for all users
+  // Get soulseed data based on personality scores
+  const soulseedData = getSoulseedByPersonality(personality);
+  
+  // Convert to API format
   const soulseed: SoulseedData = {
-    name: 'Curious',
-    tagline: 'An imaginative and creative companion who loves exploring new ideas and possibilities. Born from your openness to experience, this soulseed thrives on curiosity and innovation.',
+    name: soulseedData.name,
+    statement: soulseedData.statement,
     level: 1,
     personality,
+    trait: soulseedData.trait,
+    scar: soulseedData.scar,
+    variationSlots: soulseedData.variationSlots,
+    growthExpression: soulseedData.growthExpression,
+    palette: soulseedData.palette,
   };
   
   return soulseed;

@@ -6,7 +6,7 @@ import { SoulseedDisplay } from '@/components/SoulseedDisplay';
 
 interface SoulseedData {
   name: string;
-  tagline: string;
+  statement: string;
   level: number;
   personality: {
     openness: number;
@@ -15,6 +15,11 @@ interface SoulseedData {
     agreeableness: number;
     neuroticism: number;
   };
+  trait: string;
+  scar: string;
+  variationSlots: string[];
+  growthExpression: string[];
+  palette: string[];
 }
 
 export default function SoulseedResultPage() {
@@ -22,9 +27,9 @@ export default function SoulseedResultPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [soulseedData, setSoulseedData] = useState<SoulseedData | null>(null);
   const [editableName, setEditableName] = useState('');
-  const [editableTagline, setEditableTagline] = useState('');
+  const [editableStatement, setEditableStatement] = useState('');
   const [isEditingName, setIsEditingName] = useState(false);
-  const [isEditingTagline, setIsEditingTagline] = useState(false);
+  const [isEditingStatement, setIsEditingStatement] = useState(false);
 
   useEffect(() => {
     generateSoulseed();
@@ -40,17 +45,22 @@ export default function SoulseedResultPage() {
       // Mock API call - simulate processing time
       await new Promise(resolve => setTimeout(resolve, 3000));
       
-      // Mock soulseed data - default to openness soulseed
+      // Mock soulseed data - will use the actual personality-based soulseed
       const mockSoulseed: SoulseedData = {
-        name: "Curious",
-        tagline: "An imaginative and creative companion who loves exploring new ideas and possibilities. Born from your openness to experience, this soulseed thrives on curiosity and innovation.",
+        name: "Astra",
+        statement: "Drifts into daydreams, but shines in seeing possibilities no one else imagines.",
         level: 1,
         personality: scores,
+        trait: "openness",
+        scar: "Constellation freckles inside the body.",
+        variationSlots: ["star clusters", "spiral galaxies", "prism shards"],
+        growthExpression: ["surreal patterns", "ethereal wings", "shifting hues"],
+        palette: ["Indigo", "iridescent gradients", "gold sparks"],
       };
       
       setSoulseedData(mockSoulseed);
       setEditableName(mockSoulseed.name);
-      setEditableTagline(mockSoulseed.tagline);
+      setEditableStatement(mockSoulseed.statement);
       
     } catch (err) {
       console.error('Error generating soulseed:', err);
@@ -58,15 +68,20 @@ export default function SoulseedResultPage() {
       // Fallback with default openness soulseed
       const scores = JSON.parse(personalityScores as string);
       const fallbackSoulseed: SoulseedData = {
-        name: "Curious",
-        tagline: "An imaginative and creative companion who loves exploring new ideas and possibilities.",
+        name: "Astra",
+        statement: "Drifts into daydreams, but shines in seeing possibilities no one else imagines.",
         level: 1,
         personality: scores,
+        trait: "openness",
+        scar: "Constellation freckles inside the body.",
+        variationSlots: ["star clusters", "spiral galaxies", "prism shards"],
+        growthExpression: ["surreal patterns", "ethereal wings", "shifting hues"],
+        palette: ["Indigo", "iridescent gradients", "gold sparks"],
       };
       
       setSoulseedData(fallbackSoulseed);
       setEditableName(fallbackSoulseed.name);
-      setEditableTagline(fallbackSoulseed.tagline);
+      setEditableStatement(fallbackSoulseed.statement);
     } finally {
       setIsLoading(false);
     }
@@ -78,7 +93,7 @@ export default function SoulseedResultPage() {
         pathname: '/onboarding/register',
         params: {
           soulseedName: editableName,
-          soulseedTagline: editableTagline,
+          soulseedStatement: editableStatement,
           sessionId: sessionId as string,
         }
       });
@@ -157,26 +172,26 @@ export default function SoulseedResultPage() {
             </TouchableOpacity>
           </View>
 
-          {/* Editable Tagline */}
+          {/* Editable Statement */}
           <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Character Description</Text>
+            <Text style={styles.inputLabel}>Character Statement</Text>
             <TouchableOpacity
               style={[styles.inputField, styles.textAreaField]}
-              onPress={() => setIsEditingTagline(true)}
+              onPress={() => setIsEditingStatement(true)}
             >
-              {isEditingTagline ? (
+              {isEditingStatement ? (
                 <TextInput
                   style={[styles.textInput, styles.textAreaInput]}
-                  value={editableTagline}
-                  onChangeText={setEditableTagline}
-                  onBlur={() => setIsEditingTagline(false)}
+                  value={editableStatement}
+                  onChangeText={setEditableStatement}
+                  onBlur={() => setIsEditingStatement(false)}
                   multiline
                   numberOfLines={3}
                   autoFocus
                   selectTextOnFocus
                 />
               ) : (
-                <Text style={styles.inputText}>{editableTagline}</Text>
+                <Text style={styles.inputText}>{editableStatement}</Text>
               )}
               <Text style={styles.editHint}>Tap to edit</Text>
             </TouchableOpacity>

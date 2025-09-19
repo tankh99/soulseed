@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, Button } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, Button, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AudioPlayer, useAudioPlayer } from 'expo-audio';
 
@@ -155,14 +155,14 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
       </Animated.View>
 
       {/* Main Soulseed */}
-      <TouchableOpacity 
+      <TouchableWithoutFeedback 
         style={[
           styles.soulseed, 
           currentSize,
           isPlayingSound && styles.soulseedDisabled
         ]} 
         onPress={handlePetSoulseed}
-        activeOpacity={isPlayingSound ? 1 : 0.8}
+        // activeOpacity={isPlayingSound ? 1 : 0.8}
         disabled={isPlayingSound}
       >
         <Image 
@@ -184,7 +184,7 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
             <View style={[styles.mouth, { backgroundColor: '#1A0B3D' }]} />
           </View>
         </LinearGradient> */}
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
 
       {/* Sparkle Effects */}
       {level > 1 && (

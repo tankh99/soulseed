@@ -46,7 +46,7 @@ const genderOptions = [
 ];
 
 export default function RegisterPage() {
-  const { soulseedName, soulseedTagline, sessionId } = useLocalSearchParams();
+  const { soulseedName, soulseedStatement, sessionId } = useLocalSearchParams();
   
   const [formData, setFormData] = useState<RegistrationData>({
     email: '',
@@ -127,7 +127,7 @@ export default function RegisterPage() {
         ethnicity: formData.ethnicity,
         gender: formData.gender,
         soulseedName: soulseedName,
-        soulseedTagline: soulseedTagline,
+        soulseedStatement: soulseedStatement,
         sessionId: sessionId,
       });
 
