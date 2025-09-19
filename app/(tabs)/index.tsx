@@ -11,6 +11,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Flame, Star, Gift, CircleCheck as CheckCircle, PenTool } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { Colors } from '../../constants/colors';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
@@ -66,7 +67,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}>
+    <LinearGradient colors={Colors.gradientBackground} style={styles.container}>
       <Animated.ScrollView 
         style={[styles.scrollView, { opacity: fadeAnim }]}
         showsVerticalScrollIndicator={false}

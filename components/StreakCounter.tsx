@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Flame, Calendar } from 'lucide-react-native';
+import { Colors } from '../constants/colors';
 
 interface StreakCounterProps {
   currentStreak: number;
@@ -17,14 +18,14 @@ export function StreakCounter({ currentStreak, weeklyProgress }: StreakCounterPr
       {/* Current Streak */}
       <View style={styles.streakCard}>
         <LinearGradient
-          colors={['rgba(255, 215, 0, 0.15)', 'rgba(255, 215, 0, 0.05)']}
+          colors={Colors.gradientGold}
           style={styles.streakGradient}
         >
           <View style={styles.streakHeader}>
             <View style={styles.streakIcon}>
               <Flame size={24} color="#FFD700" />
             </View>
-            <View>
+            <View style={{height: "100%"}}>
               <Text style={styles.streakNumber}>{currentStreak}</Text>
               <Text style={styles.streakLabel}>Day Streak</Text>
             </View>

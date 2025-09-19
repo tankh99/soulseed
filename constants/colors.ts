@@ -37,7 +37,8 @@ export const Colors = {
   gradientWarm: ['#E8C988', '#B6A4E2'],              // Warm gradient
   gradientCool: ['#2A2F45', '#6B4F8F'],              // Cool gradient with vibrant purple
   gradientPurple: ['#4A3F75', '#6B4F8F', '#8B5FBF'], // Rich purple gradient
-  gradientBackground: ['#2A2F45', '#4A3F75', '#6B4F8F'], // Main background gradient
+  gradientBackground: ['#2D1B69', '#1A0B3D'],
+  gradientGold: ['rgba(255, 215, 0, 0.15)', 'rgba(255, 215, 0, 0.05)'], // Gold streak gradient
   
   // Special Effects
   shadow: 'rgba(42, 47, 69, 0.3)',                   // Shadow with primary color
