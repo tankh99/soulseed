@@ -25,7 +25,7 @@ export function StreakCounter({ currentStreak, weeklyProgress }: StreakCounterPr
             <View style={styles.streakIcon}>
               <Flame size={24} color="#FFD700" />
             </View>
-            <View style={{height: "100%"}}>
+            <View>
               <Text style={styles.streakNumber}>{currentStreak}</Text>
               <Text style={styles.streakLabel}>Day Streak</Text>
             </View>
@@ -80,6 +80,9 @@ const styles = StyleSheet.create({
   },
   streakGradient: {
     padding: 20,
+    flex: 1,
+    alignItems: "center",
+    // justifyContent: 
   },
   streakHeader: {
     flexDirection: 'row',

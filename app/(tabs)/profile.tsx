@@ -9,38 +9,27 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Settings, Trophy, Calendar, TrendingUp } from 'lucide-react-native';
+import ScreenLayout from '../../components/ScreenLayout';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { PersonalityTraits } from '../../components/PersonalityTraits';
 import { StatsCard } from '../../components/StatsCard';
+import { UserStats, PersonalityScores, SoulseedData } from '../../constants/userData';
 
 const { width } = Dimensions.get('window');
 
 export default function ProfileScreen() {
-  const userStats = {
-    totalEntries: 47,
-    currentStreak: 7,
-    longestStreak: 15,
-    totalPoints: 1250,
-    level: 2,
-    weeklyGoal: 7,
-    weeklyProgress: 5,
-  };
-
-  const personalityScores = {
-    openness: 0.8,
-    conscientiousness: 0.6,
-    extroversion: 0.7,
-    agreeableness: 0.9,
-    resilience: 0.7,
-  };
+  // Use global constants for consistent data across screens
+  const userStats = UserStats;
+  const personalityScores = PersonalityScores;
 
   return (
-    <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+    <ScreenLayout
+      title="Your Profile"
+      showBackButton={false}
+    >
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.welcomeText}>Your Profile</Text>
             <Text style={styles.subText}>Level {userStats.level} Journaler</Text>
           </View>
           <TouchableOpacity style={styles.settingsButton}>
@@ -123,24 +112,15 @@ export default function ProfileScreen() {
         </View>
 
         <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-    paddingTop: 60,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
     marginBottom: 32,
   },
   welcomeText: {
@@ -159,7 +139,6 @@ const styles = StyleSheet.create({
   soulseedSection: {
     alignItems: 'center',
     marginBottom: 32,
-    paddingHorizontal: 24,
   },
   soulseedTitle: {
     fontSize: 20,
@@ -178,12 +157,10 @@ const styles = StyleSheet.create({
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: 24,
     marginBottom: 32,
     gap: 12,
   },
   personalitySection: {
-    paddingHorizontal: 24,
     marginBottom: 32,
   },
   sectionTitle: {
@@ -199,7 +176,6 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   achievementsSection: {
-    paddingHorizontal: 24,
     marginBottom: 32,
   },
   achievementCard: {

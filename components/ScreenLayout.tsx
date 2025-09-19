@@ -38,7 +38,7 @@ export default function ScreenLayout({
   contentStyle,
   headerStyle,
   titleStyle,
-  gradientColors = ['#2D1B69', '#1A0B3D'],
+  gradientColors = [Colors.primary, Colors.primary],
   rightElement
 }: ScreenLayoutProps) {
   const ContentWrapper = scrollable ? ScrollView : View;

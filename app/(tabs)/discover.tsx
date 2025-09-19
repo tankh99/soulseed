@@ -11,6 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Book, Heart, TrendingUp, Calendar } from 'lucide-react-native';
 import { WeeklySummary } from '../../components/WeeklySummary';
 import { TraitCard } from '../../components/TraitCard';
+import ScreenLayout from '@/components/ScreenLayout';
 
 const { width } = Dimensions.get('window');
 
@@ -104,105 +105,108 @@ export default function DiscoverScreen() {
   };
 
   return (
-    <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Discover Yourself</Text>
-        <Text style={styles.subtitle}>Insights from your journey</Text>
-      </View>
+    <ScreenLayout
+      showBackButton={false}>
+      {/* <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}> */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Discover Yourself</Text>
+          <Text style={styles.subtitle}>Insights from your journey</Text>
+        </View>
 
-      {/* Tab Navigation */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'summary' && styles.activeTab]}
-          onPress={() => setActiveTab('summary')}
-        >
-          <Calendar size={18} color={activeTab === 'summary' ? '#1A0B3D' : '#8B7BD8'} />
-          <Text style={[styles.tabText, activeTab === 'summary' && styles.activeTabText]}>
-            Weekly
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'traits' && styles.activeTab]}
-          onPress={() => setActiveTab('traits')}
-        >
-          <Book size={18} color={activeTab === 'traits' ? '#1A0B3D' : '#8B7BD8'} />
-          <Text style={[styles.tabText, activeTab === 'traits' && styles.activeTabText]}>
-            Personality
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'tips' && styles.activeTab]}
-          onPress={() => setActiveTab('tips')}
-        >
-          <Heart size={18} color={activeTab === 'tips' ? '#1A0B3D' : '#8B7BD8'} />
-          <Text style={[styles.tabText, activeTab === 'tips' && styles.activeTabText]}>
-            Growth
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {activeTab === 'summary' && (
-          <WeeklySummary data={weeklyData} />
-        )}
-
-        {activeTab === 'traits' && (
-          <View style={styles.traitsContent}>
-            <Text style={styles.sectionTitle}>Your OCEAN Personality</Text>
-            <Text style={styles.sectionDescription}>
-              Understanding your unique combination of traits can help you grow and thrive. 
-              Remember, every trait has its strengths! 🌟
+        {/* Tab Navigation */}
+        <View style={styles.tabBar}>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'summary' && styles.activeTab]}
+            onPress={() => setActiveTab('summary')}
+          >
+            <Calendar size={18} color={activeTab === 'summary' ? '#1A0B3D' : '#8B7BD8'} />
+            <Text style={[styles.tabText, activeTab === 'summary' && styles.activeTabText]}>
+              Weekly
             </Text>
-            {traitInfo.map((trait, index) => (
-              <TraitCard key={index} trait={trait} />
-            ))}
-          </View>
-        )}
-
-        {activeTab === 'tips' && (
-          <View style={styles.tipsContent}>
-            <Text style={styles.sectionTitle}>Personal Growth Tips</Text>
-            <Text style={styles.sectionDescription}>
-              Based on your personality and journaling patterns, here are some ways to continue growing:
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'traits' && styles.activeTab]}
+            onPress={() => setActiveTab('traits')}
+          >
+            <Book size={18} color={activeTab === 'traits' ? '#1A0B3D' : '#8B7BD8'} />
+            <Text style={[styles.tabText, activeTab === 'traits' && styles.activeTabText]}>
+              Personality
             </Text>
-            
-            <View style={styles.tipCard}>
-              <Text style={styles.tipTitle}>🌱 Self-Acceptance</Text>
-              <Text style={styles.tipText}>
-                Your high agreeableness (90%) is a beautiful gift! You naturally care for others, 
-                but remember to care for yourself too. Practice saying "no" when you need to.
-              </Text>
-            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, activeTab === 'tips' && styles.activeTab]}
+            onPress={() => setActiveTab('tips')}
+          >
+            <Heart size={18} color={activeTab === 'tips' ? '#1A0B3D' : '#8B7BD8'} />
+            <Text style={[styles.tabText, activeTab === 'tips' && styles.activeTabText]}>
+              Growth
+            </Text>
+          </TouchableOpacity>
+        </View>
 
-            <View style={styles.tipCard}>
-              <Text style={styles.tipTitle}>🎨 Creative Expression</Text>
-              <Text style={styles.tipText}>
-                With your high openness (80%), you have a rich inner world. Try different 
-                journaling styles - draw, use colors, or write poetry to express yourself.
-              </Text>
-            </View>
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          {activeTab === 'summary' && (
+            <WeeklySummary data={weeklyData} />
+          )}
 
-            <View style={styles.tipCard}>
-              <Text style={styles.tipTitle}>📈 Building Habits</Text>
-              <Text style={styles.tipText}>
-                Your conscientiousness (60%) shows room for growth in building consistent habits. 
-                Start small - even 5 minutes of daily reflection counts!
+          {activeTab === 'traits' && (
+            <View style={styles.traitsContent}>
+              <Text style={styles.sectionTitle}>Your OCEAN Personality</Text>
+              <Text style={styles.sectionDescription}>
+                Understanding your unique combination of traits can help you grow and thrive. 
+                Remember, every trait has its strengths! 🌟
               </Text>
+              {traitInfo.map((trait, index) => (
+                <TraitCard key={index} trait={trait} />
+              ))}
             </View>
+          )}
 
-            <View style={styles.tipCard}>
-              <Text style={styles.tipTitle}>🧘 Emotional Balance</Text>
-              <Text style={styles.tipText}>
-                Your high resilience (30%) means you handle stress well! Use this strength to 
-                support friends and be a calming presence in challenging situations.
+          {activeTab === 'tips' && (
+            <View style={styles.tipsContent}>
+              <Text style={styles.sectionTitle}>Personal Growth Tips</Text>
+              <Text style={styles.sectionDescription}>
+                Based on your personality and journaling patterns, here are some ways to continue growing:
               </Text>
-            </View>
-          </View>
-        )}
+              
+              <View style={styles.tipCard}>
+                <Text style={styles.tipTitle}>🌱 Self-Acceptance</Text>
+                <Text style={styles.tipText}>
+                  Your high agreeableness (90%) is a beautiful gift! You naturally care for others, 
+                  but remember to care for yourself too. Practice saying "no" when you need to.
+                </Text>
+              </View>
 
-        <View style={styles.bottomSpacer} />
-      </ScrollView>
-    </LinearGradient>
+              <View style={styles.tipCard}>
+                <Text style={styles.tipTitle}>🎨 Creative Expression</Text>
+                <Text style={styles.tipText}>
+                  With your high openness (80%), you have a rich inner world. Try different 
+                  journaling styles - draw, use colors, or write poetry to express yourself.
+                </Text>
+              </View>
+
+              <View style={styles.tipCard}>
+                <Text style={styles.tipTitle}>📈 Building Habits</Text>
+                <Text style={styles.tipText}>
+                  Your conscientiousness (60%) shows room for growth in building consistent habits. 
+                  Start small - even 5 minutes of daily reflection counts!
+                </Text>
+              </View>
+
+              <View style={styles.tipCard}>
+                <Text style={styles.tipTitle}>🧘 Emotional Balance</Text>
+                <Text style={styles.tipText}>
+                  Your high resilience (30%) means you handle stress well! Use this strength to 
+                  support friends and be a calming presence in challenging situations.
+                </Text>
+              </View>
+            </View>
+          )}
+
+          <View style={styles.bottomSpacer} />
+        </ScrollView>
+      {/* </LinearGradient> */}
+    </ScreenLayout>
   );
 }
 
@@ -211,7 +215,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingHorizontal: 24,
     paddingTop: 60,
     paddingBottom: 24,
   },
@@ -227,7 +230,6 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    paddingHorizontal: 24,
     marginBottom: 24,
   },
   tab: {
@@ -254,7 +256,6 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
   },
   traitsContent: {
     flex: 1,

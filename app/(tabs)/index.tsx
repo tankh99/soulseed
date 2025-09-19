@@ -177,14 +177,14 @@ const styles = StyleSheet.create({
   },
   soulseedContainer: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginVertical: 16,
     paddingHorizontal: 24,
   },
   soulseedName: {
     fontSize: 20,
+    marginVertical: 10,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginTop: 16,
     textAlign: 'center',
   },
   soulseedSubtext: {

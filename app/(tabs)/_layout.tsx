@@ -1,3 +1,4 @@
+import { Colors } from '@/constants/colors';
 import { Tabs } from 'expo-router';
 import { Chrome as Home, PenTool, User, Compass } from 'lucide-react-native';
 
@@ -7,15 +8,15 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: '#1A0B3D',
-          borderTopColor: '#8B7BD8',
+          backgroundColor: Colors.background,
+          borderTopColor: Colors.secondary,
           borderTopWidth: 1,
           height: 90,
           paddingBottom: 20,
           paddingTop: 10,
         },
-        tabBarActiveTintColor: '#FFD700',
-        tabBarInactiveTintColor: '#8B7BD8',
+        tabBarActiveTintColor: Colors.accent,
+        tabBarInactiveTintColor: Colors.secondary,
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
