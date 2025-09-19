@@ -27,6 +27,7 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
   const [lastTapTime, setLastTapTime] = useState(0);
   const [isPlayingSound, setIsPlayingSound] = useState(false);
   const [currentMoodImage, setCurrentMoodImage] = useState<string | null>(null);
+  const [restingMoodImage, setRestingMoodImage] = useState<string | null>(null);
   
   // Audio players for the two petted sounds
   const player1 = useAudioPlayer(require('../assets/sounds/petted_1.m4a'));
@@ -50,13 +51,19 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
   // Handle mood changes
   useEffect(() => {
     if (selectedMood) {
-      setCurrentMoodImage(getMoodImage(selectedMood));
+      // Phase 1: Show initial reaction image
+      setCurrentMoodImage(getInitialReactionImage(selectedMood));
       playMoodSound(selectedMood);
       
-      // Reset mood image after 2 seconds
+      // Phase 2: After initial reaction, show resting state
       setTimeout(() => {
         setCurrentMoodImage(null);
+        setRestingMoodImage(getRestingImage(selectedMood));
       }, 2000);
+    } else {
+      // Reset everything when no mood is selected
+      setCurrentMoodImage(null);
+      setRestingMoodImage(null);
     }
   }, [selectedMood]);
 
@@ -104,19 +111,36 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
     }, 2000);
   };
 
-  const getMoodImage = (mood: string): string => {
-    // Placeholder - will be replaced with actual mood-specific images
+  // Get the initial reaction image for each mood
+  const getInitialReactionImage = (mood: string): string => {
     switch (mood) {
       case 'happy':
-        return require('../assets/images/reactions/openness/happy.png'); // Placeholder
+        return require('../assets/images/reactions/openness/happy.png');
       case 'sad':
-        return require('../assets/images/reactions/openness/cry.png'); // Placeholder
+        return require('../assets/images/reactions/openness/cry.png');
       case 'angry':
-        return require('../assets/images/reactions/openness/angry.png'); // Placeholder
+        return require('../assets/images/reactions/openness/angry.png');
       case 'surprised':
-        return require('../assets/images/reactions/openness/surprised.png'); // Placeholder
+        return require('../assets/images/reactions/openness/surprised.png');
       case 'neutral':
-        return require('../assets/images/reactions/openness/neutral.png'); // Placeholder
+        return require('../assets/images/reactions/openness/neutral.png');
+      default:
+        return require('../assets/images/openness.png');
+    }
+  };
+
+  // Get the resting state image based on mood type
+  const getRestingImage = (mood: string): string => {
+    switch (mood) {
+      case 'happy':
+      case 'surprised':
+      case 'neutral':
+        // Positive/neutral moods show the happy resting state
+        return require('../assets/images/openness.png');
+      case 'sad':
+      case 'angry':
+        // Negative moods show the sad resting state
+        return require('../assets/images/reactions/openness/sad.png');
       default:
         return require('../assets/images/openness.png');
     }
@@ -260,6 +284,7 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
         <Image 
           source={
             currentMoodImage ? currentMoodImage : 
+            restingMoodImage ? restingMoodImage :
             isPetted ? require('../assets/images/petted.png') : 
             require('../assets/images/openness.png')
           }
