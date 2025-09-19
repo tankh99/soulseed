@@ -1,0 +1,325 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+
+const { width } = Dimensions.get('window');
+
+// Placeholder questions for Big Five personality test
+const questions = [
+  { id: 1, text: "I am the life of the party", trait: "extroversion" },
+  { id: 2, text: "I feel comfortable around people", trait: "extroversion" },
+  { id: 3, text: "I start conversations", trait: "extroversion" },
+  { id: 4, text: "I am interested in people", trait: "openness" },
+  { id: 5, text: "I have a rich vocabulary", trait: "openness" },
+  { id: 6, text: "I have excellent ideas", trait: "openness" },
+  { id: 7, text: "I am always prepared", trait: "conscientiousness" },
+  { id: 8, text: "I pay attention to details", trait: "conscientiousness" },
+  { id: 9, text: "I get chores done right away", trait: "conscientiousness" },
+  { id: 10, text: "I am interested in others", trait: "agreeableness" },
+  { id: 11, text: "I feel others' emotions", trait: "agreeableness" },
+  { id: 12, text: "I have a soft heart", trait: "agreeableness" },
+  { id: 13, text: "I get stressed out easily", trait: "neuroticism" },
+  { id: 14, text: "I worry about things", trait: "neuroticism" },
+  { id: 15, text: "I am easily disturbed", trait: "neuroticism" },
+];
+
+const scaleOptions = [
+  { value: 1, label: "Strongly Disagree" },
+  { value: 2, label: "Disagree" },
+  { value: 3, label: "Neutral" },
+  { value: 4, label: "Agree" },
+  { value: 5, label: "Strongly Agree" },
+];
+
+export default function PersonalityTestPage() {
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+
+  const handleAnswer = (questionId: number, value: number) => {
+    setAnswers(prev => ({ ...prev, [questionId]: value }));
+    
+    // Auto-advance to next question after a short delay, but only if not on the last question
+    setTimeout(() => {
+      setCurrentQuestion(prev => {
+        // Don't advance past the last question
+        if (prev < questions.length - 1) {
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 300);
+  };
+
+  const handleSubmit = () => {
+    // Calculate Big Five scores
+    const scores = {
+      openness: 0,
+      conscientiousness: 0,
+      extroversion: 0,
+      agreeableness: 0,
+      neuroticism: 0,
+    };
+
+    // Count questions per trait and calculate averages
+    const traitCounts = {
+      openness: 0,
+      conscientiousness: 0,
+      extroversion: 0,
+      agreeableness: 0,
+      neuroticism: 0,
+    };
+
+    questions.forEach(question => {
+      const answer = answers[question.id];
+      if (answer) {
+        scores[question.trait as keyof typeof scores] += answer;
+        traitCounts[question.trait as keyof typeof traitCounts]++;
+      }
+    });
+
+    // Calculate averages
+    Object.keys(scores).forEach(trait => {
+      if (traitCounts[trait as keyof typeof traitCounts] > 0) {
+        scores[trait as keyof typeof scores] = 
+          scores[trait as keyof typeof scores] / traitCounts[trait as keyof typeof traitCounts] / 5; // Normalize to 0-1
+      }
+    });
+
+    // Navigate to submit page with results
+    router.push({
+      pathname: '/onboarding/personality-submit',
+      params: { scores: JSON.stringify(scores) }
+    });
+  };
+
+  const isComplete = Object.keys(answers).length === questions.length;
+
+  return (
+    <LinearGradient
+      colors={['#F8F9FF', '#E8EDFF', '#D6E3FF']}
+      style={styles.container}
+    >
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
+          {/* Progress Header */}
+          <View style={styles.header}>
+            <Text style={styles.progressText}>
+              Question {currentQuestion + 1} of {questions.length}
+            </Text>
+            <View style={styles.progressBar}>
+              <View 
+                style={[
+                  styles.progressFill, 
+                  { width: `${((currentQuestion + 1) / questions.length) * 100}%` }
+                ]} 
+              />
+            </View>
+          </View>
+
+          {/* Current Question */}
+          <View style={styles.questionContainer}>
+            <Text style={styles.questionText}>
+              {questions[currentQuestion]?.text || ''}
+            </Text>
+
+            {/* Scale Options */}
+            <View style={styles.scaleContainer}>
+              {scaleOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  style={[
+                    styles.scaleOption,
+                    answers[questions[currentQuestion]?.id] === option.value && styles.scaleOptionSelected
+                  ]}
+                  onPress={() => handleAnswer(questions[currentQuestion]?.id || 0, option.value)}
+                >
+                  <Text style={[
+                    styles.scaleValue,
+                    answers[questions[currentQuestion]?.id] === option.value && styles.scaleValueSelected
+                  ]}>
+                    {option.value}
+                  </Text>
+                  <Text style={[
+                    styles.scaleLabel,
+                    answers[questions[currentQuestion]?.id] === option.value && styles.scaleLabelSelected
+                  ]}>
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Navigation */}
+            <View style={styles.navigationContainer}>
+              {currentQuestion > 0 && (
+                <TouchableOpacity
+                  style={styles.navButton}
+                  onPress={() => setCurrentQuestion(prev => prev - 1)}
+                >
+                  <Text style={styles.navButtonText}>Previous</Text>
+                </TouchableOpacity>
+              )}
+              
+              {currentQuestion < questions.length - 1 && (
+                <TouchableOpacity
+                  style={[styles.navButton, styles.navButtonPrimary]}
+                  onPress={() => setCurrentQuestion(prev => prev + 1)}
+                  disabled={!answers[questions[currentQuestion]?.id]}
+                >
+                  <Text style={[styles.navButtonText, styles.navButtonTextPrimary]}>Next</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* Submit Button */}
+            {isComplete && (
+              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                <LinearGradient
+                  colors={['#8B7BD8', '#6366F1']}
+                  style={styles.submitGradient}
+                >
+                  <Text style={styles.submitButtonText}>Submit Assessment</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+    </LinearGradient>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    padding: 20,
+    paddingTop: 60,
+  },
+  header: {
+    marginBottom: 40,
+  },
+  progressText: {
+    fontSize: 16,
+    color: '#6366F1',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontWeight: '600',
+  },
+  progressBar: {
+    height: 6,
+    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+    borderRadius: 3,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#6366F1',
+    borderRadius: 3,
+  },
+  questionContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  questionText: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#1A0B3D',
+    textAlign: 'center',
+    marginBottom: 40,
+    lineHeight: 30,
+  },
+  scaleContainer: {
+    marginBottom: 40,
+  },
+  scaleOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    marginBottom: 12,
+    borderRadius: 12,
+    backgroundColor: '#F8F9FF',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  scaleOptionSelected: {
+    backgroundColor: '#E8EDFF',
+    borderColor: '#6366F1',
+  },
+  scaleValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#6366F1',
+    width: 30,
+    textAlign: 'center',
+  },
+  scaleValueSelected: {
+    color: '#4F46E5',
+  },
+  scaleLabel: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginLeft: 16,
+    flex: 1,
+  },
+  scaleLabelSelected: {
+    color: '#1F2937',
+    fontWeight: '500',
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  navButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+    backgroundColor: '#F3F4F6',
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+  },
+  navButtonPrimary: {
+    backgroundColor: '#6366F1',
+    borderColor: '#6366F1',
+  },
+  navButtonText: {
+    fontSize: 16,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  navButtonTextPrimary: {
+    color: '#FFFFFF',
+  },
+  submitButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#6366F1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  submitGradient: {
+    paddingVertical: 18,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  submitButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+});

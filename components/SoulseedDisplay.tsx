@@ -23,6 +23,7 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
   const [isPetted, setIsPetted] = useState(false);
   const [tapCount, setTapCount] = useState(0);
   const [lastTapTime, setLastTapTime] = useState(0);
+  const [isPlayingSound, setIsPlayingSound] = useState(false);
   
   // Audio players for the two petted sounds
   const player1 = useAudioPlayer(require('../assets/sounds/petted_1.m4a'));
@@ -38,14 +39,25 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
 
   const playRandomSound = () => {
     const randomPlayer = Math.random() < 0.5 ? player1 : player2;
-    randomPlayer.seekTo(0)
+    randomPlayer.seekTo(0);
     randomPlayer.play();
+    
+    // Set playing state and reset after sound duration (assuming ~2 seconds)
+    setIsPlayingSound(true);
+    setTimeout(() => {
+      setIsPlayingSound(false);
+    }, 2500); // Slightly longer than the visual petting effect
   };
 
   const handlePetSoulseed = () => {
+    // Prevent interaction if sound is currently playing
+    if (isPlayingSound) {
+      return;
+    }
+    
     setIsPetted(true);
     // Return to base image after 2 seconds
-    playRandomSound()
+    playRandomSound();
     setTimeout(() => {
       setIsPetted(false);
     }, 2000);
@@ -144,9 +156,14 @@ export function SoulseedDisplay({ level, personality, size = 'large' }: Soulseed
 
       {/* Main Soulseed */}
       <TouchableOpacity 
-        style={[styles.soulseed, currentSize]} 
+        style={[
+          styles.soulseed, 
+          currentSize,
+          isPlayingSound && styles.soulseedDisabled
+        ]} 
         onPress={handlePetSoulseed}
-        activeOpacity={0.8}
+        activeOpacity={isPlayingSound ? 1 : 0.8}
+        disabled={isPlayingSound}
       >
         <Image 
           source={isPetted ? require('../assets/images/petted.png') : require('../assets/images/openness.png')}
@@ -233,6 +250,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
+  },
+  soulseedDisabled: {
+    opacity: 0.6,
+    elevation: 4,
+    shadowOpacity: 0.1,
   },
   soulseedGradient: {
     width: '100%',
