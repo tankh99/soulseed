@@ -12,97 +12,18 @@ import { Book, Heart, TrendingUp, Calendar } from 'lucide-react-native';
 import { WeeklySummary } from '../../components/WeeklySummary';
 import { TraitCard } from '../../components/TraitCard';
 import ScreenLayout from '@/components/ScreenLayout';
+import { WeeklyData, TraitInfo } from '../../constants/userData';
 
 const { width } = Dimensions.get('window');
 
 export default function DiscoverScreen() {
   const [activeTab, setActiveTab] = useState<'summary' | 'traits' | 'tips'>('summary');
 
-  const traitInfo = [
-    {
-      name: 'Openness',
-      score: 0.8,
-      description: 'Your imagination and curiosity about the world',
-      color: '#8B7BD8',
-      icon: '🎨',
-      tips: [
-        'Try creative writing in your journal',
-        'Explore new perspectives on familiar topics',
-        'Ask "what if" questions more often'
-      ]
-    },
-    {
-      name: 'Conscientiousness',
-      score: 0.6,
-      description: 'Your organization and self-discipline',
-      color: '#4ADE80',
-      icon: '📋',
-      tips: [
-        'Set small, achievable daily goals',
-        'Use your journal to track habits',
-        'Celebrate small wins along the way'
-      ]
-    },
-    {
-      name: 'Extroversion',
-      score: 0.7,
-      description: 'Your energy around others and social situations',
-      color: '#F59E0B',
-      icon: '🎉',
-      tips: [
-        'Journal about social interactions',
-        'Reflect on group vs. solo activities',
-        'Notice your energy patterns'
-      ]
-    },
-    {
-      name: 'Agreeableness',
-      score: 0.9,
-      description: 'Your tendency to be cooperative and trusting',
-      color: '#EC4899',
-      icon: '🤝',
-      tips: [
-        'Practice setting healthy boundaries',
-        'Journal about your needs and wants',
-        'Celebrate your caring nature'
-      ]
-    },
-    {
-      name: 'Resilience',
-      score: 0.3,
-      description: 'Your emotional stability and stress response',
-      color: '#06B6D4',
-      icon: '🧘',
-      tips: [
-        'Use journaling during stressful times',
-        'Practice gratitude regularly',
-        'Notice your coping strategies'
-      ]
-    },
-  ];
+  // Use global constants for consistent data
+  const traitInfo = TraitInfo;
 
-  const weeklyData = {
-    moodTrends: [
-      { day: 'Mon', mood: 'happy', score: 4 },
-      { day: 'Tue', mood: 'neutral', score: 3 },
-      { day: 'Wed', mood: 'sad', score: 2 },
-      { day: 'Thu', mood: 'happy', score: 5 },
-      { day: 'Fri', mood: 'surprised', score: 4 },
-      { day: 'Sat', mood: 'happy', score: 5 },
-      { day: 'Sun', mood: 'neutral', score: 3 },
-    ],
-    insights: [
-      'You tend to feel happiest on weekends',
-      'Wednesday seems to be your most challenging day',
-      'Your mood improved significantly this week'
-    ],
-    topics: [
-      { topic: 'School stress', count: 3 },
-      { topic: 'Friendship', count: 2 },
-      { topic: 'Family time', count: 4 },
-      { topic: 'Future goals', count: 1 }
-    ]
-  };
+  // Use global weekly data
+  const weeklyData = WeeklyData;
 
   return (
     <ScreenLayout

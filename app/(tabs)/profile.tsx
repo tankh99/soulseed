@@ -40,10 +40,10 @@ export default function ProfileScreen() {
         {/* Soulseed Display */}
         <View style={styles.soulseedSection}>
           <SoulseedDisplay 
-            level={userStats.level} 
-            personality={personalityScores}
+            level={SoulseedData.level} 
+            personality={SoulseedData.personality}
           />
-          <Text style={styles.soulseedTitle}>Your Cosmic Companion</Text>
+          <Text style={styles.soulseedTitle}>{SoulseedData.name}</Text>
           <Text style={styles.soulseedDescription}>
             Born from your unique personality, growing with every reflection
           </Text>

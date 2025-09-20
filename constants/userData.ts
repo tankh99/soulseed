@@ -55,10 +55,20 @@ export const MockQuests = [
 ] as const;
 
 // Weekly data for discover screen
-export const WeeklyData = {
-  totalEntries: 5,
-  averageMood: 4.2,
-  topEmotions: ['Happy', 'Grateful', 'Motivated'],
+export const WeeklyData: {
+  moodTrends: Array<{ day: string; mood: string; score: number; }>;
+  insights: string[];
+  topics: Array<{ topic: string; count: number; }>;
+} = {
+  moodTrends: [
+    { day: 'Mon', mood: 'happy', score: 4 },
+    { day: 'Tue', mood: 'neutral', score: 3 },
+    { day: 'Wed', mood: 'sad', score: 2 },
+    { day: 'Thu', mood: 'happy', score: 5 },
+    { day: 'Fri', mood: 'surprised', score: 4 },
+    { day: 'Sat', mood: 'happy', score: 5 },
+    { day: 'Sun', mood: 'neutral', score: 3 },
+  ],
   insights: [
     'You wrote more when feeling grateful',
     'Your energy peaks in the morning',
@@ -71,10 +81,17 @@ export const WeeklyData = {
     { topic: 'Family time', count: 4 },
     { topic: 'Future goals', count: 1 }
   ]
-} as const;
+};
 
 // Trait information for discover screen
-export const TraitInfo = [
+export const TraitInfo: Array<{
+  name: string;
+  score: number;
+  description: string;
+  color: string;
+  icon: string;
+  tips: string[];
+}> = [
   {
     name: 'Openness',
     score: 0.8,
@@ -135,4 +152,4 @@ export const TraitInfo = [
       'Focus on growth from difficulties'
     ]
   }
-] as const;
+];

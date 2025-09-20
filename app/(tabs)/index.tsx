@@ -15,14 +15,17 @@ import { Colors } from '../../constants/colors';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
+import { UserStats, SoulseedData, MockQuests } from '../../constants/userData';
 
 const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
-  const [streak, setStreak] = useState(7);
-  const [totalPoints, setTotalPoints] = useState(1250);
-  const [weeklyProgress, setWeeklyProgress] = useState(5);
-  const [soulseedLevel, setSoulseedLevel] = useState(1);
+  // Use global constants for consistent data
+  const streak = UserStats.currentStreak;
+  const totalPoints = UserStats.totalPoints;
+  const weeklyProgress = UserStats.weeklyProgress;
+  const soulseedLevel = SoulseedData.level;
+  const mockQuests = MockQuests;
   
   const fadeAnim = new Animated.Value(0);
 
@@ -33,33 +36,6 @@ export default function HomeScreen() {
       useNativeDriver: true,
     }).start();
   }, []);
-
-  const mockQuests = [
-    {
-      id: '1',
-      title: 'Morning Reflection',
-      description: 'Journal about your goals for today',
-      points: 25,
-      completed: true,
-      icon: '🌅',
-    },
-    {
-      id: '2',
-      title: 'Gratitude Check',
-      description: 'Write down 3 things you\'re grateful for',
-      points: 20,
-      completed: false,
-      icon: '🙏',
-    },
-    {
-      id: '3',
-      title: 'Mood Tracker',
-      description: 'Record your current emotional state',
-      points: 15,
-      completed: false,
-      icon: '😊',
-    },
-  ];
 
   const handleCheckIn = () => {
     // Navigate to journal tab
@@ -85,15 +61,9 @@ export default function HomeScreen() {
         <View style={styles.soulseedContainer}>
           <SoulseedDisplay 
             level={soulseedLevel} 
-            personality={{
-              openness: 0.8,
-              conscientiousness: 0.6,
-              extroversion: 0.7,
-              agreeableness: 0.9,
-              resilience: 0.7,
-            }}
+            personality={SoulseedData.personality}
           />
-          <Text style={styles.soulseedName}>Your Cosmic Companion</Text>
+          <Text style={styles.soulseedName}>{SoulseedData.name}</Text>
           <Text style={styles.soulseedSubtext}>Level {soulseedLevel} • Evolving</Text>
         </View>
 
