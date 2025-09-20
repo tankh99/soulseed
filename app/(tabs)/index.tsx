@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 16
   },
   questsTitle: {
     fontSize: 20,
@@ -210,6 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#8B7BD8',
+    paddingHorizontal: 8 
   },
   bottomSpacer: {
     height: 100,
