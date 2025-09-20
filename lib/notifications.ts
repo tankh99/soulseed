@@ -54,3 +54,18 @@ export async function registerForPushNotificationsAsync() {
 
   return token;
 }
+
+export async function scheduleWelcomeNotification() {
+    console.log("setting notification")
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "How're you feeling today?",
+      body: 'Is judging stressful?',
+      data: { data: 'goes here' },
+    },
+    trigger: { 
+        seconds: 5, 
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+    },
+  });
+}

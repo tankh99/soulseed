@@ -2,13 +2,20 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
-import { registerForPushNotificationsAsync } from '@/lib/notifications';
+import { registerForPushNotificationsAsync, scheduleWelcomeNotification } from '@/lib/notifications';
 
 export default function RootLayout() {
   useFrameworkReady();
 
   useEffect(() => {
-    registerForPushNotificationsAsync();
+    const setupNotifications = async () => {
+      const token = await registerForPushNotificationsAsync();
+      if (token) {
+        await scheduleWelcomeNotification();
+      }
+    };
+
+    setupNotifications();
   }, []);
 
   return (

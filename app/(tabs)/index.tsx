@@ -18,6 +18,8 @@ import { QuestCard } from '../../components/QuestCard';
 import { UserStats, SoulseedData, MockQuests, PersonalityScores } from '../../constants/userData';
 import ScreenLayout from '../../components/ScreenLayout';
 import { registerForPushNotificationsAsync } from '@/lib/notifications';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 const { width } = Dimensions.get('window');
 
@@ -38,7 +40,13 @@ export default function HomeScreen() {
       useNativeDriver: true,
     }).start();
 
-    registerForPushNotificationsAsync()
+    registerForPushNotificationsAsync();
+
+    // (async() => {
+    //   const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+    //   const pushTokenString = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+    //   console.log(pushTokenString)
+    // })()
   }, []);
 
   const handleCheckIn = () => {
