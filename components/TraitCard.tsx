@@ -14,11 +14,15 @@ interface Trait {
 
 interface TraitCardProps {
   trait: Trait;
+  onPress: () => void;
 }
 
-export function TraitCard({ trait }: TraitCardProps) {
+export function TraitCard({ trait, onPress }: TraitCardProps) {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity 
+      style={styles.container}
+      onPress={onPress}
+    >
       <View style={styles.header}>
         <View style={[styles.iconContainer, { backgroundColor: `${trait.color}20` }]}>
           <Text style={styles.icon}>{trait.icon}</Text>
@@ -42,13 +46,6 @@ export function TraitCard({ trait }: TraitCardProps) {
             end={{ x: 1, y: 0 }}
           />
         </View>
-      </View>
-
-      <View style={styles.tipsContainer}>
-        <Text style={styles.tipsTitle}>Growth tips:</Text>
-        {trait.tips.slice(0, 2).map((tip, index) => (
-          <Text key={index} style={styles.tip}>• {tip}</Text>
-        ))}
       </View>
     </TouchableOpacity>
   );

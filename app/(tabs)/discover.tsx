@@ -5,19 +5,23 @@ import {
   StyleSheet, 
   ScrollView, 
   TouchableOpacity,
-  Dimensions 
+  Dimensions,
+  Modal,
+  Pressable
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Book, Heart, TrendingUp, Calendar } from 'lucide-react-native';
+import { Book, Heart, TrendingUp, Calendar, X } from 'lucide-react-native';
 import { WeeklySummary } from '../../components/WeeklySummary';
 import { TraitCard } from '../../components/TraitCard';
 import ScreenLayout from '@/components/ScreenLayout';
 import { WeeklyData, TraitInfo } from '../../constants/userData';
+import { Colors } from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
 
 export default function DiscoverScreen() {
-  const [activeTab, setActiveTab] = useState<'trends' | 'insights'>('trends');
+  const [activeTab, setActiveTab] = useState<'trends' | 'growth'>('trends');
+  const [selectedTrait, setSelectedTrait] = useState<string | null>(null);
 
   // Use global constants for consistent data
   const traitInfo = TraitInfo;
@@ -48,12 +52,12 @@ export default function DiscoverScreen() {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, activeTab === 'insights' && styles.activeTab]}
-            onPress={() => setActiveTab('insights')}
+            style={[styles.tab, activeTab === 'growth' && styles.activeTab]}
+            onPress={() => setActiveTab('growth')}
           >
-            <Book size={18} color={activeTab === 'insights' ? '#1A0B3D' : '#8B7BD8'} />
-            <Text style={[styles.tabText, activeTab === 'insights' && styles.activeTabText]}>
-              Insights
+            <Book size={18} color={activeTab === 'growth' ? '#1A0B3D' : '#8B7BD8'} />
+            <Text style={[styles.tabText, activeTab === 'growth' && styles.activeTabText]}>
+              Growth
             </Text>
           </TouchableOpacity>
         </View>
@@ -63,7 +67,7 @@ export default function DiscoverScreen() {
             <WeeklySummary data={weeklyData} />
           )}
 
-          {activeTab === 'insights' && (
+          {activeTab === 'growth' && (
             <>
               <View style={styles.traitsContent}>
                 <Text style={styles.sectionTitle}>Your OCEAN Personality</Text>
@@ -72,53 +76,37 @@ export default function DiscoverScreen() {
                   Remember, every trait has its strengths! 🌟
                 </Text>
                 {traitInfo.map((trait, index) => (
-                  <TraitCard key={index} trait={trait} />
+                  <TraitCard 
+                    key={index} 
+                    trait={trait}
+                    onPress={() => setSelectedTrait(trait.name)}
+                  />
                 ))}
-              </View>
-              
-              <View style={styles.tipsContent}>
-                <Text style={styles.sectionTitle}>Personal Growth Tips</Text>
-                <Text style={styles.sectionDescription}>
-                  Based on your personality and journaling patterns, here are some ways to continue growing:
-                </Text>
-                
-                <View style={styles.tipCard}>
-                  <Text style={styles.tipTitle}>🌱 Self-Acceptance</Text>
-                  <Text style={styles.tipText}>
-                    Your high agreeableness (90%) is a beautiful gift! You naturally care for others, 
-                    but remember to care for yourself too. Practice saying "no" when you need to.
-                  </Text>
-                </View>
-
-                <View style={styles.tipCard}>
-                  <Text style={styles.tipTitle}>🎨 Creative Expression</Text>
-                  <Text style={styles.tipText}>
-                    With your high openness (80%), you have a rich inner world. Try different 
-                    journaling styles - draw, use colors, or write poetry to express yourself.
-                  </Text>
-                </View>
-
-                <View style={styles.tipCard}>
-                  <Text style={styles.tipTitle}>📈 Building Habits</Text>
-                  <Text style={styles.tipText}>
-                    Your conscientiousness (60%) shows room for growth in building consistent habits. 
-                    Start small - even 5 minutes of daily reflection counts!
-                  </Text>
-                </View>
-
-                <View style={styles.tipCard}>
-                  <Text style={styles.tipTitle}>🧘 Emotional Balance</Text>
-                  <Text style={styles.tipText}>
-                    Your high resilience (30%) means you handle stress well! Use this strength to 
-                    support friends and be a calming presence in challenging situations.
-                  </Text>
-                </View>
               </View>
             </>
           )}
 
           <View style={styles.bottomSpacer} />
         </ScrollView>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={!!selectedTrait}
+          onRequestClose={() => setSelectedTrait(null)}
+        >
+          <Pressable style={styles.modalOverlay} onPress={() => setSelectedTrait(null)}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Growth Tips for {selectedTrait}</Text>
+              {traitInfo.find(t => t.name === selectedTrait)?.tips.map((tip, index) => (
+                <Text key={index} style={styles.tipText}>• {tip}</Text>
+              ))}
+              <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedTrait(null)}>
+                <X size={24} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View>
+          </Pressable>
+        </Modal>
       {/* </LinearGradient> */}
     </ScreenLayout>
   );
@@ -157,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
   activeTab: {
-    backgroundColor: '#FFD700',
+    backgroundColor: Colors.accent,
   },
   tabText: {
     fontSize: 14,
@@ -207,8 +195,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#8B7BD8',
     lineHeight: 20,
+    marginBottom: 8,
   },
   bottomSpacer: {
     height: 100,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalContent: {
+    backgroundColor: '#2A2F45',
+    borderRadius: 16,
+    padding: 24,
+    width: '90%',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 123, 216, 0.2)',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 16,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
   },
 });
