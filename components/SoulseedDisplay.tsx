@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Image, TouchableOpacity, Button, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions, Image, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { AudioPlayer, useAudioPlayer } from 'expo-audio';
 import { Colors } from '../constants/colors';
@@ -20,9 +20,6 @@ interface SoulseedDisplayProps {
 }
 
 export function SoulseedDisplay({ level, personality, size = 'large', selectedMood }: SoulseedDisplayProps) {
-  const [sparkleAnim] = useState(new Animated.Value(0));
-  const [glowAnim] = useState(new Animated.Value(0));
-  const [pingScaleAnim] = useState(new Animated.Value(1));
   const [isPetted, setIsPetted] = useState(false);
   const [tapCount, setTapCount] = useState(0);
   const [lastTapTime, setLastTapTime] = useState(0);
@@ -182,56 +179,6 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
     setLastTapTime(currentTime);
   };
 
-  useEffect(() => {
-    // Sparkle animation - keep existing for level > 1
-    if (level > 1) {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(sparkleAnim, {
-            toValue: 1,
-            duration: 2000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(sparkleAnim, {
-            toValue: 0,
-            duration: 2000,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-    }
-
-    // Subtle ping animation for all soulseeds
-    Animated.loop(
-      Animated.sequence([
-        Animated.parallel([
-          Animated.timing(glowAnim, {
-            toValue: 0.6,
-            duration: 4000, // Very slow fade in
-            useNativeDriver: true,
-          }),
-          Animated.timing(pingScaleAnim, {
-            toValue: 1.05,
-            duration: 4000, // Very slow scale up
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.parallel([
-          Animated.timing(glowAnim, {
-            toValue: 0.1,
-            duration: 4000, // Very slow fade out
-            useNativeDriver: true,
-          }),
-          Animated.timing(pingScaleAnim, {
-            toValue: 1,
-            duration: 4000, // Very slow scale back
-            useNativeDriver: true,
-          }),
-        ]),
-      ])
-    ).start();
-  }, [level]);
-
   const getSoulseedImage = () => {
     // Base form for level 1
     if (level === 1) {
@@ -269,35 +216,7 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
   };
 
   return (
-    <Animated.View 
-      style={[
-        styles.container, 
-        currentSize,
-        {
-          transform: [{ scale: pingScaleAnim }]
-        }
-      ]}
-    >
-      {/* Glow Effect */}
-      <Animated.View
-        pointerEvents="none"
-        style={[
-          styles.glowContainer,
-          {
-            opacity: glowAnim,
-            width: currentSize.width + 40,
-            height: currentSize.height + 40,
-          },
-        ]}
-      >
-        <LinearGradient
-          colors={getAuraColor()}
-          style={styles.glow}
-          start={{ x: 0.5, y: 0.5 }}
-          end={{ x: 1, y: 1 }}
-        />
-      </Animated.View>
-
+    <View style={[styles.container, currentSize]}>
       {/* Main Soulseed */}
       <TouchableWithoutFeedback
         style={[
@@ -334,44 +253,6 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
           </View>
         </LinearGradient> */}
       </TouchableWithoutFeedback>
-
-      {/* Sparkle Effects */}
-      {level > 1 && (
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            styles.sparklesContainer,
-            {
-              opacity: sparkleAnim,
-              transform: [
-                {
-                  rotate: sparkleAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: ['0deg', '360deg'],
-                  }),
-                },
-              ],
-            },
-          ]}
-        >
-          {[...Array(6)].map((_, index) => (
-            <View
-              key={index}
-              style={[
-                styles.sparkle,
-                {
-                  transform: [
-                    { rotate: `${index * 60}deg` },
-                    { translateY: -currentSize.width * 0.6 },
-                  ],
-                },
-              ]}
-            >
-              <View style={styles.sparkleInner} />
-            </View>
-          ))}
-        </Animated.View>
-      )}
     </View>
   );
 }
@@ -380,18 +261,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  glowContainer: {
-    position: 'absolute',
-    borderRadius: 1000,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  glow: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 1000,
-    
   },
   soulseed: {
     borderRadius: 1000,
@@ -456,8 +325,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   soulseedImage: {
-    flex: 1,
-    width: "100%",
-    // width: 40
+    width: '100%',
+    height: '100%',
   }
 });
