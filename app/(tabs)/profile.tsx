@@ -11,10 +11,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Settings, Trophy, Calendar, TrendingUp } from 'lucide-react-native';
 import ScreenLayout from '../../components/ScreenLayout';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
-import { PersonalityTraits } from '../../components/PersonalityTraits';
 import { StatsCard } from '../../components/StatsCard';
-import { UserStats, PersonalityScores, SoulseedData } from '../../constants/userData';
+import { UserStats, PersonalityScores, SoulseedData, TraitInfo } from '../../constants/userData';
 import { useRouter } from 'expo-router';
+import { TraitCard } from '../../components/TraitCard';
 
 const { width } = Dimensions.get('window');
 
@@ -84,7 +84,23 @@ export default function ProfileScreen() {
           <Text style={styles.sectionSubtitle}>
             Based on your OCEAN personality assessment
           </Text>
-          <PersonalityTraits scores={personalityScores} />
+          {TraitInfo.map((trait, index) => {
+            const traitName = trait.name.toLowerCase() as keyof typeof personalityScores;
+            const scoreData = personalityScores[traitName];
+            if (!scoreData) return null;
+
+            return (
+              <TraitCard
+                key={index}
+                trait={{ ...trait, scoreData }}
+                onPress={() => {
+                  // In a real app, you'd open a modal here like in the Discover tab
+                  // For now, we'll just log it.
+                  console.log(`Tapped on ${trait.name}`);
+                }}
+              />
+            );
+          })}
         </View>
 
         {/* Recent Achievements */}
