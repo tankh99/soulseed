@@ -26,15 +26,12 @@ export default function ProfileScreen() {
   const router = useRouter()
   return (
     <ScreenLayout
-      title="Your Profile"
       showBackButton={false}
       disableBottomSafeArea
     >
         {/* Header */}
         <View style={styles.header}>
-          <View>
-            <Text style={styles.subText}>Level {userStats.level} Journaler</Text>
-          </View>
+          <Text style={styles.headerTitle}>Your Profile</Text>
           <TouchableOpacity style={styles.settingsButton}>
             <Settings size={24} color="#8B7BD8" />
           </TouchableOpacity>
@@ -124,6 +121,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingTop: 60,
+    paddingBottom: 24,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   welcomeText: {
     fontSize: 24,

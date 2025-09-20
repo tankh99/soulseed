@@ -46,12 +46,13 @@ export default function HomeScreen() {
 
   return (
     <ScreenLayout disableBottomSafeArea>
-      <Animated.View 
+      <Animated.ScrollView 
         style={[styles.scrollView, { opacity: fadeAnim }]}
+        showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.greeting}>Good morning! ✨</Text>
+          <Text style={styles.headerTitle}>Good morning! ✨</Text>
           <View style={styles.pointsContainer}>
             <Star size={16} color="#FFD700" />
             <Text style={styles.points}>{totalPoints.toLocaleString()}</Text>
@@ -105,7 +106,7 @@ export default function HomeScreen() {
 
         {/* Bottom Spacer */}
         <View style={styles.bottomSpacer} />
-      </Animated.View>
+      </Animated.ScrollView>
     </ScreenLayout>
   );
 }
@@ -121,7 +122,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 32,
+    paddingTop: 60,
+    marginBottom: 16
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   greeting: {
     fontSize: 24,

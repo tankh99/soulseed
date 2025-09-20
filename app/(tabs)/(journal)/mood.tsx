@@ -20,9 +20,13 @@ export default function MoodSelectionPage() {
 
   return (
     <ScreenLayout
-      title="How are you feeling?"
       showBackButton
     >
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>How are you feeling?</Text>
+      </View>
+      
       {/* Always visible soulseed at the top */}
       <View style={styles.topSoulseedContainer}>
         <SoulseedDisplay 
@@ -47,6 +51,16 @@ export default function MoodSelectionPage() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    paddingTop: 60,
+    paddingBottom: 24,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
   topSoulseedContainer: {
     alignItems: 'center',
   },

@@ -190,7 +190,6 @@ export default function JournalEntryPage() {
 
   return (
     <ScreenLayout
-      title={conversationMode ? 'Reflection Conversation' : 'Journal Entry'}
       showBackButton={true}
       onBackPress={() => {
         if (conversationMode) {
@@ -205,6 +204,12 @@ export default function JournalEntryPage() {
       showKeyboardAvoiding={false}
     >
       <View style={{ flex: 1 }}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>
+            {conversationMode ? 'Reflection' : 'Journal'}
+          </Text>
+        </View>
+
       {/* Always visible soulseed at the top */}
       <View style={styles.topSoulseedContainer}>
         <SoulseedDisplay 
@@ -333,6 +338,16 @@ export default function JournalEntryPage() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    paddingTop: 60,
+    paddingBottom: 24,
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
   topSoulseedContainer: {
     alignItems: 'center',
     marginBottom: 32,

@@ -18,14 +18,12 @@ import { useRouter } from 'expo-router';
 
 interface ScreenLayoutProps {
   children: React.ReactNode;
-  title?: string;
   showBackButton?: boolean;
   onBackPress?: () => void;
   showKeyboardAvoiding?: boolean;
   scrollable?: boolean;
   contentStyle?: ViewStyle;
   headerStyle?: ViewStyle;
-  titleStyle?: TextStyle;
   gradientColors?: readonly [string, string, ...string[]];
   rightElement?: React.ReactNode;
   disableBottomSafeArea?: boolean;
@@ -35,14 +33,12 @@ interface ScreenLayoutProps {
 
 export default function ScreenLayout({
   children,
-  title,
   showBackButton = false,
   onBackPress,
   showKeyboardAvoiding = true,
   scrollable = true,
   contentStyle,
   headerStyle,
-  titleStyle,
   gradientColors = [Colors.primary, Colors.primary],
   rightElement,
   disableBottomSafeArea = false
@@ -70,7 +66,7 @@ export default function ScreenLayout({
             contentContainerStyle={[styles.container, contentStyle]}>
 
             {/* Header */}
-            {(title || showBackButton || rightElement) && (
+            {(showBackButton || rightElement) && (
               <View style={[styles.header, headerStyle]}>
                 <TouchableOpacity
                   style={styles.backButton}
@@ -79,12 +75,6 @@ export default function ScreenLayout({
                 >
                   {showBackButton && <ArrowLeft size={24} color="#FFFFFF" />}
                 </TouchableOpacity>
-
-                {title && (
-                  <Text style={[styles.headerTitle, titleStyle]}>
-                    {title}
-                  </Text>
-                )}
 
                 <View style={styles.headerRight}>
                   {rightElement || <View style={styles.placeholder} />}
