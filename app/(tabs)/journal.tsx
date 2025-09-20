@@ -502,7 +502,6 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   journalSection: {
-    paddingHorizontal: 16
   },
   journalPrompt: {
     fontSize: 16,
