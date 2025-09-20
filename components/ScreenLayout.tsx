@@ -47,16 +47,16 @@ export default function ScreenLayout({
   return (
 
     <LinearGradient colors={gradientColors} style={[styles.container]}>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={[{ flex: 1 }]}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        <ScrollView
-          style={{ flex: 1 }}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={[styles.container, contentStyle]}>
-          <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[styles.container, contentStyle]}>
 
             {/* Header */}
             {(title || showBackButton || rightElement) && (
@@ -88,8 +88,8 @@ export default function ScreenLayout({
             > */}
             {children}
             {/* </ScrollView> */}
-          </SafeAreaView>
-        </ScrollView>
+          </ScrollView>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </LinearGradient>
   );
@@ -97,7 +97,7 @@ export default function ScreenLayout({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 12
   },
   keyboardContainer: {
