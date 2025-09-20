@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import {Image} from 'expo-image'
 import ScreenLayout from '@/components/ScreenLayout';
 
 export default function IndexPage() {
@@ -31,7 +32,9 @@ export default function IndexPage() {
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logoEmoji}>🌱</Text>
+          {/* <Text style={styles.logoEmoji}>🌱</Text> */}
+          <Image source={require('../assets/images/base_form.png')} 
+            style={styles.logoImage} />
           <Text style={styles.logoText}>Soulseed</Text>
         </View>
         <ActivityIndicator size="large" color="#FFFFFF" style={styles.spinner} />
@@ -54,8 +57,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 60,
   },
-  logoEmoji: {
-    fontSize: 80,
+  logoImage: {
+    width: 100,
+    height: 100,
     marginBottom: 16,
   },
   logoText: {

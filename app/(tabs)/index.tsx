@@ -16,6 +16,7 @@ import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
 import { UserStats, SoulseedData, MockQuests } from '../../constants/userData';
+import ScreenLayout from '@/components/ScreenLayout';
 
 const { width } = Dimensions.get('window');
 
@@ -44,10 +45,9 @@ export default function HomeScreen() {
   };
 
   return (
-    <LinearGradient colors={Colors.gradientBackground} style={styles.container}>
-      <Animated.ScrollView 
+    <ScreenLayout>
+      <Animated.View 
         style={[styles.scrollView, { opacity: fadeAnim }]}
-        showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -105,8 +105,8 @@ export default function HomeScreen() {
 
         {/* Bottom Spacer */}
         <View style={styles.bottomSpacer} />
-      </Animated.ScrollView>
-    </LinearGradient>
+      </Animated.View>
+    </ScreenLayout>
   );
 }
 
@@ -116,13 +116,11 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    paddingTop: 60,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
     marginBottom: 32,
   },
   greeting: {
@@ -134,7 +132,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
@@ -149,7 +146,6 @@ const styles = StyleSheet.create({
   soulseedContainer: {
     alignItems: 'center',
     marginVertical: 16,
-    paddingHorizontal: 24,
   },
   soulseedName: {
     fontSize: 20,
@@ -165,7 +161,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   streakSection: {
-    paddingHorizontal: 24,
     marginBottom: 32,
   },
   checkInButton: {
@@ -184,7 +179,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 18,
-    paddingHorizontal: 32,
   },
   checkInText: {
     fontSize: 18,
@@ -193,13 +187,11 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   questsSection: {
-    paddingHorizontal: 24,
   },
   questsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
   },
   questsTitle: {
     fontSize: 20,
@@ -208,7 +200,6 @@ const styles = StyleSheet.create({
   },
   questsBadge: {
     backgroundColor: 'rgba(139, 123, 216, 0.2)',
-    paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
     borderWidth: 1,
