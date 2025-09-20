@@ -286,9 +286,9 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
       >
         <Image 
           source={
+            isPetted ? require('../assets/images/petted.png') : 
             currentMoodImage ? currentMoodImage : 
             restingMoodImage ? restingMoodImage :
-            isPetted ? require('../assets/images/petted.png') : 
             require('../assets/images/openness.png')
           }
           style={styles.soulseedImage} 
