@@ -18,6 +18,7 @@ import { ArrowLeft, Sparkles, Send } from 'lucide-react-native';
 import ScreenLayout from '../../components/ScreenLayout';
 import { MoodSelector } from '../../components/MoodSelector';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
+import { Colors } from '@/constants/colors';
 
 export default function JournalScreen() {
   const [currentStep, setCurrentStep] = useState<'mood' | 'journal' | 'complete'>('mood');
@@ -337,7 +338,7 @@ export default function JournalScreen() {
               <TextInput
                 style={[styles.textInput, conversationMode && styles.textInputDisabled]}
                 multiline
-                placeholder="I feel really good today. My school life is great and I have plenty of friends, but I still feel so lonely. It feels like everything might come crashing down on me one day and I can't do anything about it..."
+                placeholder="Write your thoughts here..."
                 placeholderTextColor="rgba(255, 255, 255, 0.4)"
                 value={journalText}
                 onChangeText={setJournalText}
@@ -364,9 +365,9 @@ export default function JournalScreen() {
                 disabled={isUnpacking}
               >
                 {isUnpacking ? (
-                  <ActivityIndicator size="small" color="#FFD700" />
+                  <ActivityIndicator size="small" color={Colors.accent} />
                 ) : (
-                  <Sparkles size={20} color="#FFD700" />
+                  <Sparkles size={20} color={Colors.accent} />
                 )}
                 <Text style={styles.unpackButtonText}>
                   {isUnpacking ? 'Analyzing...' : 'Unpack It'}
@@ -377,7 +378,7 @@ export default function JournalScreen() {
                 style={styles.submitButton}
                 onPress={handleSubmit}
               >
-                <Send size={20} color="#1A0B3D" />
+                <Send size={20} color={Colors.primary} />
                 <Text style={styles.submitButtonText}>Finish Entry</Text>
               </TouchableOpacity>
             </View>
@@ -386,11 +387,6 @@ export default function JournalScreen() {
 
         {/* Conversation Mode */}
         {conversationMode && (
-          <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.conversationContainer}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-          >
             <View style={styles.conversationSection}>
               {/* Conversation History */}
               <FlatList
@@ -455,7 +451,6 @@ export default function JournalScreen() {
                 </View>
               </View>
             </View>
-          </KeyboardAvoidingView>
         )}
     </ScreenLayout>
   );
@@ -507,11 +502,11 @@ const styles = StyleSheet.create({
     lineHeight: 24,
   },
   journalSection: {
-    flex: 1,
+    paddingHorizontal: 16
   },
   journalPrompt: {
     fontSize: 16,
-    color: '#8B7BD8',
+    color: Colors.secondary,
     marginBottom: 24,
     lineHeight: 24,
   },
@@ -577,7 +572,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 215, 0, 0.1)',
   },
   unpackButtonText: {
-    color: '#FFD700',
+    color: Colors.accent,
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
@@ -587,13 +582,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#8B7BD8',
+    backgroundColor: Colors.secondary,
     borderRadius: 12,
     paddingVertical: 16,
     paddingHorizontal: 20,
   },
   submitButtonText: {
-    color: '#1A0B3D',
+    color: Colors.primary,
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
@@ -716,7 +711,7 @@ const styles = StyleSheet.create({
   },
   sendAnswerButtonDisabled: {
     opacity: 0.6,
-    backgroundColor: '#6B5B9A',
+    backgroundColor: Colors.secondary,
   },
   sendAnswerText: {
     color: '#FFFFFF',
