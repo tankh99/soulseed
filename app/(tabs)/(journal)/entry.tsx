@@ -20,6 +20,7 @@ import ScreenLayout from '../../../components/ScreenLayout';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
 import { getMoodData } from '../../../constants/moods';
+import { useAudioPlayer } from 'expo-audio';
 
 export default function JournalEntryPage() {
   const { mood } = useLocalSearchParams();
@@ -35,6 +36,8 @@ export default function JournalEntryPage() {
   const [currentAnswer, setCurrentAnswer] = useState<string>('');
   const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
   const [conversationStep, setConversationStep] = useState(0);
+
+  const chimePlayer = useAudioPlayer(require('../../../assets/sounds/chime.mp3'));
 
   // Mock API functions
   const mockGetNextQuestion = async (
@@ -98,6 +101,8 @@ export default function JournalEntryPage() {
       return;
     }
 
+    chimePlayer.play();
+
     // Navigate to complete page
     router.push({
       pathname: '/(journal)/complete' as any,
@@ -150,6 +155,8 @@ export default function JournalEntryPage() {
       setConversationStep(0);
       setIsWaitingForResponse(false);
       
+      chimePlayer.play();
+
       // Navigate to complete page
       router.push({
         pathname: '/(journal)/complete' as any,
@@ -172,6 +179,8 @@ export default function JournalEntryPage() {
     setCurrentAnswer('');
     setConversationStep(0);
     
+    chimePlayer.play();
+
     // Navigate to complete page
     router.push({
       pathname: '/(journal)/complete' as any,

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import ScreenLayout from '../../../components/ScreenLayout';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
@@ -21,10 +20,9 @@ export default function JournalCompletePage() {
   return (
     <ScreenLayout contentStyle={styles.container}>
       <View style={styles.completeContainer}>
-        <SoulseedDisplay 
-          level={SoulseedData.level} 
-          personality={SoulseedData.personality}
-          size="large"
+        <Image
+          source={require("../../../assets/images/reactions/openness/journal_submitted.png")}
+          style={styles.submittedImage}
         />
         <Text style={styles.completeTitle}>Journal Saved! ✨</Text>
         <Text style={styles.completeSubtext}>
@@ -41,15 +39,20 @@ export default function JournalCompletePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  completeContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
+  },
+  completeContainer: {
+    alignItems: 'center',
+    padding: 24,
+  },
+  submittedImage: {
+    width: 200,
+    height: 200,
+    marginBottom: 24,
   },
   completeTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
     textAlign: 'center',
