@@ -53,7 +53,7 @@ export const MockQuests = [
     reward: { trait: 'openness', xp: 30 },
     completed: false,
     icon: '😊',
-    callbackUrl: '/(tabs)/discover',
+    callbackUrl: 'https://www.samhealth.org.sg/',
   },
 ] as const;
 

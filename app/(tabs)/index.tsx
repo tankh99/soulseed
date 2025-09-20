@@ -29,7 +29,7 @@ export default function HomeScreen() {
   const totalXp = Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.currentXP, 0);
   const weeklyProgress = UserStats.weeklyProgress;
   const soulseedLevel = SoulseedData.level;
-  const mockQuests = MockQuests;
+  const [quests, setQuests] = useState(MockQuests.map(q => ({ ...q })));
   
   const fadeAnim = new Animated.Value(0);
 
@@ -48,6 +48,14 @@ export default function HomeScreen() {
     //   console.log(pushTokenString)
     // })()
   }, []);
+
+  const handleQuestComplete = (questId: string) => {
+    setQuests(currentQuests =>
+      currentQuests.map(q =>
+        q.id === questId ? { ...q, completed: true } : q
+      )
+    );
+  };
 
   const handleCheckIn = () => {
     // Navigate to journal tab
@@ -105,13 +113,17 @@ export default function HomeScreen() {
             <Text style={styles.questsTitle}>Today's Quests</Text>
             <View style={styles.questsBadge}>
               <Text style={styles.questsBadgeText}>
-                {mockQuests.filter(q => q.completed).length}/{mockQuests.length}
+                {quests.filter(q => q.completed).length}/{quests.length}
               </Text>
             </View>
           </View>
           
-          {mockQuests.map((quest) => (
-            <QuestCard key={quest.id} quest={quest} />
+          {quests.map((quest) => (
+            <QuestCard 
+              key={quest.id} 
+              quest={quest}
+              onComplete={handleQuestComplete} 
+            />
           ))}
         </View>
 
@@ -183,7 +195,6 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   checkInButton: {
-    marginHorizontal: 24,
     marginBottom: 32,
     borderRadius: 16,
     overflow: 'hidden',

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { CircleCheck as CheckCircle, Circle, Star } from 'lucide-react-native';
 import { router } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
 
 const traitAcronyms: { [key: string]: string } = {
   openness: 'OPN',
@@ -26,12 +27,21 @@ interface Quest {
 
 interface QuestCardProps {
   quest: Quest;
+  onComplete: (questId: string) => void;
 }
 
-export function QuestCard({ quest }: QuestCardProps) {
+export function QuestCard({ quest, onComplete }: QuestCardProps) {
   const handlePress = () => {
+    if (!quest.completed) {
+      onComplete(quest.id);
+    }
+    
     if (quest.callbackUrl) {
-      router.push(quest.callbackUrl as any);
+      if (quest.callbackUrl.startsWith('http')) {
+        WebBrowser.openBrowserAsync(quest.callbackUrl);
+      } else {
+        router.push(quest.callbackUrl as any);
+      }
     }
   };
 
@@ -41,7 +51,6 @@ export function QuestCard({ quest }: QuestCardProps) {
     <TouchableOpacity 
       style={[styles.container, quest.completed && styles.completed]}
       onPress={handlePress}
-      disabled={quest.completed}
     >
       <View style={styles.iconContainer}>
         <Text style={styles.questIcon}>{quest.icon}</Text>
