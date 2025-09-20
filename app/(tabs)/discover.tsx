@@ -71,7 +71,7 @@ export default function DiscoverScreen() {
           {activeTab === 'growth' && (
             <>
               <View style={styles.traitsContent}>
-                <Text style={styles.sectionTitle}>Your OCEAN Personality</Text>
+                <Text style={styles.sectionTitle}>Your Personality</Text>
                 <Text style={styles.sectionDescription}>
                   Understanding your unique combination of traits can help you grow and thrive. 
                   Remember, every trait has its strengths! 🌟

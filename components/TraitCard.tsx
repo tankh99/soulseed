@@ -35,22 +35,20 @@ export function TraitCard({ trait, onPress }: TraitCardProps) {
           <Text style={styles.traitName}>{trait.name}</Text>
           <Text style={styles.traitDescription}>{trait.description}</Text>
         </View>
-        <View style={styles.scoreContainer}>
-          <Text style={styles.score}>{trait.scoreData.currentXP} / {trait.scoreData.levelUpXP} XP</Text>
-          <ChevronRight size={16} color="#8B7BD8" />
-        </View>
+        <ChevronRight size={16} color="#8B7BD8" />
       </View>
 
       <View style={styles.progressBar}>
-        <View style={styles.progressTrack}>
-          <LinearGradient
-            colors={[trait.color, `${trait.color}80`]}
-            style={[styles.progressFill, { width: `${trait.score * 100}%` }]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          />
-        </View>
+        <LinearGradient
+          colors={[trait.color, `${trait.color}80`]}
+          style={[styles.progressFill, { width: `${trait.score * 100}%` }]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+        />
       </View>
+      <Text style={styles.xpText}>
+        {trait.scoreData.currentXP} / {trait.scoreData.levelUpXP} XP
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   iconContainer: {
     width: 48,
@@ -93,20 +91,7 @@ const styles = StyleSheet.create({
     color: '#8B7BD8',
     marginTop: 2,
   },
-  scoreContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  score: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginRight: 8,
-  },
   progressBar: {
-    marginBottom: 16,
-  },
-  progressTrack: {
     height: 6,
     backgroundColor: 'rgba(139, 123, 216, 0.2)',
     borderRadius: 3,
@@ -115,6 +100,13 @@ const styles = StyleSheet.create({
   progressFill: {
     height: '100%',
     borderRadius: 3,
+  },
+  xpText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#8B7BD8',
+    textAlign: 'right',
+    marginTop: 4,
   },
   tipsContainer: {
     marginTop: 8,
