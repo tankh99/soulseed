@@ -35,6 +35,7 @@ export const MockQuests = [
     points: 25,
     completed: true,
     icon: '🌅',
+    callbackUrl: '/(tabs)/(journal)/entry',
   },
   {
     id: '2',
@@ -43,14 +44,16 @@ export const MockQuests = [
     points: 20,
     completed: false,
     icon: '🙏',
+    callbackUrl: '/(tabs)/(journal)',
   },
   {
     id: '3',
-    title: 'Mood Tracker',
-    description: 'Record your current emotional state',
-    points: 15,
+    title: 'Learn About SAMH',
+    description: 'Learn more about the community and resources around you',
+    points: 30,
     completed: false,
     icon: '😊',
+    callbackUrl: '/(tabs)/discover',
   },
 ] as const;
 

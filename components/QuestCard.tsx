@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { CircleCheck as CheckCircle, Circle, Star } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 interface Quest {
   id: string;
@@ -9,6 +10,7 @@ interface Quest {
   points: number;
   completed: boolean;
   icon: string;
+  callbackUrl: string;
 }
 
 interface QuestCardProps {
@@ -16,8 +18,18 @@ interface QuestCardProps {
 }
 
 export function QuestCard({ quest }: QuestCardProps) {
+  const handlePress = () => {
+    if (quest.callbackUrl) {
+      router.push(quest.callbackUrl as any);
+    }
+  };
+
   return (
-    <TouchableOpacity style={[styles.container, quest.completed && styles.completed]}>
+    <TouchableOpacity 
+      style={[styles.container, quest.completed && styles.completed]}
+      onPress={handlePress}
+      disabled={quest.completed}
+    >
       <View style={styles.iconContainer}>
         <Text style={styles.questIcon}>{quest.icon}</Text>
       </View>
