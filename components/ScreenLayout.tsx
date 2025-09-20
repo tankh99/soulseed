@@ -28,6 +28,7 @@ interface ScreenLayoutProps {
   titleStyle?: TextStyle;
   gradientColors?: readonly [string, string, ...string[]];
   rightElement?: React.ReactNode;
+  disableBottomSafeArea?: boolean;
 }
 
 
@@ -43,7 +44,8 @@ export default function ScreenLayout({
   headerStyle,
   titleStyle,
   gradientColors = [Colors.primary, Colors.primary],
-  rightElement
+  rightElement,
+  disableBottomSafeArea = false
 }: ScreenLayoutProps) {
   const router = useRouter();
   const defaultOnBackPress = () => {
@@ -59,7 +61,10 @@ export default function ScreenLayout({
         style={[{ flex: 1 }]}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView 
+          style={{ flex: 1 }}
+          edges={disableBottomSafeArea ? ['top', 'left', 'right'] : ['top', 'left', 'right', 'bottom']}
+        >
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[styles.container, contentStyle]}>

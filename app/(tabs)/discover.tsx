@@ -27,7 +27,9 @@ export default function DiscoverScreen() {
 
   return (
     <ScreenLayout
-      showBackButton={false}>
+      showBackButton={false}
+      disableBottomSafeArea
+    >
       {/* <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}> */}
         <View style={styles.header}>
           <Text style={styles.title}>Discover Yourself</Text>

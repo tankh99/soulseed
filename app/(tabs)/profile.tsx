@@ -28,6 +28,7 @@ export default function ProfileScreen() {
     <ScreenLayout
       title="Your Profile"
       showBackButton={false}
+      disableBottomSafeArea
     >
         {/* Header */}
         <View style={styles.header}>

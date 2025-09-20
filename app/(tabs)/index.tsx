@@ -16,7 +16,7 @@ import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
 import { UserStats, SoulseedData, MockQuests } from '../../constants/userData';
-import ScreenLayout from '@/components/ScreenLayout';
+import ScreenLayout from '../../components/ScreenLayout';
 
 const { width } = Dimensions.get('window');
 
@@ -40,12 +40,12 @@ export default function HomeScreen() {
 
   const handleCheckIn = () => {
     // Navigate to journal tab
-    router.push('/(tabs)/(journal)/mood');
+    router.push('/(tabs)/(journal)');
     
   };
 
   return (
-    <ScreenLayout>
+    <ScreenLayout disableBottomSafeArea>
       <Animated.View 
         style={[styles.scrollView, { opacity: fadeAnim }]}
       >

@@ -13,6 +13,7 @@ export default function TabLayout() {
           borderTopWidth: 1,
           height: 90,
           paddingBottom: 20,
+          paddingTop: 10
         },
         tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: Colors.secondary,
