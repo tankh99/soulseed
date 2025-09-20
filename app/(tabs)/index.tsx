@@ -17,6 +17,7 @@ import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
 import { UserStats, SoulseedData, MockQuests, PersonalityScores } from '../../constants/userData';
 import ScreenLayout from '../../components/ScreenLayout';
+import { registerForPushNotificationsAsync } from '@/lib/notifications';
 
 const { width } = Dimensions.get('window');
 
@@ -36,11 +37,13 @@ export default function HomeScreen() {
       duration: 1000,
       useNativeDriver: true,
     }).start();
+
+    registerForPushNotificationsAsync()
   }, []);
 
   const handleCheckIn = () => {
     // Navigate to journal tab
-    router.push('/(tabs)/(journal)');
+    router.push('/(tabs)/(journal)' as any);
     
   };
 
