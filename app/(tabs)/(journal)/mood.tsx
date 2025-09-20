@@ -5,20 +5,22 @@ import ScreenLayout from '../../../components/ScreenLayout';
 import { MoodSelector } from '../../../components/MoodSelector';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
+import { Colors } from '@/constants/colors';
 
 export default function MoodSelectionPage() {
   const handleMoodSelect = (mood: string) => {
     // Navigate to journal entry page with mood parameter
     router.push({
-      pathname: '/journal/entry' as any,
+      pathname: '/(tabs)/(journal)/entry' as any,
       params: { mood }
     });
+    // router.push("/(tabs)/" as any);
   };
 
   return (
     <ScreenLayout
       title="How are you feeling?"
-      showBackButton={false}
+      showBackButton
     >
       {/* Always visible soulseed at the top */}
       <View style={styles.topSoulseedContainer}>
@@ -52,16 +54,15 @@ export default function MoodSelectionPage() {
 const styles = StyleSheet.create({
   topSoulseedContainer: {
     alignItems: 'center',
-    marginBottom: 32,
   },
   moodSection: {
-    flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    paddingTop: 48
   },
   moodPrompt: {
     fontSize: 18,
-    color: '#8B7BD8',
+    color: Colors.secondary,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 24,

@@ -12,14 +12,14 @@ export default function JournalCompletePage() {
   useEffect(() => {
     // Auto-navigate back to mood selection after 3 seconds
     const timer = setTimeout(() => {
-      router.replace('/journal/mood' as any);
+      router.replace('/(tabs)/');
     }, 3000);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}>
+    <ScreenLayout contentStyle={styles.container}>
       <View style={styles.completeContainer}>
         <SoulseedDisplay 
           level={SoulseedData.level} 
@@ -34,7 +34,7 @@ export default function JournalCompletePage() {
           <Text style={styles.pointsText}>+25 points earned</Text>
         </View>
       </View>
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 

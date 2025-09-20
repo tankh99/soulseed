@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-native';
 
 interface Mood {
   id: string;
@@ -16,7 +16,11 @@ interface MoodSelectorProps {
 
 export function MoodSelector({ moods, selectedMood, onSelect }: MoodSelectorProps) {
   return (
-    <View style={styles.container}>
+    // <ScrollView 
+    //   horizontal
+    //   showsHorizontalScrollIndicator={false}
+    //   contentContainerStyle={styles.container}>
+        <View style={styles.container}>
       {moods.map((mood) => (
         <TouchableOpacity
           key={mood.id}
@@ -37,7 +41,8 @@ export function MoodSelector({ moods, selectedMood, onSelect }: MoodSelectorProp
           </Text>
         </TouchableOpacity>
       ))}
-    </View>
+      </View>
+    // </ScrollView> 
   );
 }
 
@@ -47,15 +52,14 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 20
   },
   moodButton: {
     alignItems: 'center',
     justifyContent: 'center',
     width: 80,
     height: 80,
-    borderRadius: 40,
+    borderRadius: 90,
+    // padding: 4,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderWidth: 2,
     borderColor: 'rgba(20, 10, 72, 0.3)',

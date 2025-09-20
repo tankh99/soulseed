@@ -50,6 +50,12 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="(journal)"
+        options={{
+          href: null, // This hides the tab from the tab bar
+        }}
+      />
     </Tabs>
   );
 }

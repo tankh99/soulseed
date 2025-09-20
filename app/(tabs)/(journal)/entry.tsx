@@ -98,7 +98,7 @@ export default function JournalEntryPage() {
 
     // Navigate to complete page
     router.push({
-      pathname: '/journal/complete' as any,
+      pathname: '/(journal)/complete' as any,
       params: { mood: selectedMood, text: journalText }
     });
   };
@@ -150,7 +150,7 @@ export default function JournalEntryPage() {
       
       // Navigate to complete page
       router.push({
-        pathname: '/journal/complete' as any,
+        pathname: '/(journal)/complete' as any,
         params: { mood: selectedMood, text: journalText }
       });
     } else {
@@ -172,7 +172,7 @@ export default function JournalEntryPage() {
     
     // Navigate to complete page
     router.push({
-      pathname: '/journal/complete' as any,
+      pathname: '/(journal)/complete' as any,
       params: { mood: selectedMood, text: journalText }
     });
   };

@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Scroll } from 'lucide-react-native';
 import { Colors } from '../constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 
 interface ScreenLayoutProps {
   children: React.ReactNode;
@@ -29,6 +30,8 @@ interface ScreenLayoutProps {
   rightElement?: React.ReactNode;
 }
 
+
+
 export default function ScreenLayout({
   children,
   title,
@@ -42,7 +45,10 @@ export default function ScreenLayout({
   gradientColors = [Colors.primary, Colors.primary],
   rightElement
 }: ScreenLayoutProps) {
-
+  const router = useRouter();
+  const defaultOnBackPress = () => {
+    router.back()
+  }
 
   return (
 
@@ -63,7 +69,7 @@ export default function ScreenLayout({
               <View style={[styles.header, headerStyle]}>
                 <TouchableOpacity
                   style={styles.backButton}
-                  onPress={onBackPress}
+                  onPress={onBackPress ? onBackPress : defaultOnBackPress}
                   disabled={!showBackButton}
                 >
                   {showBackButton && <ArrowLeft size={24} color="#FFFFFF" />}

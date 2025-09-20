@@ -14,6 +14,7 @@ import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { PersonalityTraits } from '../../components/PersonalityTraits';
 import { StatsCard } from '../../components/StatsCard';
 import { UserStats, PersonalityScores, SoulseedData } from '../../constants/userData';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
@@ -22,6 +23,7 @@ export default function ProfileScreen() {
   const userStats = UserStats;
   const personalityScores = PersonalityScores;
 
+  const router = useRouter()
   return (
     <ScreenLayout
       title="Your Profile"
