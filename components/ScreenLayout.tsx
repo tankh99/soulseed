@@ -1,9 +1,9 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -11,8 +11,9 @@ import {
   TextStyle
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft } from 'lucide-react-native';
+import { ArrowLeft, Scroll } from 'lucide-react-native';
 import { Colors } from '../constants/colors';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ScreenLayoutProps {
   children: React.ReactNode;
@@ -41,52 +42,55 @@ export default function ScreenLayout({
   gradientColors = [Colors.primary, Colors.primary],
   rightElement
 }: ScreenLayoutProps) {
-  const ContentWrapper = scrollable ? ScrollView : View;
-  const contentProps = scrollable ? { showsVerticalScrollIndicator: false } : {};
 
-  const content = (
-    <>
-      {/* Header */}
-      {(title || showBackButton || rightElement) && (
-        <View style={[styles.header, headerStyle]}>
-          <TouchableOpacity 
-            style={styles.backButton}
-            onPress={onBackPress}
-            disabled={!showBackButton}
-          >
-            {showBackButton && <ArrowLeft size={24} color="#FFFFFF" />}
-          </TouchableOpacity>
-          
-          {title && (
-            <Text style={[styles.headerTitle, titleStyle]}>
-              {title}
-            </Text>
-          )}
-          
-          <View style={styles.headerRight}>
-            {rightElement || <View style={styles.placeholder} />}
-          </View>
-        </View>
-      )}
-
-      {/* Content */}
-      <ContentWrapper style={[styles.content, contentStyle]} {...contentProps}>
-        {children}
-      </ContentWrapper>
-    </>
-  );
 
   return (
-    <LinearGradient colors={gradientColors} style={styles.container}>
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+
+    <LinearGradient colors={gradientColors} style={[styles.container]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={[{ flex: 1 }]}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+      >
+        <ScrollView
           style={{ flex: 1 }}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-        >
-          <ScrollView style={{flex: 1}}>
-            {content}
-          </ScrollView>
-        </KeyboardAvoidingView>
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[styles.container, contentStyle]}>
+          <SafeAreaView>
+
+            {/* Header */}
+            {(title || showBackButton || rightElement) && (
+              <View style={[styles.header, headerStyle]}>
+                <TouchableOpacity
+                  style={styles.backButton}
+                  onPress={onBackPress}
+                  disabled={!showBackButton}
+                >
+                  {showBackButton && <ArrowLeft size={24} color="#FFFFFF" />}
+                </TouchableOpacity>
+
+                {title && (
+                  <Text style={[styles.headerTitle, titleStyle]}>
+                    {title}
+                  </Text>
+                )}
+
+                <View style={styles.headerRight}>
+                  {rightElement || <View style={styles.placeholder} />}
+                </View>
+              </View>
+            )}
+
+            {/* Content */}
+            {/* <ScrollView
+              style={styles.content}
+              contentContainerStyle={contentStyle}
+            > */}
+            {children}
+            {/* </ScrollView> */}
+          </SafeAreaView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </LinearGradient>
   );
 }

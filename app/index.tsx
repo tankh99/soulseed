@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import ScreenLayout from '@/components/ScreenLayout';
 
 export default function IndexPage() {
   useEffect(() => {
@@ -24,11 +25,9 @@ export default function IndexPage() {
   }, []);
 
   return (
-    <LinearGradient
-      colors={['#8B7BD8', '#6366F1', '#4F46E5']}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+    <ScreenLayout
+      contentStyle={styles.container}
+      showBackButton={false}
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
@@ -38,7 +37,7 @@ export default function IndexPage() {
         <ActivityIndicator size="large" color="#FFFFFF" style={styles.spinner} />
         <Text style={styles.loadingText}>Loading...</Text>
       </View>
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 
