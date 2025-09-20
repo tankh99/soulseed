@@ -22,6 +22,7 @@ interface SoulseedDisplayProps {
 export function SoulseedDisplay({ level, personality, size = 'large', selectedMood }: SoulseedDisplayProps) {
   const [sparkleAnim] = useState(new Animated.Value(0));
   const [glowAnim] = useState(new Animated.Value(0));
+  const [pingScaleAnim] = useState(new Animated.Value(1));
   const [isPetted, setIsPetted] = useState(false);
   const [tapCount, setTapCount] = useState(0);
   const [lastTapTime, setLastTapTime] = useState(0);
@@ -182,38 +183,54 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
   };
 
   useEffect(() => {
-    // Sparkle animation
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(sparkleAnim, {
-          toValue: 1,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(sparkleAnim, {
-          toValue: 0,
-          duration: 2000,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
+    // Sparkle animation - keep existing for level > 1
+    if (level > 1) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(sparkleAnim, {
+            toValue: 1,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(sparkleAnim, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
 
-    // Glow animation
+    // Subtle ping animation for all soulseeds
     Animated.loop(
       Animated.sequence([
-        Animated.timing(glowAnim, {
-          toValue: 1,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(glowAnim, {
-          toValue: 0.3,
-          duration: 1500,
-          useNativeDriver: true,
-        }),
+        Animated.parallel([
+          Animated.timing(glowAnim, {
+            toValue: 0.6,
+            duration: 4000, // Very slow fade in
+            useNativeDriver: true,
+          }),
+          Animated.timing(pingScaleAnim, {
+            toValue: 1.05,
+            duration: 4000, // Very slow scale up
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.parallel([
+          Animated.timing(glowAnim, {
+            toValue: 0.1,
+            duration: 4000, // Very slow fade out
+            useNativeDriver: true,
+          }),
+          Animated.timing(pingScaleAnim, {
+            toValue: 1,
+            duration: 4000, // Very slow scale back
+            useNativeDriver: true,
+          }),
+        ]),
       ])
     ).start();
-  }, []);
+  }, [level]);
 
   const getSoulseedImage = () => {
     // Base form for level 1
@@ -252,7 +269,15 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
   };
 
   return (
-    <View style={[styles.container, currentSize]}>
+    <Animated.View 
+      style={[
+        styles.container, 
+        currentSize,
+        {
+          transform: [{ scale: pingScaleAnim }]
+        }
+      ]}
+    >
       {/* Glow Effect */}
       <Animated.View
         pointerEvents="none"

@@ -22,7 +22,7 @@ export const PersonalityScores = {
 // Soulseed display data
 export const SoulseedData = {
   level: 2,
-  name: "Your Cosmic Companion",
+  name: "Astra",
   personality: PersonalityScores,
 } as const;
 

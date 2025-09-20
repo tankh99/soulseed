@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   soulseedName: {
     fontSize: 20,
-    marginVertical: 10,
+    paddingVertical: 10,
     fontWeight: '600',
     color: '#FFFFFF',
     textAlign: 'center',
