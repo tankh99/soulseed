@@ -19,10 +19,12 @@ import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
+import { getMoodData } from '../../../constants/moods';
 
 export default function JournalEntryPage() {
   const { mood } = useLocalSearchParams();
   const selectedMood = mood as string;
+  const moodData = getMoodData(selectedMood);
   
   const [journalText, setJournalText] = useState('');
   const [showUnpackIt, setShowUnpackIt] = useState(false);
@@ -193,6 +195,7 @@ export default function JournalEntryPage() {
       }}
       showKeyboardAvoiding={false}
     >
+      <View style={{ flex: 1 }}>
       {/* Always visible soulseed at the top */}
       <View style={styles.topSoulseedContainer}>
         <SoulseedDisplay 
@@ -243,12 +246,14 @@ export default function JournalEntryPage() {
           </View>
         </View>
       ) : (
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.conversationContainer}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-        >
           <View style={styles.conversationSection}>
+            {/* Selected Mood Display */}
+            <View style={styles.selectedMoodContainer}>
+              <Text style={styles.selectedMoodText}>
+                You chose: <Text style={{fontWeight: 'bold'}}>{moodData?.emoji} {moodData?.label}</Text>
+              </Text>
+            </View>
+
             {/* Conversation History */}
             <FlatList
               style={styles.conversationHistory}
@@ -298,7 +303,7 @@ export default function JournalEntryPage() {
                 </TouchableOpacity>
 
                 <TouchableOpacity 
-                  style={[styles.sendAnswerButton, isWaitingForResponse && styles.sendAnswerButtonDisabled]}
+                  style={[styles.sendAnswerButton, (isWaitingForResponse || !currentAnswer.trim()) && styles.sendAnswerButtonDisabled]}
                   onPress={handleSendAnswer}
                   disabled={isWaitingForResponse || !currentAnswer.trim()}
                 >
@@ -312,8 +317,8 @@ export default function JournalEntryPage() {
               </View>
             </View>
           </View>
-        </KeyboardAvoidingView>
       )}
+      </View>
     </ScreenLayout>
   );
 }
@@ -386,6 +391,17 @@ const styles = StyleSheet.create({
   },
   conversationSection: {
     flex: 1,
+  },
+  selectedMoodContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    padding: 12,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  selectedMoodText: {
+    color: '#FFFFFF',
+    fontSize: 14,
   },
   conversationHistory: {
     flex: 1,
@@ -461,9 +477,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+    opacity: 1,
   },
   sendAnswerButtonDisabled: {
     backgroundColor: 'rgba(139, 123, 216, 0.5)',
+    opacity: 0.5,
   },
   sendAnswerText: {
     color: '#FFFFFF',

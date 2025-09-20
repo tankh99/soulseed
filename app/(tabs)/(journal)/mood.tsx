@@ -6,6 +6,7 @@ import { MoodSelector } from '../../../components/MoodSelector';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
 import { Colors } from '@/constants/colors';
+import { MOODS } from '../../../constants/moods';
 
 export default function MoodSelectionPage() {
   const handleMoodSelect = (mood: string) => {
@@ -36,13 +37,7 @@ export default function MoodSelectionPage() {
           Your soulseed is curious about your current mood
         </Text>
         <MoodSelector 
-          moods={[
-            { id: 'happy', emoji: '😊', label: 'Happy', color: '#FFD700' },
-            { id: 'sad', emoji: '😢', label: 'Sad', color: '#4A90E2' },
-            { id: 'angry', emoji: '😠', label: 'Angry', color: '#FF6B6B' },
-            { id: 'surprised', emoji: '😲', label: 'Surprised', color: '#4ECDC4' },
-            { id: 'neutral', emoji: '😐', label: 'Neutral', color: '#95A5A6' },
-          ]}
+          moods={MOODS}
           onSelect={handleMoodSelect}
           selectedMood=""
         />
