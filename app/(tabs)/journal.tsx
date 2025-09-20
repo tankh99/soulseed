@@ -289,7 +289,7 @@ export default function JournalScreen() {
   return (
     <ScreenLayout
       title={conversationMode ? 'Reflection Conversation' : 
-             currentStep === 'mood' ? 'How are you feeling?' : 'Journal Entry'}
+      currentStep === 'mood' ? 'How are you feeling?' : 'Journal Entry'}
       showBackButton={currentStep === 'journal'}
       onBackPress={() => {
         if (currentStep === 'journal') {

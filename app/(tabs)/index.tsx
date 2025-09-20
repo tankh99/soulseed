@@ -78,10 +78,10 @@ export default function HomeScreen() {
         {/* Check In Button */}
         <TouchableOpacity style={styles.checkInButton} onPress={handleCheckIn}>
           <LinearGradient 
-            colors={['#FFD700', '#FFA500']} 
+            colors={[Colors.secondary, Colors.secondary]} 
             style={styles.checkInGradient}
           >
-            <PenTool size={24} color="#1A0B3D" />
+            <PenTool size={24} color={Colors.primary} />
             <Text style={styles.checkInText}>Check In</Text>
           </LinearGradient>
         </TouchableOpacity>
