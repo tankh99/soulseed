@@ -2,12 +2,17 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
+interface TraitScore {
+  currentXP: number;
+  levelUpXP: number;
+}
+
 interface PersonalityScores {
-  openness: number;
-  conscientiousness: number;
-  extroversion: number;
-  agreeableness: number;
-  resilience: number;
+  openness: TraitScore;
+  conscientiousness: TraitScore;
+  extroversion: TraitScore;
+  agreeableness: TraitScore;
+  resilience: TraitScore;
 }
 
 interface PersonalityTraitsProps {
@@ -66,7 +71,7 @@ export function PersonalityTraits({ scores }: PersonalityTraitsProps) {
               <Text style={styles.traitDescription}>{trait.description}</Text>
             </View>
             <Text style={styles.traitScore}>
-              {Math.round(trait.score * 100)}%
+              {trait.score.currentXP} / {trait.score.levelUpXP} XP
             </Text>
           </View>
           
@@ -74,7 +79,7 @@ export function PersonalityTraits({ scores }: PersonalityTraitsProps) {
             <View style={styles.progressTrack}>
               <LinearGradient
                 colors={[trait.color, `${trait.color}80`]}
-                style={[styles.progressFill, { width: `${trait.score * 100}%` }]}
+                style={[styles.progressFill, { width: `${(trait.score.currentXP / trait.score.levelUpXP) * 100}%` }]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
               />

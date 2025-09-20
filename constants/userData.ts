@@ -12,11 +12,11 @@ export const UserStats = {
 } as const;
 
 export const PersonalityScores = {
-  openness: 0.8,
-  conscientiousness: 0.6,
-  extroversion: 0.7,
-  agreeableness: 0.9,
-  resilience: 0.7,
+  openness: { currentXP: 800, levelUpXP: 1000 },
+  conscientiousness: { currentXP: 600, levelUpXP: 1000 },
+  extroversion: { currentXP: 700, levelUpXP: 1000 },
+  agreeableness: { currentXP: 900, levelUpXP: 1000 },
+  resilience: { currentXP: 300, levelUpXP: 1000 },
 } as const;
 
 // Soulseed display data
@@ -32,7 +32,7 @@ export const MockQuests = [
     id: '1',
     title: 'Morning Reflection',
     description: 'Journal about your goals for today',
-    points: 25,
+    reward: { trait: 'conscientiousness', xp: 25 },
     completed: true,
     icon: '🌅',
     callbackUrl: '/(tabs)/(journal)/entry',
@@ -41,7 +41,7 @@ export const MockQuests = [
     id: '2',
     title: 'Gratitude Check',
     description: 'Write down 3 things you\'re grateful for',
-    points: 20,
+    reward: { trait: 'agreeableness', xp: 20 },
     completed: false,
     icon: '🙏',
     callbackUrl: '/(tabs)/(journal)',
@@ -50,7 +50,7 @@ export const MockQuests = [
     id: '3',
     title: 'Learn About SAMH',
     description: 'Learn more about the community and resources around you',
-    points: 30,
+    reward: { trait: 'openness', xp: 30 },
     completed: false,
     icon: '😊',
     callbackUrl: '/(tabs)/discover',
@@ -97,7 +97,7 @@ export const TraitInfo: Array<{
 }> = [
   {
     name: 'Openness',
-    score: 0.8,
+    score: PersonalityScores.openness.currentXP / PersonalityScores.openness.levelUpXP,
     description: 'Your imagination and curiosity about the world',
     color: '#8B7BD8',
     icon: '🎨',
@@ -109,7 +109,7 @@ export const TraitInfo: Array<{
   },
   {
     name: 'Conscientiousness',
-    score: 0.6,
+    score: PersonalityScores.conscientiousness.currentXP / PersonalityScores.conscientiousness.levelUpXP,
     description: 'Your organization and goal-oriented nature',
     color: '#4CAF50',
     icon: '📋',
@@ -121,7 +121,7 @@ export const TraitInfo: Array<{
   },
   {
     name: 'Extraversion',
-    score: 0.7,
+    score: PersonalityScores.extroversion.currentXP / PersonalityScores.extroversion.levelUpXP,
     description: 'Your social energy and outgoing nature',
     color: '#FF9800',
     icon: '🌟',
@@ -133,7 +133,7 @@ export const TraitInfo: Array<{
   },
   {
     name: 'Agreeableness',
-    score: 0.9,
+    score: PersonalityScores.agreeableness.currentXP / PersonalityScores.agreeableness.levelUpXP,
     description: 'Your compassion and cooperation with others',
     color: '#E91E63',
     icon: '❤️',
@@ -145,7 +145,7 @@ export const TraitInfo: Array<{
   },
   {
     name: 'Resilience',
-    score: 0.3,
+    score: PersonalityScores.resilience.currentXP / PersonalityScores.resilience.levelUpXP,
     description: 'Your emotional stability and stress response',
     color: '#9C27B0',
     icon: '💪',

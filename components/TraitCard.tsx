@@ -10,6 +10,10 @@ interface Trait {
   color: string;
   icon: string;
   tips: string[];
+  scoreData: {
+    currentXP: number;
+    levelUpXP: number;
+  };
 }
 
 interface TraitCardProps {
@@ -32,7 +36,7 @@ export function TraitCard({ trait, onPress }: TraitCardProps) {
           <Text style={styles.traitDescription}>{trait.description}</Text>
         </View>
         <View style={styles.scoreContainer}>
-          <Text style={styles.score}>{Math.round(trait.score * 100)}%</Text>
+          <Text style={styles.score}>{trait.scoreData.currentXP} / {trait.scoreData.levelUpXP} XP</Text>
           <ChevronRight size={16} color="#8B7BD8" />
         </View>
       </View>

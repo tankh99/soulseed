@@ -14,7 +14,7 @@ import { Book, Heart, TrendingUp, Calendar, X } from 'lucide-react-native';
 import { WeeklySummary } from '../../components/WeeklySummary';
 import { TraitCard } from '../../components/TraitCard';
 import ScreenLayout from '@/components/ScreenLayout';
-import { WeeklyData, TraitInfo } from '../../constants/userData';
+import { WeeklyData, TraitInfo, PersonalityScores } from '../../constants/userData';
 import { Colors } from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
@@ -25,6 +25,7 @@ export default function DiscoverScreen() {
 
   // Use global constants for consistent data
   const traitInfo = TraitInfo;
+  const personalityScores = PersonalityScores;
 
   // Use global weekly data
   const weeklyData = WeeklyData;
@@ -75,13 +76,23 @@ export default function DiscoverScreen() {
                   Understanding your unique combination of traits can help you grow and thrive. 
                   Remember, every trait has its strengths! 🌟
                 </Text>
-                {traitInfo.map((trait, index) => (
-                  <TraitCard 
-                    key={index} 
-                    trait={trait}
-                    onPress={() => setSelectedTrait(trait.name)}
-                  />
-                ))}
+                {traitInfo.map((trait, index) => {
+                  const traitName = trait.name.toLowerCase() as keyof typeof personalityScores;
+                  const scoreData = personalityScores[traitName];
+                  
+                  // Gracefully handle cases where score data might not be found
+                  if (!scoreData) {
+                    return null;
+                  }
+
+                  return (
+                    <TraitCard 
+                      key={index} 
+                      trait={{...trait, scoreData}}
+                      onPress={() => setSelectedTrait(trait.name)}
+                    />
+                  );
+                })}
               </View>
             </>
           )}

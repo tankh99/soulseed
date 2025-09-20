@@ -22,6 +22,7 @@ export default function ProfileScreen() {
   // Use global constants for consistent data across screens
   const userStats = UserStats;
   const personalityScores = PersonalityScores;
+  const totalXp = Object.values(personalityScores).reduce((acc, trait) => acc + trait.currentXP, 0);
 
   const router = useRouter()
   return (
@@ -53,8 +54,8 @@ export default function ProfileScreen() {
         <View style={styles.statsGrid}>
           <StatsCard
             icon={<Trophy size={20} color="#FFD700" />}
-            title="Total Points"
-            value={userStats.totalPoints.toLocaleString()}
+            title="Total XP"
+            value={totalXp.toLocaleString()}
             subtitle="Keep growing!"
           />
           <StatsCard

@@ -15,7 +15,7 @@ import { Colors } from '../../constants/colors';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
-import { UserStats, SoulseedData, MockQuests } from '../../constants/userData';
+import { UserStats, SoulseedData, MockQuests, PersonalityScores } from '../../constants/userData';
 import ScreenLayout from '../../components/ScreenLayout';
 
 const { width } = Dimensions.get('window');
@@ -23,7 +23,7 @@ const { width } = Dimensions.get('window');
 export default function HomeScreen() {
   // Use global constants for consistent data
   const streak = UserStats.currentStreak;
-  const totalPoints = UserStats.totalPoints;
+  const totalXp = Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.currentXP, 0);
   const weeklyProgress = UserStats.weeklyProgress;
   const soulseedLevel = SoulseedData.level;
   const mockQuests = MockQuests;
@@ -55,7 +55,7 @@ export default function HomeScreen() {
           <Text style={styles.headerTitle}>Good morning! ✨</Text>
           <View style={styles.pointsContainer}>
             <Star size={16} color="#FFD700" />
-            <Text style={styles.points}>{totalPoints.toLocaleString()}</Text>
+            <Text style={styles.points}>{totalXp.toLocaleString()} XP</Text>
           </View>
         </View>
 
