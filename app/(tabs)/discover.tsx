@@ -58,7 +58,7 @@ export default function DiscoverScreen() {
           >
             <Book size={18} color={activeTab === 'growth' ? '#1A0B3D' : '#8B7BD8'} />
             <Text style={[styles.tabText, activeTab === 'growth' && styles.activeTabText]}>
-              Growth
+              Lifestyle
             </Text>
           </TouchableOpacity>
         </View>
@@ -71,10 +71,10 @@ export default function DiscoverScreen() {
           {activeTab === 'growth' && (
             <>
               <View style={styles.traitsContent}>
-                <Text style={styles.sectionTitle}>Your Personality</Text>
+                <Text style={styles.sectionTitle}>Living Your Best Life</Text>
                 <Text style={styles.sectionDescription}>
-                  Understanding your unique combination of traits can help you grow and thrive. 
-                  Remember, every trait has its strengths! 🌟
+                  Discover how to align your lifestyle with your natural tendencies. 
+                  You have the power to choose how your traits serve you! 💫
                 </Text>
                 {traitInfo.map((trait, index) => {
                   const traitName = trait.name.toLowerCase() as keyof typeof personalityScores;
@@ -108,7 +108,7 @@ export default function DiscoverScreen() {
         >
           <Pressable style={styles.modalOverlay} onPress={() => setSelectedTrait(null)}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Growth Tips for {selectedTrait}</Text>
+              <Text style={styles.modalTitle}>Lifestyle Choices for {selectedTrait}</Text>
               {traitInfo.find(t => t.name === selectedTrait)?.tips.map((tip, index) => (
                 <Text key={index} style={styles.tipText}>• {tip}</Text>
               ))}

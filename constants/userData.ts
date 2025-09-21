@@ -102,9 +102,9 @@ export const TraitInfo: Array<{
     color: '#8B7BD8',
     icon: '🎨',
     tips: [
-      'Try creative writing in your journal',
-      'Explore new perspectives on familiar topics',
-      'Ask "what if" questions more often'
+      'Create spaces that inspire creativity and new ideas',
+      'Surround yourself with diverse perspectives and experiences',
+      'Choose flexible routines that allow for spontaneity and exploration'
     ]
   },
   {
@@ -114,9 +114,9 @@ export const TraitInfo: Array<{
     color: '#4CAF50',
     icon: '📋',
     tips: [
-      'Set small daily goals in your journal',
-      'Track your progress regularly',
-      'Celebrate completed tasks'
+      'Design environments that support your need for structure and planning',
+      'Build systems that help you feel accomplished and in control',
+      'Create accountability partnerships that match your commitment style'
     ]
   },
   {
@@ -126,9 +126,9 @@ export const TraitInfo: Array<{
     color: '#FF9800',
     icon: '🌟',
     tips: [
-      'Write about social interactions',
-      'Reflect on group activities',
-      'Share your thoughts with others'
+      'Choose social environments that energize and inspire you',
+      'Build networks that support both your need for connection and personal growth',
+      'Create opportunities for meaningful interactions that align with your values'
     ]
   },
   {
@@ -138,9 +138,9 @@ export const TraitInfo: Array<{
     color: '#E91E63',
     icon: '❤️',
     tips: [
-      'Write about helping others',
-      'Reflect on conflicts and resolutions',
-      'Practice empathy in your entries'
+      'Cultivate relationships that honor your caring nature while respecting your boundaries',
+      'Choose communities and causes that align with your values and desire to help',
+      'Create environments where cooperation and harmony feel natural and fulfilling'
     ]
   },
   {
@@ -150,9 +150,9 @@ export const TraitInfo: Array<{
     color: '#9C27B0',
     icon: '💪',
     tips: [
-      'Write about challenges you\'ve overcome',
-      'Reflect on coping strategies',
-      'Focus on growth from difficulties'
+      'Design your lifestyle to minimize unnecessary stress while building your capacity to handle challenges',
+      'Create support systems and routines that help you maintain emotional balance',
+      'Choose environments and relationships that promote your well-being and personal strength'
     ]
   }
 ];
