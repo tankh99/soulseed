@@ -1,6 +1,6 @@
 import { Colors } from '@/constants/colors';
 import { Tabs } from 'expo-router';
-import { Chrome as Home, PenTool, User, Compass } from 'lucide-react-native';
+import { Chrome as Home, PenTool, User, Compass, BookHeart } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -38,6 +38,15 @@ export default function TabLayout() {
           title: 'Discover',
           tabBarIcon: ({ size, color }) => (
             <Compass size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="almanac"
+        options={{
+          title: 'Almanac',
+          tabBarIcon: ({ size, color }) => (
+            <BookHeart size={size} color={color} />
           ),
         }}
       />

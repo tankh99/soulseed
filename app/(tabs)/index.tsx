@@ -73,9 +73,6 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Good morning! ✨</Text>
           <View style={styles.headerActions}>
-            <TouchableOpacity onPress={() => router.push('/almanac')}>
-              <BookHeart size={28} color={Colors.secondary} />
-            </TouchableOpacity>
             <View style={styles.pointsContainer}>
               <Star size={16} color="#FFD700" />
               <Text style={styles.points}>{totalXp.toLocaleString()} XP</Text>
