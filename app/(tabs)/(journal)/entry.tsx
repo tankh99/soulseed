@@ -21,6 +21,7 @@ import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
 import { getMoodData } from '../../../constants/moods';
 import { useAudioPlayer } from 'expo-audio';
+import { getUserFruits, getNextUncollectedFruit, collectFruit } from "../../../data/userFruits";
 
 export default function JournalEntryPage() {
   const { mood } = useLocalSearchParams();
@@ -99,6 +100,17 @@ export default function JournalEntryPage() {
     if (!journalText.trim()) {
       Alert.alert('Empty Entry', 'Please write something before saving.');
       return;
+    }
+
+    // Fruit collection logic
+    const nextFruit = getNextUncollectedFruit();
+    if (nextFruit) {
+      collectFruit(nextFruit.id);
+      Alert.alert(
+        "New Fruit Collected!",
+        `You've collected the ${nextFruit.name}! Check it out in your almanac.`,
+        [{ text: "OK" }]
+      );
     }
 
     chimePlayer.play();

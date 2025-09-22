@@ -9,7 +9,7 @@ import {
   Animated 
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Flame, Star, Gift, CircleCheck as CheckCircle, PenTool } from 'lucide-react-native';
+import { Flame, Star, Gift, CircleCheck as CheckCircle, PenTool, BookHeart } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
@@ -72,9 +72,14 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Good morning! ✨</Text>
-          <View style={styles.pointsContainer}>
-            <Star size={16} color="#FFD700" />
-            <Text style={styles.points}>{totalXp.toLocaleString()} XP</Text>
+          <View style={styles.headerActions}>
+            <TouchableOpacity onPress={() => router.push('/almanac')}>
+              <BookHeart size={28} color={Colors.secondary} />
+            </TouchableOpacity>
+            <View style={styles.pointsContainer}>
+              <Star size={16} color="#FFD700" />
+              <Text style={styles.points}>{totalXp.toLocaleString()} XP</Text>
+            </View>
           </View>
         </View>
 
@@ -86,6 +91,7 @@ export default function HomeScreen() {
           />
           <Text style={styles.soulseedName}>{SoulseedData.name}</Text>
           <Text style={styles.soulseedSubtext}>Level {soulseedLevel} • Evolving</Text>
+          <Text style={styles.tapHint}>Tap quickly to pet {SoulseedData.name} 💫</Text>
         </View>
 
         {/* Streak Counter */}
@@ -146,12 +152,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: 60,
+    paddingHorizontal: 20,
     marginBottom: 16
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
   },
   greeting: {
     fontSize: 24,
@@ -190,6 +202,14 @@ const styles = StyleSheet.create({
     color: '#8B7BD8',
     marginTop: 4,
     textAlign: 'center',
+  },
+  tapHint: {
+    fontSize: 12,
+    color: '#8B7BD8',
+    marginTop: 8,
+    textAlign: 'center',
+    fontStyle: 'italic',
+    opacity: 0.8,
   },
   streakSection: {
     marginBottom: 32,
