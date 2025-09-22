@@ -27,7 +27,6 @@ export default function ProfileScreen() {
   const router = useRouter()
   return (
     <ScreenLayout
-      showBackButton={false}
       disableBottomSafeArea
     >
         {/* Header */}

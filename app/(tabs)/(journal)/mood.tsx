@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { router } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
+import Header from '../../../components/Header';
 import { MoodSelector } from '../../../components/MoodSelector';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
@@ -19,13 +20,8 @@ export default function MoodSelectionPage() {
   };
 
   return (
-    <ScreenLayout
-      showBackButton
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>How are you feeling?</Text>
-      </View>
+    <ScreenLayout>
+      <Header showBackButton title="How are you feeling?" />
       
       {/* Always visible soulseed at the top */}
       <View style={styles.topSoulseedContainer}>

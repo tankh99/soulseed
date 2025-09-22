@@ -59,7 +59,7 @@ export default function HomeScreen() {
 
   const handleCheckIn = () => {
     // Navigate to journal tab
-    router.push('/(tabs)/(journal)' as any);
+    router.push('/(tabs)/(journal)/mood' as any);
     
   };
 

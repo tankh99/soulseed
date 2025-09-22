@@ -64,7 +64,7 @@ export async function scheduleWelcomeNotification() {
       data: { data: 'goes here' },
     },
     trigger: { 
-        seconds: 5, 
+        seconds: 60 * 15, // 10 minutes later
         type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
     },
   });

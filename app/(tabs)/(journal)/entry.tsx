@@ -17,6 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Sparkles, Send } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
+import Header from '../../../components/Header';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
 import { getMoodData } from '../../../constants/moods';
@@ -201,149 +202,144 @@ export default function JournalEntryPage() {
   };
 
   return (
-    <ScreenLayout
-      showBackButton={true}
-      onBackPress={() => {
-        if (conversationMode) {
-          setConversationMode(false);
-          setCurrentQuestion('');
-          setCurrentAnswer('');
-          setConversationStep(0);
-        } else {
-          router.back();
-        }
-      }}
-      showKeyboardAvoiding={false}
-    >
+    <ScreenLayout showKeyboardAvoiding={false}>
+      <Header
+        showBackButton={true}
+        onBackPress={() => {
+          if (conversationMode) {
+            setConversationMode(false);
+            setCurrentQuestion('');
+            setCurrentAnswer('');
+            setConversationStep(0);
+          } else {
+            router.back();
+          }
+        }}
+        title={conversationMode ? 'Reflection' : 'Journal'}
+      />
       <View style={{ flex: 1 }}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>
-            {conversationMode ? 'Reflection' : 'Journal'}
-          </Text>
-        </View>
-
-      {/* Always visible soulseed at the top */}
-      <View style={styles.topSoulseedContainer}>
-        <SoulseedDisplay 
-          level={SoulseedData.level} 
-          personality={SoulseedData.personality}
-          size="medium"
-          selectedMood={selectedMood}
-        />
-      </View>
-
-      {!conversationMode ? (
-        <View style={styles.journalSection}>
-          <Text style={styles.journalPrompt}>
-            {selectedMood === 'happy' && "What's bringing you joy right now?"}
-            {selectedMood === 'sad' && "What's on your heart today?"}
-            {selectedMood === 'angry' && "What's frustrating you?"}
-            {selectedMood === 'surprised' && "What caught you off guard?"}
-            {selectedMood === 'neutral' && "What's on your mind?"}
-          </Text>
-          
-          <TextInput
-            style={styles.textInput}
-            multiline
-            placeholder="Share your thoughts..."
-            placeholderTextColor="rgba(255, 255, 255, 0.4)"
-            value={journalText}
-            onChangeText={setJournalText}
-            textAlignVertical="top"
+        {/* Always visible soulseed at the top */}
+        <View style={styles.topSoulseedContainer}>
+          <SoulseedDisplay 
+            level={SoulseedData.level} 
+            personality={SoulseedData.personality}
+            size="medium"
+            selectedMood={selectedMood}
           />
-
-          <View style={styles.actionButtons}>
-            <TouchableOpacity 
-              style={styles.unpackButton} 
-              onPress={handleUnpackIt}
-              disabled={!journalText.trim()}
-            >
-              <Sparkles size={20} color="#FFFFFF" />
-              <Text style={styles.unpackButtonText}>Unpack It</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={styles.saveButton} 
-              onPress={handleSave}
-              disabled={!journalText.trim()}
-            >
-              <Text style={styles.saveButtonText}>Save Entry</Text>
-            </TouchableOpacity>
-          </View>
         </View>
-      ) : (
-          <View style={styles.conversationSection}>
-            {/* Selected Mood Display */}
-            <View style={styles.selectedMoodContainer}>
-              <Text style={styles.selectedMoodText}>
-                You chose: <Text style={{fontWeight: 'bold'}}>{moodData?.emoji} {moodData?.label}</Text>
-              </Text>
-            </View>
 
-            {/* Conversation History */}
-            <FlatList
-              style={styles.conversationHistory}
-              data={[
-                ...conversationThread,
-                ...(currentQuestion ? [{ role: 'assistant' as const, content: currentQuestion, id: 'current-question' }] : [])
-              ]}
-              keyExtractor={(item, index) => ('id' in item ? item.id : `message-${index}`)}
-              renderItem={({ item }) => (
-                <View style={[
-                  styles.messageContainer,
-                  item.role === 'user' ? styles.userMessage : styles.assistantMessage
-                ]}>
-                  <Text style={[
-                    styles.messageText,
-                    item.role === 'user' ? styles.userMessageText : styles.assistantMessageText
-                  ]}>
-                    {item.content}
-                  </Text>
-                </View>
-              )}
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="interactive"
+        {!conversationMode ? (
+          <View style={styles.journalSection}>
+            <Text style={styles.journalPrompt}>
+              {selectedMood === 'happy' && "What's bringing you joy right now?"}
+              {selectedMood === 'sad' && "What's on your heart today?"}
+              {selectedMood === 'angry' && "What's frustrating you?"}
+              {selectedMood === 'surprised' && "What caught you off guard?"}
+              {selectedMood === 'neutral' && "What's on your mind?"}
+            </Text>
+            
+            <TextInput
+              style={styles.textInput}
+              multiline
+              placeholder="Share your thoughts..."
+              placeholderTextColor="rgba(255, 255, 255, 0.4)"
+              value={journalText}
+              onChangeText={setJournalText}
+              textAlignVertical="top"
             />
 
-            {/* Answer Input */}
-            <View style={styles.answerInputContainer}>
-              <TextInput
-                style={styles.answerInput}
-                multiline
-                placeholder="Share your thoughts..."
-                placeholderTextColor="rgba(255, 255, 255, 0.4)"
-                value={currentAnswer}
-                onChangeText={setCurrentAnswer}
-                textAlignVertical="top"
-                editable={!isWaitingForResponse}
-              />
-              
-              <View style={styles.conversationActions}>
-                <TouchableOpacity 
-                  style={styles.endConversationButton}
-                  onPress={handleEndConversation}
-                  disabled={isWaitingForResponse}
-                >
-                  <Text style={styles.endConversationText}>Finish</Text>
-                </TouchableOpacity>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity 
+                style={styles.unpackButton} 
+                onPress={handleUnpackIt}
+                disabled={!journalText.trim()}
+              >
+                <Sparkles size={20} color="#FFFFFF" />
+                <Text style={styles.unpackButtonText}>Unpack It</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity 
-                  style={[styles.sendAnswerButton, (isWaitingForResponse || !currentAnswer.trim()) && styles.sendAnswerButtonDisabled]}
-                  onPress={handleSendAnswer}
-                  disabled={isWaitingForResponse || !currentAnswer.trim()}
-                >
-                  {isWaitingForResponse ? (
-                    <ActivityIndicator size="small" color="#FFFFFF" />
-                  ) : (
-                    <Send size={20} color="#FFFFFF" />
-                  )}
-                  <Text style={styles.sendAnswerText}>Send</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity 
+                style={styles.saveButton} 
+                onPress={handleSave}
+                disabled={!journalText.trim()}
+              >
+                <Text style={styles.saveButtonText}>Save Entry</Text>
+              </TouchableOpacity>
             </View>
           </View>
-      )}
+        ) : (
+            <View style={styles.conversationSection}>
+              {/* Selected Mood Display */}
+              <View style={styles.selectedMoodContainer}>
+                <Text style={styles.selectedMoodText}>
+                  You chose: <Text style={{fontWeight: 'bold'}}>{moodData?.emoji} {moodData?.label}</Text>
+                </Text>
+              </View>
+
+              {/* Conversation History */}
+              <FlatList
+                style={styles.conversationHistory}
+                data={[
+                  ...conversationThread,
+                  ...(currentQuestion ? [{ role: 'assistant' as const, content: currentQuestion, id: 'current-question' }] : [])
+                ]}
+                keyExtractor={(item, index) => ('id' in item ? item.id : `message-${index}`)}
+                renderItem={({ item }) => (
+                  <View style={[
+                    styles.messageContainer,
+                    item.role === 'user' ? styles.userMessage : styles.assistantMessage
+                  ]}>
+                    <Text style={[
+                      styles.messageText,
+                      item.role === 'user' ? styles.userMessageText : styles.assistantMessageText
+                    ]}>
+                      {item.content}
+                    </Text>
+                  </View>
+                )}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="interactive"
+              />
+
+              {/* Answer Input */}
+              <View style={styles.answerInputContainer}>
+                <TextInput
+                  style={styles.answerInput}
+                  multiline
+                  placeholder="Share your thoughts..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  value={currentAnswer}
+                  onChangeText={setCurrentAnswer}
+                  textAlignVertical="top"
+                  editable={!isWaitingForResponse}
+                />
+                
+                <View style={styles.conversationActions}>
+                  <TouchableOpacity 
+                    style={styles.endConversationButton}
+                    onPress={handleEndConversation}
+                    disabled={isWaitingForResponse}
+                  >
+                    <Text style={styles.endConversationText}>Finish</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity 
+                    style={[styles.sendAnswerButton, (isWaitingForResponse || !currentAnswer.trim()) && styles.sendAnswerButtonDisabled]}
+                    onPress={handleSendAnswer}
+                    disabled={isWaitingForResponse || !currentAnswer.trim()}
+                  >
+                    {isWaitingForResponse ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <Send size={20} color="#FFFFFF" />
+                    )}
+                    <Text style={styles.sendAnswerText}>Send</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+        )}
       </View>
     </ScreenLayout>
   );

@@ -28,7 +28,6 @@ export default function IndexPage() {
   return (
     <ScreenLayout
       contentStyle={styles.container}
-      showBackButton={false}
     >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
