@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 
 interface Fruit {
   id: string;
@@ -14,37 +14,34 @@ interface FruitGridProps {
 }
 
 const FruitGrid: React.FC<FruitGridProps> = ({ fruits }) => {
-  const renderItem = ({ item }: { item: Fruit }) => (
-    <View style={styles.fruitItem}>
-      <Image
-        source={item.collected ? item.image : item.silhouette}
-        style={styles.fruitImage}
-      />
-      <Text style={styles.fruitName}>
-        {item.collected ? item.name : "??????"}
-      </Text>
-    </View>
-  );
-
   return (
-    <FlatList
-      data={fruits}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      numColumns={3}
-      contentContainerStyle={styles.grid}
-    />
+    <View style={styles.grid}>
+      {fruits.map((item) => (
+        <View key={item.id} style={styles.fruitItem}>
+          <Image
+            source={item.collected ? item.image : item.silhouette}
+            style={styles.fruitImage}
+          />
+          <Text style={styles.fruitName}>
+            {item.collected ? item.name : "??????"}
+          </Text>
+        </View>
+      ))}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
     padding: 10,
   },
   fruitItem: {
-    flex: 1,
+    width: '30%',
     alignItems: "center",
-    margin: 10,
+    margin: 4,
   },
   fruitImage: {
     width: 80,

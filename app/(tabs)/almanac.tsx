@@ -15,18 +15,15 @@ const AlmanacScreen = () => {
   );
 
   return (
-    <ScreenLayout>
-      <View style={styles.container}>
-        <Text style={styles.title}>Fruit Almanac</Text>
-        <FruitGrid fruits={fruits} />
-      </View>
+    <ScreenLayout contentStyle={styles.container}>
+      <Text style={styles.title}>Fruit Almanac</Text>
+      <FruitGrid fruits={fruits} />
     </ScreenLayout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 20,
   },
   title: {
@@ -34,6 +31,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     color: "white",
+    textAlign: "center"
   },
 });
 
