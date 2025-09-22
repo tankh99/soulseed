@@ -1,6 +1,6 @@
 import { Colors } from '@/constants/colors';
 import { Tabs } from 'expo-router';
-import { Chrome as Home, PenTool, User, Compass, BookHeart } from 'lucide-react-native';
+import { Home, PenTool, User, Compass, BookHeart } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (

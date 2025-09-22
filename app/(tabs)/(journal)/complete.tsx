@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
@@ -8,14 +8,7 @@ import { SoulseedData } from '../../../constants/userData';
 export default function JournalCompletePage() {
   const { mood, text } = useLocalSearchParams();
 
-  useEffect(() => {
-    // Auto-navigate back to mood selection after 3 seconds
-    const timer = setTimeout(() => {
-      router.replace('/(tabs)/');
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  
 
   return (
     <ScreenLayout contentStyle={styles.container}>
@@ -31,6 +24,11 @@ export default function JournalCompletePage() {
         <View style={styles.pointsEarned}>
           <Text style={styles.pointsText}>+25 points earned</Text>
         </View>
+        <Button 
+          style={styles.button}
+          
+          title="Back to Home" 
+          onPress={() => router.replace('/(tabs)/')} />
       </View>
     </ScreenLayout>
   );

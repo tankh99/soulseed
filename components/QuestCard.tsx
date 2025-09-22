@@ -4,20 +4,11 @@ import { CircleCheck as CheckCircle, Circle, Star } from 'lucide-react-native';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 
-const traitAcronyms: { [key: string]: string } = {
-  openness: 'OPN',
-  conscientiousness: 'CSN',
-  extroversion: 'EXT',
-  agreeableness: 'AGR',
-  resilience: 'RES',
-};
-
 interface Quest {
   id: string;
   title: string;
   description: string;
   reward: {
-    trait: string;
     xp: number;
   };
   completed: boolean;
@@ -45,8 +36,6 @@ export function QuestCard({ quest, onComplete }: QuestCardProps) {
     }
   };
 
-  const acronym = traitAcronyms[quest.reward.trait] || quest.reward.trait.substring(0, 3).toUpperCase();
-
   return (
     <TouchableOpacity 
       style={[styles.container, quest.completed && styles.completed]}
@@ -69,7 +58,7 @@ export function QuestCard({ quest, onComplete }: QuestCardProps) {
         <View style={styles.pointsContainer}>
           <Star size={14} color={quest.completed ? '#8B7BD8' : '#FFD700'} />
           <Text style={[styles.points, quest.completed && styles.completedPoints]}>
-            +{quest.reward.xp} {acronym} XP
+            +{quest.reward.xp} XP
           </Text>
         </View>
         

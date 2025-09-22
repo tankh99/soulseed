@@ -55,12 +55,6 @@ export function StreakCounter({ currentStreak, weeklyProgress }: StreakCounterPr
           </View>
         </View>
 
-        <View style={styles.fruitPreview}>
-          <Text style={styles.fruitEmoji}>🍎</Text>
-          <Text style={styles.fruitText}>
-            {weeklyProgress === weeklyGoal ? 'Fruit earned!' : `${weeklyGoal - weeklyProgress} days to fruit`}
-          </Text>
-        </View>
       </View>
     </View>
   );
@@ -126,7 +120,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   progressBar: {
-    marginBottom: 16,
   },
   progressTrack: {
     height: 6,
