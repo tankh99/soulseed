@@ -52,7 +52,6 @@ export default function MoodSelectionPage() {
 
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 60,
     paddingBottom: 24,
     alignItems: 'center',
   },
