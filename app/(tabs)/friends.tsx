@@ -208,7 +208,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: 60,
-    paddingHorizontal: 20,
     marginBottom: 24,
   },
   headerTitle: {
@@ -221,7 +220,6 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
     marginBottom: 24,
     gap: 12,
   },
@@ -252,7 +250,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    marginHorizontal: 20,
     marginBottom: 24,
     borderWidth: 1,
     borderColor: 'rgba(139, 123, 216, 0.2)',
@@ -264,7 +261,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   friendsSection: {
-    paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 18,
