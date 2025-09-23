@@ -24,7 +24,15 @@ interface Friend {
   isOnline: boolean;
   lastActive: string;
   mutualFriends?: number;
+  trait: 'agreeableness' | 'extroversion' | 'conscientiousness' | 'neuroticism';
 }
+
+const TRAIT_IMAGE: Record<Friend['trait'], any> = {
+  agreeableness: require('../../assets//images/agreeableness.png'),
+  extroversion: require('../../assets/images/extroversion.png'),
+  conscientiousness: require('../../assets/images/conscientiousness.png'),
+  neuroticism: require('../../assets/images/neuroticism.png'),
+};
 
 const mockFriends: Friend[] = [
   {
@@ -36,7 +44,8 @@ const mockFriends: Friend[] = [
     level: 8,
     isOnline: true,
     lastActive: '2 minutes ago',
-    mutualFriends: 3
+    mutualFriends: 3,
+    trait: 'extroversion',
   },
   {
     id: '2',
@@ -47,7 +56,8 @@ const mockFriends: Friend[] = [
     level: 6,
     isOnline: false,
     lastActive: '1 hour ago',
-    mutualFriends: 1
+    mutualFriends: 1,
+    trait: 'agreeableness',
   },
   {
     id: '3',
@@ -58,7 +68,8 @@ const mockFriends: Friend[] = [
     level: 12,
     isOnline: true,
     lastActive: '5 minutes ago',
-    mutualFriends: 5
+    mutualFriends: 5,
+    trait: 'conscientiousness',
   },
   {
     id: '4',
@@ -69,7 +80,8 @@ const mockFriends: Friend[] = [
     level: 4,
     isOnline: false,
     lastActive: '3 hours ago',
-    mutualFriends: 2
+    mutualFriends: 2,
+    trait: 'neuroticism',
   },
   {
     id: '5',
@@ -80,7 +92,8 @@ const mockFriends: Friend[] = [
     level: 9,
     isOnline: true,
     lastActive: '1 minute ago',
-    mutualFriends: 4
+    mutualFriends: 4,
+    trait: 'agreeableness',
   }
 ];
 
@@ -102,11 +115,7 @@ export default function FriendsScreen() {
     <TouchableOpacity key={friend.id} style={styles.friendCard}>
       <View style={styles.friendHeader}>
         <View style={styles.avatarContainer}>
-          <View style={[styles.avatar, { backgroundColor: Colors.accent }]}>
-            <Text style={styles.avatarText}>
-              {friend.name.split(' ').map(n => n[0]).join('')}
-            </Text>
-          </View>
+          <Image source={TRAIT_IMAGE[friend.trait]} style={styles.avatarImage} />
           {friend.isOnline && <View style={styles.onlineIndicator} />}
         </View>
         <View style={styles.friendInfo}>
@@ -296,6 +305,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+  avatarImage: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    resizeMode: 'cover',
   },
   onlineIndicator: {
     position: 'absolute',
