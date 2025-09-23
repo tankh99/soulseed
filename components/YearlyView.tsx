@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, SectionList, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { collectionData } from '@/data/collectionData';
 import { RARITY_COLORS } from '@/data/fruits';
 
@@ -8,44 +8,37 @@ interface YearlyViewProps {
 }
 
 const YearlyView: React.FC<YearlyViewProps> = ({ onSelectMonth }) => {
-  const sections = collectionData.map(monthData => ({
-    title: monthData.month,
-    data: [monthData.weeks],
-  }));
-
   return (
     <View style={styles.container}>
-        <Text style={styles.headerTitle}>2025 Fruits</Text>
-      <SectionList
-        sections={sections}
-        keyExtractor={(item, index) => `month-${index}`}
-        renderSectionHeader={({ section: { title } }) => (
-            <Text style={styles.monthHeader}>{title}</Text>
-        )}
-        renderItem={({ item, section }) => (
-          <TouchableOpacity onPress={() => onSelectMonth(section.title)}>
-            <View style={styles.weekGrid}>
-              {item.map((week, index) => (
-                <View key={`week-${index}`} style={styles.fruitIconContainer}>
-                  {week ? (
-                    <View style={[
-                      styles.fruitIconWrapper,
-                      { borderColor: week.fruit.collected ? RARITY_COLORS[week.fruit.rarity] : 'transparent' }
-                    ]}>
-                      <Image 
-                        source={week.fruit.collected ? week.fruit.image : week.fruit.silhouette} 
-                        style={styles.fruitIcon} 
-                      />
-                    </View>
-                  ) : (
-                    <View style={styles.emptyWeek} />
-                  )}
-                </View>
-              ))}
-            </View>
-          </TouchableOpacity>
-        )}
-      />
+      <Text style={styles.headerTitle}>2025 Fruits</Text>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {collectionData.map((monthData, monthIndex) => (
+          <View key={`month-${monthIndex}`} style={styles.monthSection}>
+            <Text style={styles.monthHeader}>{monthData.month}</Text>
+            <TouchableOpacity onPress={() => onSelectMonth(monthData.month)}>
+              <View style={styles.weekGrid}>
+                {monthData.weeks.map((week, weekIndex) => (
+                  <View key={`week-${weekIndex}`} style={styles.fruitIconContainer}>
+                    {week ? (
+                      <View style={[
+                        styles.fruitIconWrapper,
+                        { borderColor: week.fruit.collected ? RARITY_COLORS[week.fruit.rarity] : 'transparent' }
+                      ]}>
+                        <Image 
+                          source={week.fruit.collected ? week.fruit.image : week.fruit.silhouette} 
+                          style={styles.fruitIcon} 
+                        />
+                      </View>
+                    ) : (
+                      <View style={styles.emptyWeek} />
+                    )}
+                  </View>
+                ))}
+              </View>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -60,6 +53,12 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     marginVertical: 20,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  monthSection: {
+    marginBottom: 20,
   },
   monthHeader: {
     fontSize: 18,
