@@ -1,16 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-
-interface Fruit {
-  id: string;
-  name: string;
-  collected: boolean;
-  image: any;
-  silhouette: any;
-}
+import { Fruit as FruitType, RARITY_COLORS } from "@/data/fruits";
 
 interface FruitGridProps {
-  fruits: Fruit[];
+  fruits: FruitType[];
 }
 
 const FruitGrid: React.FC<FruitGridProps> = ({ fruits }) => {
@@ -22,7 +15,10 @@ const FruitGrid: React.FC<FruitGridProps> = ({ fruits }) => {
             source={item.collected ? item.image : item.silhouette}
             style={styles.fruitImage}
           />
-          <Text style={styles.fruitName}>
+          <Text style={[
+            styles.fruitName,
+            { color: item.collected ? RARITY_COLORS[item.rarity] : 'white' }
+          ]}>
             {item.collected ? item.name : "??????"}
           </Text>
         </View>

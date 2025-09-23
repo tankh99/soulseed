@@ -55,6 +55,15 @@ export const MockQuests = [
     icon: '😊',
     callbackUrl: 'https://www.samhealth.org.sg/',
   },
+  {
+    id: '4',
+    title: 'Friendship Check',
+    description: 'Check in with a friend',
+    reward: { xp: 50 },
+    completed: false,
+    icon: '👬',
+    callbackUrl: '/(tabs)/(journal)',
+  },
 ] as const;
 
 // Weekly data for discover screen
