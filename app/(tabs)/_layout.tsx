@@ -42,9 +42,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="almanac"
+        name="collection"
         options={{
-          title: 'Almanac',
+          title: 'Collection',
           tabBarIcon: ({ size, color }) => (
             <BookHeart size={size} color={color} />
           ),
