@@ -28,13 +28,39 @@ const months = [
   "July", "August", "September", "October", "November", "December"
 ];
 
+// Create a pool of 52 fruits for the year to ensure variety
+let fruitPool: Fruit[] = [];
+for (let i = 0; i < Math.ceil(52 / fruits.length); i++) {
+  fruitPool.push(...fruits);
+}
+fruitPool = fruitPool.slice(0, 52);
+
+// Shuffle the fruit pool to randomize the order
+const shuffleArray = (array: any[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+};
+shuffleArray(fruitPool);
+
+let weekCounter = 0;
 export const collectionData: MonthlyCollection[] = months.map((month, monthIndex) => {
   const weeksInMonth = monthIndex === 1 ? 4 : 4; // Simplified for dummy data
   const weeks: (FruitCollection | null)[] = Array.from({ length: weeksInMonth }, (_, weekIndex) => {
-    const fruitIndex = (monthIndex * 4 + weekIndex) % fruits.length;
+    const fruitFromPool = fruitPool[weekCounter];
+    weekCounter++;
+    if (!fruitFromPool) return null;
+
+    // Randomly decide if a fruit is collected for dummy data, but ensure some are uncollected
+    const isCollected = Math.random() > 0.4; 
+
     return {
-      fruit: fruits[fruitIndex],
-      weeklyHighlight: generateDummyHighlights(monthIndex * 4 + weekIndex + 1),
+      fruit: {
+        ...fruitFromPool,
+        collected: isCollected,
+      },
+      weeklyHighlight: generateDummyHighlights(weekCounter),
     };
   });
 

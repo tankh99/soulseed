@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image } from 'react-native';
 import { collectionData } from '@/data/collectionData';
 import FruitDetailModal from './FruitDetailModal';
 import { FruitCollection } from '@/data/collectionData';
@@ -16,26 +16,12 @@ const { width } = Dimensions.get('window');
 const MonthlyView: React.FC<MonthlyViewProps> = ({ initialMonthIndex, onBack }) => {
   const [selectedFruit, setSelectedFruit] = useState<FruitCollection | null>(null);
   const [currentIndex, setCurrentIndex] = useState(initialMonthIndex);
+  const scrollViewRef = useRef<ScrollView>(null);
 
-  const onViewableItemsChanged = useRef(({ viewableItems }: any) => {
-    if (viewableItems.length > 0) {
-      setCurrentIndex(viewableItems[0].index);
-    }
-  }).current;
-
-  const renderMonth = ({ item }: { item: typeof collectionData[0] }) => (
-    <View style={styles.monthContainer}>
-      {item.weeks.map((week, index) => (
-        week && (
-          <TouchableOpacity key={index} style={styles.weekRow} onPress={() => setSelectedFruit(week)}>
-            <Text style={styles.weekLabel}>Week {index + 1}</Text>
-            <Image source={week.fruit.image} style={styles.fruitImage} />
-            <Text style={[styles.fruitName, { color: RARITY_COLORS[week.fruit.rarity] }]}>{week.fruit.name}</Text>
-          </TouchableOpacity>
-        )
-      ))}
-    </View>
-  );
+  const handleScroll = (event: any) => {
+    const newIndex = Math.round(event.nativeEvent.contentOffset.x / width);
+    setCurrentIndex(newIndex);
+  };
 
   return (
     <View style={styles.container}>
@@ -43,19 +29,37 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ initialMonthIndex, onBack }) 
         onBackPress={onBack}
         title={`${collectionData[currentIndex].month} ${collectionData[currentIndex].year}`}
       />
-      <FlatList
-        data={collectionData}
-        renderItem={renderMonth}
+      <ScrollView
+        ref={scrollViewRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        keyExtractor={item => item.month}
-        initialScrollIndex={initialMonthIndex}
-        onViewableItemsChanged={onViewableItemsChanged}
-        viewabilityConfig={{
-          itemVisiblePercentThreshold: 50,
-        }}
-      />
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentOffset={{ x: width * initialMonthIndex, y: 0 }}
+      >
+        {collectionData.map((monthData, index) => (
+          <View key={index} style={styles.monthContainer}>
+            {monthData.weeks.map((week, weekIndex) => (
+              week && (
+                <TouchableOpacity key={weekIndex} style={styles.weekRow} onPress={() => setSelectedFruit(week)}>
+                  <Text style={styles.weekLabel}>Week {weekIndex + 1}</Text>
+                  <Image 
+                    source={week.fruit.collected ? week.fruit.image : week.fruit.silhouette} 
+                    style={styles.fruitImage} 
+                  />
+                  <Text style={[
+                    styles.fruitName,
+                    { color: week.fruit.collected ? RARITY_COLORS[week.fruit.rarity] : 'white' }
+                  ]}>
+                    {week.fruit.collected ? week.fruit.name : "??????"}
+                  </Text>
+                </TouchableOpacity>
+              )
+            ))}
+          </View>
+        ))}
+      </ScrollView>
       {selectedFruit && (
         <FruitDetailModal
           visible={!!selectedFruit}

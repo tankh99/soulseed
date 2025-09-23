@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, SectionList, TouchableOpacity, Image } from 'react-native';
 import { collectionData } from '@/data/collectionData';
+import { RARITY_COLORS } from '@/data/fruits';
 
 interface YearlyViewProps {
   onSelectMonth: (month: string) => void;
@@ -19,22 +20,30 @@ const YearlyView: React.FC<YearlyViewProps> = ({ onSelectMonth }) => {
         sections={sections}
         keyExtractor={(item, index) => `month-${index}`}
         renderSectionHeader={({ section: { title } }) => (
-          <TouchableOpacity onPress={() => onSelectMonth(title)}>
             <Text style={styles.monthHeader}>{title}</Text>
-          </TouchableOpacity>
         )}
-        renderItem={({ item }) => (
-          <View style={styles.weekGrid}>
-            {item.map((week, index) => (
-              <View key={`week-${index}`} style={styles.fruitIconContainer}>
-                {week ? (
-                  <Image source={week.fruit.image} style={styles.fruitIcon} />
-                ) : (
-                  <View style={styles.emptyWeek} />
-                )}
-              </View>
-            ))}
-          </View>
+        renderItem={({ item, section }) => (
+          <TouchableOpacity onPress={() => onSelectMonth(section.title)}>
+            <View style={styles.weekGrid}>
+              {item.map((week, index) => (
+                <View key={`week-${index}`} style={styles.fruitIconContainer}>
+                  {week ? (
+                    <View style={[
+                      styles.fruitIconWrapper,
+                      { borderColor: week.fruit.collected ? RARITY_COLORS[week.fruit.rarity] : 'transparent' }
+                    ]}>
+                      <Image 
+                        source={week.fruit.collected ? week.fruit.image : week.fruit.silhouette} 
+                        style={styles.fruitIcon} 
+                      />
+                    </View>
+                  ) : (
+                    <View style={styles.emptyWeek} />
+                  )}
+                </View>
+              ))}
+            </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -67,6 +76,11 @@ const styles = StyleSheet.create({
     width: '25%',
     padding: 5,
     alignItems: 'center',
+  },
+  fruitIconWrapper: {
+    borderWidth: 2,
+    borderRadius: 22,
+    padding: 2,
   },
   fruitIcon: {
     width: 40,
