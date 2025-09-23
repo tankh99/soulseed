@@ -5,7 +5,6 @@ export default function JournalLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
       }}
     >
       <Stack.Screen name="mood" />

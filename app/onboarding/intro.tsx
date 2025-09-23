@@ -13,7 +13,7 @@ export default function IntroPage() {
 
   const handleSkipOnboarding = () => {
     // Navigate directly to main app tabs
-    router.push('/(tabs)');
+    router.replace('/(tabs)');
   };
 
   return (

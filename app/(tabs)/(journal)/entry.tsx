@@ -220,7 +220,7 @@ export default function JournalEntryPage() {
             setCurrentAnswer('');
             setConversationStep(0);
           } else {
-            router.back();
+            router.replace('/(tabs)/');
           }
         }}
         title={conversationMode ? 'Reflection' : 'Journal'}

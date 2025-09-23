@@ -21,7 +21,11 @@ export default function MoodSelectionPage() {
 
   return (
     <ScreenLayout>
-      <Header showBackButton title="How are you feeling?" />
+      <Header 
+        showBackButton 
+        title="How are you feeling?" 
+        onBackPress={() => router.replace('/(tabs)/')} 
+      />
       
       {/* Always visible soulseed at the top */}
       <View style={styles.topSoulseedContainer}>
