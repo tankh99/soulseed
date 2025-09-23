@@ -12,9 +12,9 @@ interface SoulseedData {
   personality: {
     openness: number;
     conscientiousness: number;
-    extroversion: number;
+    extraversion: number;
     agreeableness: number;
-    resilience: number;
+    neuroticism: number;
   };
   trait: string;
   scar: string;

@@ -8,7 +8,7 @@ export interface SoulseedData {
   variationSlots: string[];
   growthExpression: string[];
   palette: string[];
-  trait: 'openness' | 'conscientiousness' | 'extroversion' | 'agreeableness' | 'resilience';
+  trait: 'openness' | 'conscientiousness' | 'extraversion' | 'agreeableness' | 'neuroticism';
 }
 
 export const SOULSEEDS: Record<string, SoulseedData> = {
@@ -32,14 +32,14 @@ export const SOULSEEDS: Record<string, SoulseedData> = {
     trait: "conscientiousness"
   },
   
-  extroversion: {
+  extraversion: {
     name: "Lumo",
     statement: "Feels restless in silence, but shines when sparking energy and joy around others.",
     scar: "Tiny flame or spark in chest.",
     variationSlots: ["candle flame", "heart pulse", "fireworks sparks"],
     growthExpression: ["glowing aura", "animated bounces", "phoenix-like burst"],
     palette: ["Warm yellow/orange", "electric blue", "white glow"],
-    trait: "extroversion"
+    trait: "extraversion"
   },
   
   agreeableness: {
@@ -52,14 +52,14 @@ export const SOULSEEDS: Record<string, SoulseedData> = {
     trait: "agreeableness"
   },
   
-  resilience: {
+  neuroticism: {
     name: "Miro",
     statement: "Gets overwhelmed by worries, but shines in adapting and finding calm like flowing water.",
     scar: "Ripple inside the core.",
     variationSlots: ["clockwise swirl", "counterclockwise swirl", "concentric waves"],
     growthExpression: ["glassy surface", "flowing liquid", "crystalline guardian"],
     palette: ["Deep blues", "turquoise", "silver glints"],
-    trait: "resilience"
+    trait: "neuroticism"
   }
 };
 
@@ -67,19 +67,19 @@ export const SOULSEEDS: Record<string, SoulseedData> = {
 export function determineSoulseedType(personality: {
   openness: number;
   conscientiousness: number;
-  extroversion: number;
+  extraversion: number;
   agreeableness: number;
-  resilience: number;
+  neuroticism: number;
 }): string {
-  // Use resilience directly (no conversion needed)
-  const resilience = personality.resilience;
+  // Use neuroticism directly (no conversion needed)
+  const neuroticism = personality.neuroticism;
   
   const traits = [
     { name: 'openness', value: personality.openness },
     { name: 'conscientiousness', value: personality.conscientiousness },
-    { name: 'extroversion', value: personality.extroversion },
+    { name: 'extraversion', value: personality.extraversion },
     { name: 'agreeableness', value: personality.agreeableness },
-    { name: 'resilience', value: resilience },
+    { name: 'neuroticism', value: neuroticism },
   ];
   
   // Find the dominant trait
@@ -99,9 +99,9 @@ export function getSoulseedByTrait(trait: string): SoulseedData {
 export function getSoulseedByPersonality(personality: {
   openness: number;
   conscientiousness: number;
-  extroversion: number;
+  extraversion: number;
   agreeableness: number;
-  resilience: number;
+  neuroticism: number;
 }): SoulseedData {
   const trait = determineSoulseedType(personality);
   return getSoulseedByTrait(trait);
@@ -120,7 +120,7 @@ export const SOULSEED_NAMES = {
 export const TRAIT_MAPPINGS = {
   openness: 'openness',
   conscientiousness: 'conscientiousness',
-  extroversion: 'extroversion',
+  extraversion: 'extraversion',
   agreeableness: 'agreeableness',
-  resilience: 'resilience' // Resilience trait
+  neuroticism: 'neuroticism' // Neuroticism trait
 } as const;

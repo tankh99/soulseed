@@ -6,9 +6,9 @@ import { getSoulseedByPersonality, SoulseedData as SoulseedDataType } from '../d
 export interface PersonalityScores {
   openness: number;
   conscientiousness: number;
-  extroversion: number;
+  extraversion: number;
   agreeableness: number;
-  resilience: number;
+  neuroticism: number;
 }
 
 export interface SoulseedData {

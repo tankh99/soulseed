@@ -79,9 +79,9 @@ export default function ProfileScreen() {
 
         {/* Personality Traits */}
         <View style={styles.personalitySection}>
-          <Text style={styles.sectionTitle}>Your Personality</Text>
+          <Text style={styles.sectionTitle}>Your Personality Traits</Text>
           <Text style={styles.sectionSubtitle}>
-            Based on your OCEAN personality assessment
+            Understanding your natural tendencies and how they shape your daily life
           </Text>
           {TraitInfo.map((trait, index) => {
             const traitName = trait.name.toLowerCase() as keyof typeof personalityScores;

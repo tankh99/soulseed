@@ -8,25 +8,25 @@ const { width } = Dimensions.get('window');
 
 // Big Five personality test questions
 const questions = [
-  { id: 1, text: "I am the life of the party", trait: "extroversion", reversed: false },
+  { id: 1, text: "I am the life of the party", trait: "extraversion", reversed: false },
   { id: 2, text: "I sympathize with others' feelings", trait: "agreeableness", reversed: false },
   { id: 3, text: "I get chores done right away", trait: "conscientiousness", reversed: false },
-  { id: 4, text: "I have frequent mood swings", trait: "resilience", reversed: true },
+  { id: 4, text: "I have frequent mood swings", trait: "neuroticism", reversed: true },
   { id: 5, text: "I have a vivid imagination", trait: "openness", reversed: false },
-  { id: 6, text: "I don't talk a lot", trait: "extroversion", reversed: true },
+  { id: 6, text: "I don't talk a lot", trait: "extraversion", reversed: true },
   { id: 7, text: "I am not interested in other people's problems", trait: "agreeableness", reversed: true },
   { id: 8, text: "I often forget to put things back in their proper place", trait: "conscientiousness", reversed: true },
-  { id: 9, text: "I am relaxed most of the time", trait: "resilience", reversed: false },
+  { id: 9, text: "I am relaxed most of the time", trait: "neuroticism", reversed: false },
   { id: 10, text: "I am not interested in abstract ideas", trait: "openness", reversed: true },
-  { id: 11, text: "I talk to a lot of different people at parties", trait: "extroversion", reversed: false },
+  { id: 11, text: "I talk to a lot of different people at parties", trait: "extraversion", reversed: false },
   { id: 12, text: "I feel others' emotions", trait: "agreeableness", reversed: false },
   { id: 13, text: "I like order", trait: "conscientiousness", reversed: false },
-  { id: 14, text: "I get upset easily", trait: "resilience", reversed: true },
+  { id: 14, text: "I get upset easily", trait: "neuroticism", reversed: true },
   { id: 15, text: "I have difficulty understanding abstract ideas", trait: "openness", reversed: true },
-  { id: 16, text: "I keep in the background", trait: "extroversion", reversed: true },
+  { id: 16, text: "I keep in the background", trait: "extraversion", reversed: true },
   { id: 17, text: "I am not really interested in others", trait: "agreeableness", reversed: true },
   { id: 18, text: "I make a mess of things", trait: "conscientiousness", reversed: true },
-  { id: 19, text: "I seldom feel blue", trait: "resilience", reversed: false },
+  { id: 19, text: "I seldom feel blue", trait: "neuroticism", reversed: false },
   { id: 20, text: "I do not have a good imagination", trait: "openness", reversed: true },
 ];
 
@@ -62,18 +62,18 @@ export default function PersonalityTestPage() {
     const scores = {
       openness: 0,
       conscientiousness: 0,
-      extroversion: 0,
+      extraversion: 0,
       agreeableness: 0,
-      resilience: 0,
+      neuroticism: 0,
     };
 
     // Count questions per trait and calculate averages
     const traitCounts = {
       openness: 0,
       conscientiousness: 0,
-      extroversion: 0,
+      extraversion: 0,
       agreeableness: 0,
-      resilience: 0,
+      neuroticism: 0,
     };
 
     questions.forEach(question => {

@@ -14,9 +14,9 @@ export const UserStats = {
 export const PersonalityScores = {
   openness: { currentXP: 800, levelUpXP: 1000 },
   conscientiousness: { currentXP: 600, levelUpXP: 1000 },
-  extroversion: { currentXP: 700, levelUpXP: 1000 },
+  extraversion: { currentXP: 700, levelUpXP: 1000 },
   agreeableness: { currentXP: 900, levelUpXP: 1000 },
-  resilience: { currentXP: 300, levelUpXP: 1000 },
+  neuroticism: { currentXP: 300, levelUpXP: 1000 },
 } as const;
 
 // Soulseed display data
@@ -111,9 +111,10 @@ export const TraitInfo: Array<{
     color: '#8B7BD8',
     icon: '🎨',
     tips: [
-      'Create spaces that inspire creativity and new ideas',
-      'Surround yourself with diverse perspectives and experiences',
-      'Choose flexible routines that allow for spontaneity and exploration'
+      'Notice when you feel most creative and inspired throughout your day',
+      'Recognize your natural curiosity and how it drives your interests',
+      'Understand that your openness to new experiences is a valuable trait',
+      'Be aware of how your imagination influences your problem-solving approach'
     ]
   },
   {
@@ -123,21 +124,23 @@ export const TraitInfo: Array<{
     color: '#4CAF50',
     icon: '📋',
     tips: [
-      'Design environments that support your need for structure and planning',
-      'Build systems that help you feel accomplished and in control',
-      'Create accountability partnerships that match your commitment style'
+      'Notice how structure and planning affect your stress levels and productivity',
+      'Recognize your natural drive for achievement and how it motivates you',
+      'Understand that your attention to detail is a strength, not a weakness',
+      'Be aware of how your conscientiousness influences your relationships and work style'
     ]
   },
   {
     name: 'Extraversion',
-    score: PersonalityScores.extroversion.currentXP / PersonalityScores.extroversion.levelUpXP,
+    score: PersonalityScores.extraversion.currentXP / PersonalityScores.extraversion.levelUpXP,
     description: 'Your social energy and outgoing nature',
     color: '#FF9800',
     icon: '🌟',
     tips: [
-      'Choose social environments that energize and inspire you',
-      'Build networks that support both your need for connection and personal growth',
-      'Create opportunities for meaningful interactions that align with your values'
+      'Notice how social interactions affect your energy levels throughout the day',
+      'Recognize when you feel most energized - in groups or one-on-one conversations',
+      'Understand that your need for social connection is a natural part of who you are',
+      'Be aware of how your social nature influences your decision-making and mood'
     ]
   },
   {
@@ -147,21 +150,23 @@ export const TraitInfo: Array<{
     color: '#E91E63',
     icon: '❤️',
     tips: [
-      'Cultivate relationships that honor your caring nature while respecting your boundaries',
-      'Choose communities and causes that align with your values and desire to help',
-      'Create environments where cooperation and harmony feel natural and fulfilling'
+      'Notice how conflict and harmony affect your emotional well-being',
+      'Recognize your natural tendency to help others and how it makes you feel',
+      'Understand that your empathy is a gift that helps you connect with others',
+      'Be aware of when you might be putting others\' needs before your own'
     ]
   },
   {
-    name: 'Resilience',
-    score: PersonalityScores.resilience.currentXP / PersonalityScores.resilience.levelUpXP,
-    description: 'Your emotional stability and stress response',
+    name: 'Neuroticism',
+    score: PersonalityScores.neuroticism.currentXP / PersonalityScores.neuroticism.levelUpXP,
+    description: 'Your emotional stability and tendency toward negative emotions',
     color: '#9C27B0',
-    icon: '💪',
+    icon: '🧠',
     tips: [
-      'Design your lifestyle to minimize unnecessary stress while building your capacity to handle challenges',
-      'Create support systems and routines that help you maintain emotional balance',
-      'Choose environments and relationships that promote your well-being and personal strength'
+      'Notice how you respond to stress and emotional challenges in your daily life',
+      'Recognize patterns in your emotional reactions and what triggers them',
+      'Understand that emotional sensitivity can be both a strength and a challenge',
+      'Be aware of how your emotional responses influence your decision-making and relationships'
     ]
   }
 ];
