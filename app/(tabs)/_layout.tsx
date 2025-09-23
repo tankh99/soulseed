@@ -1,6 +1,6 @@
 import { Colors } from '@/constants/colors';
 import { Tabs } from 'expo-router';
-import { Home, PenTool, User, Compass, BookHeart } from 'lucide-react-native';
+import { Home, PenTool, User, Compass, BookHeart, Users } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -47,6 +47,15 @@ export default function TabLayout() {
           title: 'Collection',
           tabBarIcon: ({ size, color }) => (
             <BookHeart size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="friends"
+        options={{
+          title: 'Friends',
+          tabBarIcon: ({ size, color }) => (
+            <Users size={size} color={color} />
           ),
         }}
       />
