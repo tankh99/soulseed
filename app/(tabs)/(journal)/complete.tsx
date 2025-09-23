@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Button } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
+import Button from '../../../components/Button';
 import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
 
@@ -28,7 +29,9 @@ export default function JournalCompletePage() {
           style={styles.button}
           
           title="Back to Home" 
-          onPress={() => router.replace('/(tabs)/')} />
+          onPress={() => router.replace('/(tabs)/')} 
+          variant="secondary"
+        />
       </View>
     </ScreenLayout>
   );
@@ -71,10 +74,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(232, 201, 136, 0.3)',
+    marginBottom: 40,
   },
   pointsText: {
     fontSize: 16,
     color: '#E8C988',
     fontWeight: '600',
   },
+  button: {
+    width: '100%',
+  }
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -38,6 +38,14 @@ export default function JournalEntryPage() {
   const [currentAnswer, setCurrentAnswer] = useState<string>('');
   const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
   const [conversationStep, setConversationStep] = useState(0);
+
+  const conversationScrollViewRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    if (conversationMode) {
+      conversationScrollViewRef.current?.scrollToEnd({ animated: true });
+    }
+  }, [conversationThread, currentQuestion]);
 
   const chimePlayer = useAudioPlayer(require('../../../assets/sounds/chime.mp3'));
 
@@ -107,11 +115,11 @@ export default function JournalEntryPage() {
     const nextFruit = getNextUncollectedFruit();
     if (nextFruit) {
       collectFruit(nextFruit.id);
-      Alert.alert(
-        "New Fruit Collected!",
-        `You've collected the ${nextFruit.name}! Check it out in your almanac.`,
-        [{ text: "OK" }]
-      );
+      // Alert.alert(
+      //   "New Fruit Collected!",
+      //   `You've collected the ${nextFruit.name}! Check it out in your almanac.`,
+      //   [{ text: "OK" }]
+      // );
     }
 
     chimePlayer.play();
@@ -277,18 +285,25 @@ export default function JournalEntryPage() {
               </View>
 
               {/* Conversation History */}
-              <FlatList
+              <ScrollView
+                ref={conversationScrollViewRef}
                 style={styles.conversationHistory}
-                data={[
+                contentContainerStyle={{ paddingBottom: 10 }}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="interactive"
+              >
+                {[
                   ...conversationThread,
                   ...(currentQuestion ? [{ role: 'assistant' as const, content: currentQuestion, id: 'current-question' }] : [])
-                ]}
-                keyExtractor={(item, index) => ('id' in item ? item.id : `message-${index}`)}
-                renderItem={({ item }) => (
-                  <View style={[
-                    styles.messageContainer,
-                    item.role === 'user' ? styles.userMessage : styles.assistantMessage
-                  ]}>
+                ].map((item, index) => (
+                  <View 
+                    key={'id' in item ? item.id : `message-${index}`} 
+                    style={[
+                      styles.messageContainer,
+                      item.role === 'user' ? styles.userMessage : styles.assistantMessage
+                    ]}
+                  >
                     <Text style={[
                       styles.messageText,
                       item.role === 'user' ? styles.userMessageText : styles.assistantMessageText
@@ -296,11 +311,8 @@ export default function JournalEntryPage() {
                       {item.content}
                     </Text>
                   </View>
-                )}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                keyboardDismissMode="interactive"
-              />
+                ))}
+              </ScrollView>
 
               {/* Answer Input */}
               <View style={styles.answerInputContainer}>
