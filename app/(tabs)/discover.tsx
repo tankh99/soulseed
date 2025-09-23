@@ -108,9 +108,27 @@ export default function DiscoverScreen() {
           <Pressable style={styles.modalOverlay} onPress={() => setSelectedTrait(null)}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Understanding {selectedTrait}</Text>
-              {traitInfo.find(t => t.name === selectedTrait)?.tips.map((tip, index) => (
-                <Text key={index} style={styles.tipText}>• {tip}</Text>
-              ))}
+              {(() => {
+                const trait = traitInfo.find(t => t.name === selectedTrait);
+                if (!trait) return null;
+                
+                return (
+                  <View>
+                    <View style={styles.modalSection}>
+                      <Text style={styles.modalSectionTitle}>✅ Strengths</Text>
+                      {trait.pros.map((pro, index) => (
+                        <Text key={index} style={styles.modalItemText}>• {pro}</Text>
+                      ))}
+                    </View>
+                    <View style={styles.modalSection}>
+                      <Text style={styles.modalSectionTitle}>⚠️ Challenges</Text>
+                      {trait.cons.map((con, index) => (
+                        <Text key={index} style={styles.modalItemText}>• {con}</Text>
+                      ))}
+                    </View>
+                  </View>
+                );
+              })()}
               <TouchableOpacity style={styles.closeButton} onPress={() => setSelectedTrait(null)}>
                 <X size={24} color="#FFFFFF" />
               </TouchableOpacity>
@@ -234,5 +252,20 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     right: 16,
+  },
+  modalSection: {
+    marginBottom: 20,
+  },
+  modalSectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  modalItemText: {
+    fontSize: 14,
+    color: '#8B7BD8',
+    lineHeight: 20,
+    marginBottom: 4,
   },
 });

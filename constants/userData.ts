@@ -14,7 +14,7 @@ export const UserStats = {
 export const PersonalityScores = {
   openness: { currentXP: 800, levelUpXP: 1000 },
   conscientiousness: { currentXP: 600, levelUpXP: 1000 },
-  extraversion: { currentXP: 700, levelUpXP: 1000 },
+  extroversion: { currentXP: 700, levelUpXP: 1000 },
   agreeableness: { currentXP: 900, levelUpXP: 1000 },
   neuroticism: { currentXP: 300, levelUpXP: 1000 },
 } as const;
@@ -102,7 +102,8 @@ export const TraitInfo: Array<{
   description: string;
   color: string;
   icon: string;
-  tips: string[];
+  pros: string[];
+  cons: string[];
 }> = [
   {
     name: 'Openness',
@@ -110,11 +111,17 @@ export const TraitInfo: Array<{
     description: 'Your imagination and curiosity about the world',
     color: '#8B7BD8',
     icon: '🎨',
-    tips: [
-      'Notice when you feel most creative and inspired throughout your day',
-      'Recognize your natural curiosity and how it drives your interests',
-      'Understand that your openness to new experiences is a valuable trait',
-      'Be aware of how your imagination influences your problem-solving approach'
+    pros: [
+      'Highly creative and imaginative',
+      'Open to new experiences and ideas',
+      'Flexible and adaptable to change',
+      'Good at thinking outside the box'
+    ],
+    cons: [
+      'May struggle with routine and structure',
+      'Can be easily distracted by new ideas',
+      'Sometimes impractical or unrealistic',
+      'May have difficulty with detailed planning'
     ]
   },
   {
@@ -123,24 +130,36 @@ export const TraitInfo: Array<{
     description: 'Your organization and goal-oriented nature',
     color: '#4CAF50',
     icon: '📋',
-    tips: [
-      'Notice how structure and planning affect your stress levels and productivity',
-      'Recognize your natural drive for achievement and how it motivates you',
-      'Understand that your attention to detail is a strength, not a weakness',
-      'Be aware of how your conscientiousness influences your relationships and work style'
+    pros: [
+      'Highly organized and reliable',
+      'Strong work ethic and self-discipline',
+      'Good at planning and following through',
+      'Detail-oriented and thorough'
+    ],
+    cons: [
+      'May be overly rigid or inflexible',
+      'Can be perfectionistic and self-critical',
+      'May struggle with spontaneity',
+      'Can be too focused on work over play'
     ]
   },
   {
-    name: 'Extraversion',
-    score: PersonalityScores.extraversion.currentXP / PersonalityScores.extraversion.levelUpXP,
+    name: 'Extroversion',
+    score: PersonalityScores.extroversion.currentXP / PersonalityScores.extroversion.levelUpXP,
     description: 'Your social energy and outgoing nature',
     color: '#FF9800',
     icon: '🌟',
-    tips: [
-      'Notice how social interactions affect your energy levels throughout the day',
-      'Recognize when you feel most energized - in groups or one-on-one conversations',
-      'Understand that your need for social connection is a natural part of who you are',
-      'Be aware of how your social nature influences your decision-making and mood'
+    pros: [
+      'Energized by social interactions',
+      'Natural leadership and communication skills',
+      'Comfortable in group settings',
+      'Good at networking and building relationships'
+    ],
+    cons: [
+      'May struggle with solitude and quiet time',
+      'Can be impulsive or speak without thinking',
+      'May have difficulty with deep, focused work',
+      'Can be overwhelming for more introverted people'
     ]
   },
   {
@@ -149,11 +168,17 @@ export const TraitInfo: Array<{
     description: 'Your compassion and cooperation with others',
     color: '#E91E63',
     icon: '❤️',
-    tips: [
-      'Notice how conflict and harmony affect your emotional well-being',
-      'Recognize your natural tendency to help others and how it makes you feel',
-      'Understand that your empathy is a gift that helps you connect with others',
-      'Be aware of when you might be putting others\' needs before your own'
+    pros: [
+      'Highly empathetic and compassionate',
+      'Great at building and maintaining relationships',
+      'Natural peacemaker and team player',
+      'Trustworthy and cooperative'
+    ],
+    cons: [
+      'May struggle to say no or set boundaries',
+      'Can be taken advantage of by others',
+      'May avoid necessary conflicts',
+      'Can be overly trusting or naive'
     ]
   },
   {
@@ -162,11 +187,17 @@ export const TraitInfo: Array<{
     description: 'Your emotional stability and tendency toward negative emotions',
     color: '#9C27B0',
     icon: '🧠',
-    tips: [
-      'Notice how you respond to stress and emotional challenges in your daily life',
-      'Recognize patterns in your emotional reactions and what triggers them',
-      'Understand that emotional sensitivity can be both a strength and a challenge',
-      'Be aware of how your emotional responses influence your decision-making and relationships'
+    pros: [
+      'Highly sensitive and emotionally aware',
+      'Good at detecting potential problems early',
+      'Can be very creative when channeled positively',
+      'Often very caring and empathetic'
+    ],
+    cons: [
+      'Prone to anxiety and worry',
+      'May overreact to minor stressors',
+      'Can be emotionally volatile',
+      'May struggle with self-confidence'
     ]
   }
 ];

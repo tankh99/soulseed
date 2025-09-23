@@ -9,7 +9,8 @@ interface Trait {
   description: string;
   color: string;
   icon: string;
-  tips: string[];
+  pros: string[];
+  cons: string[];
   scoreData: {
     currentXP: number;
     levelUpXP: number;
@@ -46,6 +47,22 @@ export function TraitCard({ trait, onPress }: TraitCardProps) {
           end={{ x: 1, y: 0 }}
         />
       </View>
+      
+      {/* <View style={styles.prosConsPreview}>
+        <View style={styles.prosSection}>
+          <Text style={styles.sectionTitle}>✅ Strengths</Text>
+          <Text style={styles.previewText}>
+            {trait.pros.slice(0, 2).join(' • ')}
+          </Text>
+        </View>
+        <View style={styles.consSection}>
+          <Text style={styles.sectionTitle}>⚠️ Challenges</Text>
+          <Text style={styles.previewText}>
+            {trait.cons.slice(0, 2).join(' • ')}
+          </Text>
+        </View>
+      </View> */}
+      
       <Text style={styles.xpText}>
         {trait.scoreData.currentXP} / {trait.scoreData.levelUpXP} XP
       </Text>
@@ -106,21 +123,26 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#8B7BD8',
     textAlign: 'right',
-    marginTop: 4,
-  },
-  tipsContainer: {
     marginTop: 8,
   },
-  tipsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
+  prosConsPreview: {
+    marginTop: 12,
+  },
+  prosSection: {
     marginBottom: 8,
   },
-  tip: {
-    fontSize: 12,
-    color: '#8B7BD8',
-    lineHeight: 16,
+  consSection: {
     marginBottom: 4,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginBottom: 4,
+  },
+  previewText: {
+    fontSize: 11,
+    color: '#8B7BD8',
+    lineHeight: 14,
   },
 });

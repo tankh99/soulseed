@@ -8,7 +8,7 @@ export interface SoulseedData {
   variationSlots: string[];
   growthExpression: string[];
   palette: string[];
-  trait: 'openness' | 'conscientiousness' | 'extraversion' | 'agreeableness' | 'neuroticism';
+  trait: 'openness' | 'conscientiousness' | 'extroversion' | 'agreeableness' | 'neuroticism';
 }
 
 export const SOULSEEDS: Record<string, SoulseedData> = {
@@ -32,14 +32,14 @@ export const SOULSEEDS: Record<string, SoulseedData> = {
     trait: "conscientiousness"
   },
   
-  extraversion: {
+  extroversion: {
     name: "Lumo",
     statement: "Feels restless in silence, but shines when sparking energy and joy around others.",
     scar: "Tiny flame or spark in chest.",
     variationSlots: ["candle flame", "heart pulse", "fireworks sparks"],
     growthExpression: ["glowing aura", "animated bounces", "phoenix-like burst"],
     palette: ["Warm yellow/orange", "electric blue", "white glow"],
-    trait: "extraversion"
+    trait: "extroversion"
   },
   
   agreeableness: {
@@ -67,7 +67,7 @@ export const SOULSEEDS: Record<string, SoulseedData> = {
 export function determineSoulseedType(personality: {
   openness: number;
   conscientiousness: number;
-  extraversion: number;
+  extroversion: number;
   agreeableness: number;
   neuroticism: number;
 }): string {
@@ -77,7 +77,7 @@ export function determineSoulseedType(personality: {
   const traits = [
     { name: 'openness', value: personality.openness },
     { name: 'conscientiousness', value: personality.conscientiousness },
-    { name: 'extraversion', value: personality.extraversion },
+    { name: 'extroversion', value: personality.extroversion },
     { name: 'agreeableness', value: personality.agreeableness },
     { name: 'neuroticism', value: neuroticism },
   ];
@@ -99,7 +99,7 @@ export function getSoulseedByTrait(trait: string): SoulseedData {
 export function getSoulseedByPersonality(personality: {
   openness: number;
   conscientiousness: number;
-  extraversion: number;
+  extroversion: number;
   agreeableness: number;
   neuroticism: number;
 }): SoulseedData {
@@ -120,7 +120,7 @@ export const SOULSEED_NAMES = {
 export const TRAIT_MAPPINGS = {
   openness: 'openness',
   conscientiousness: 'conscientiousness',
-  extraversion: 'extraversion',
+  extroversion: 'extroversion',
   agreeableness: 'agreeableness',
   neuroticism: 'neuroticism' // Neuroticism trait
 } as const;

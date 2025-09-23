@@ -11,7 +11,7 @@ interface SoulseedDisplayProps {
   personality: {
     openness: number;
     conscientiousness: number;
-    extraversion: number;
+    extroversion: number;
     agreeableness: number;
     neuroticism: number;
   };
@@ -196,7 +196,7 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
         return 'https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&cs=tinysrgb&w=300'; // Starry/cosmic
       case 'conscientiousness':
         return 'https://images.pexels.com/photos/1323712/pexels-photo-1323712.jpeg?auto=compress&cs=tinysrgb&w=300'; // Structured/geometric
-      case 'extraversion':
+      case 'extroversion':
         return 'https://images.pexels.com/photos/1386604/pexels-photo-1386604.jpeg?auto=compress&cs=tinysrgb&w=300'; // Bright/energetic
       case 'agreeableness':
         return 'https://images.pexels.com/photos/1379636/pexels-photo-1379636.jpeg?auto=compress&cs=tinysrgb&w=300'; // Warm/nurturing
@@ -206,10 +206,10 @@ export function SoulseedDisplay({ level, personality, size = 'large', selectedMo
   };
 
   const getAuraColor = (): [string, string] => {
-    const { openness, extraversion, agreeableness } = personality;
+    const { openness, extroversion, agreeableness } = personality;
     
     if (openness > 0.7) return [Colors.secondaryAlpha30, Colors.secondaryAlpha10];
-    if (extraversion > 0.7) return [Colors.accentAlpha30, Colors.accentAlpha10];
+    if (extroversion > 0.7) return [Colors.accentAlpha30, Colors.accentAlpha10];
     if (agreeableness > 0.8) return [Colors.secondaryAlpha30, Colors.secondaryAlpha10];
     
     return [Colors.soulseedAura, Colors.secondaryAlpha10];

@@ -12,7 +12,7 @@ interface SoulseedData {
   personality: {
     openness: number;
     conscientiousness: number;
-    extraversion: number;
+    extroversion: number;
     agreeableness: number;
     neuroticism: number;
   };
