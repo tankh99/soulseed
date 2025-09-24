@@ -1,6 +1,6 @@
 import { Colors } from '@/constants/colors';
 import { Tabs } from 'expo-router';
-import { Home, PenTool, User, Compass, BookHeart, Users } from 'lucide-react-native';
+import { Home, PenTool, User, Compass, History as HistoryIcon, Users } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -42,11 +42,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="collection"
+        name="history"
         options={{
-          title: 'Collection',
+          title: 'History',
           tabBarIcon: ({ size, color }) => (
-            <BookHeart size={size} color={color} />
+            <HistoryIcon size={size} color={color} />
           ),
         }}
       />
