@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, Image } from 'react-native';
 import { FruitCollection } from '@/data/collectionData';
-import { RARITY_COLORS } from '@/data/fruits';
 import { X } from 'lucide-react-native';
 
 interface FruitDetailModalProps {
@@ -26,7 +25,7 @@ const FruitDetailModal: React.FC<FruitDetailModalProps> = ({ visible, onClose, f
             <X size={24} color="white" />
           </TouchableOpacity>
           <Image source={fruit.image} style={styles.fruitImage} />
-          <Text style={[styles.fruitName, { color: RARITY_COLORS[fruit.rarity] }]}>{fruit.name}</Text>
+          <Text style={styles.fruitName}>{fruit.name}</Text>
           <Text style={styles.dateRange}>{weeklyHighlight.dateRange}</Text>
           <View style={styles.highlightSection}>
             <Text style={styles.sectionTitle}>Highlight of the Week</Text>
@@ -70,6 +69,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 5,
+        color: 'white',
       },
       dateRange: {
         fontSize: 14,

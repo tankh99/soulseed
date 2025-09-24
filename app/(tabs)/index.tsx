@@ -31,6 +31,10 @@ export default function HomeScreen() {
   const soulseedLevel = SoulseedData.level;
   const [quests, setQuests] = useState(MockQuests.map(q => ({ ...q })));
   
+  // Compute overall growth progress across traits
+  const totalLevelUpXp = Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.levelUpXP, 0);
+  const growthProgress = Math.min(100, Math.round((totalXp / totalLevelUpXp) * 100));
+  
   const fadeAnim = new Animated.Value(0);
 
   useEffect(() => {
@@ -72,12 +76,12 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Good morning! ✨</Text>
-          <View style={styles.headerActions}>
+          {/* <View style={styles.headerActions}>
             <View style={styles.pointsContainer}>
               <Star size={16} color="#FFD700" />
               <Text style={styles.points}>{totalXp.toLocaleString()} XP</Text>
             </View>
-          </View>
+          </View> */}
         </View>
 
         {/* Soulseed Display */}
@@ -89,6 +93,23 @@ export default function HomeScreen() {
           <Text style={styles.soulseedName}>{SoulseedData.name}</Text>
           <Text style={styles.soulseedSubtext}>Level {soulseedLevel} • Evolving</Text>
           <Text style={styles.tapHint}>Tap quickly to pet {SoulseedData.name} 💫</Text>
+
+          {/* XP / Growth Progress */}
+          <View style={styles.growthContainer}>
+            <View style={styles.growthHeader}>
+              <Text style={styles.growthTitle}>Soulseed Growth</Text>
+              <Text style={styles.growthPercent}>{growthProgress}%</Text>
+            </View>
+            <View style={styles.growthBarTrack}>
+              <LinearGradient
+                colors={[Colors.accent, Colors.secondary]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[styles.growthBarFill, { width: `${growthProgress}%` }]}
+              />
+            </View>
+            <Text style={styles.growthSubtitle}>{totalXp.toLocaleString()} / {totalLevelUpXp.toLocaleString()} XP to next evolution</Text>
+          </View>
         </View>
 
         {/* Streak Counter */}
@@ -261,5 +282,44 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 100,
+  },
+  growthContainer: {
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: 16,
+  },
+  growthHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  growthTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  growthPercent: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFD700',
+  },
+  growthBarTrack: {
+    height: 10,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: 6,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 123, 216, 0.25)',
+  },
+  growthBarFill: {
+    height: '100%',
+    borderRadius: 6,
+  },
+  growthSubtitle: {
+    fontSize: 12,
+    color: '#8B7BD8',
+    marginTop: 6,
+    textAlign: 'center',
   },
 });

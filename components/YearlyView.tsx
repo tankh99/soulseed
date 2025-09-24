@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { collectionData } from '@/data/collectionData';
-import { RARITY_COLORS } from '@/data/fruits';
 
 interface YearlyViewProps {
   onSelectMonth: (month: string) => void;
@@ -11,7 +10,6 @@ const YearlyView: React.FC<YearlyViewProps> = ({ onSelectMonth }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerTitle}>2025 Fruits</Text>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {collectionData.map((monthData, monthIndex) => (
           <View key={`month-${monthIndex}`} style={styles.monthSection}>
             <Text style={styles.monthHeader}>{monthData.month}</Text>
@@ -22,7 +20,7 @@ const YearlyView: React.FC<YearlyViewProps> = ({ onSelectMonth }) => {
                     {week ? (
                       <View style={[
                         styles.fruitIconWrapper,
-                        { borderColor: week.fruit.collected ? RARITY_COLORS[week.fruit.rarity] : 'transparent' }
+                        { borderColor: week.fruit.collected ? '#FFD700' : 'transparent' }
                       ]}>
                         <Image 
                           source={week.fruit.collected ? week.fruit.image : week.fruit.silhouette} 
@@ -38,7 +36,6 @@ const YearlyView: React.FC<YearlyViewProps> = ({ onSelectMonth }) => {
             </TouchableOpacity>
           </View>
         ))}
-      </ScrollView>
     </View>
   );
 };

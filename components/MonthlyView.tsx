@@ -4,7 +4,6 @@ import { collectionData } from '@/data/collectionData';
 import FruitDetailModal from './FruitDetailModal';
 import { FruitCollection } from '@/data/collectionData';
 import Header from './Header';
-import { RARITY_COLORS } from '@/data/fruits';
 
 interface MonthlyViewProps {
   initialMonthIndex: number;
@@ -44,14 +43,11 @@ const MonthlyView: React.FC<MonthlyViewProps> = ({ initialMonthIndex, onBack }) 
               week && (
                 <TouchableOpacity key={weekIndex} style={styles.weekRow} onPress={() => setSelectedFruit(week)}>
                   <Text style={styles.weekLabel}>Week {weekIndex + 1}</Text>
-                  <Image 
-                    source={week.fruit.collected ? week.fruit.image : week.fruit.silhouette} 
-                    style={styles.fruitImage} 
+                  <Image
+                    source={week.fruit.collected ? week.fruit.image : week.fruit.silhouette}
+                    style={styles.fruitImage}
                   />
-                  <Text style={[
-                    styles.fruitName,
-                    { color: week.fruit.collected ? RARITY_COLORS[week.fruit.rarity] : 'white' }
-                  ]}>
+                  <Text style={styles.fruitName}>
                     {week.fruit.collected ? week.fruit.name : "??????"}
                   </Text>
                 </TouchableOpacity>
@@ -97,6 +93,7 @@ const styles = StyleSheet.create({
       fruitName: {
         fontSize: 16,
         fontWeight: 'bold',
+        color: 'white',
       },
 });
 

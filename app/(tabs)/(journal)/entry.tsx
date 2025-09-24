@@ -23,6 +23,7 @@ import { SoulseedData } from '../../../constants/userData';
 import { getMoodData } from '../../../constants/moods';
 import { useAudioPlayer } from 'expo-audio';
 import { getUserFruits, getNextUncollectedFruit, collectFruit } from "../../../data/userFruits";
+import { Colors } from '../../../constants/colors';
 
 export default function JournalEntryPage() {
   const { mood } = useLocalSearchParams();
@@ -475,7 +476,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   assistantMessageText: {
-    color: '#FFFFFF',
+    color: Colors.accent,
   },
   answerInputContainer: {
     paddingTop: 16,

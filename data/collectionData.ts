@@ -53,7 +53,7 @@ export const collectionData: MonthlyCollection[] = months.map((month, monthIndex
     if (!fruitFromPool) return null;
 
     // Randomly decide if a fruit is collected for dummy data, but ensure some are uncollected
-    const isCollected = Math.random() > 0.4; 
+    const isCollected = Math.random() > 0.4;
 
     return {
       fruit: {

@@ -22,20 +22,15 @@ export function StreakCounter({ currentStreak, weeklyProgress }: StreakCounterPr
   const nextMilestone = streakMilestones.find(milestone => currentStreak < milestone) || streakMilestones[streakMilestones.length - 1];
   const daysToNextMilestone = nextMilestone - currentStreak;
 
-  const getRarityChance = () => {
-    const rarityChances = {
-      'common': '60%',
-      'uncommon': '25%', 
-      'rare': '10%',
-      'mythic': '4%',
-      'legendary': '1%'
-    };
-    
+  const getMotivationalMessage = () => {
     if (isWeeklyComplete) {
       return "🎉 Week Complete! You earned a fruit!";
+    } else if (daysUntilFruit === 1) {
+      return "🔥 One more day until your next fruit!";
+    } else if (daysUntilFruit <= 3) {
+      return `⚡ ${daysUntilFruit} days left for your next fruit!`;
     } else {
-      const randomRarity = Object.keys(rarityChances)[Math.floor(Math.random() * Object.keys(rarityChances).length)];
-      return `🎲 ${rarityChances[randomRarity]} chance for ${randomRarity} fruit!`;
+      return `Keep going! ${daysUntilFruit} days until your next fruit.`;
     }
   };
 
@@ -74,12 +69,12 @@ export function StreakCounter({ currentStreak, weeklyProgress }: StreakCounterPr
       <View style={styles.progressCard}>
         <View style={styles.progressHeader}>
           <Gift size={20} color="#8B7BD8" />
-          <Text style={styles.progressTitle}>Weekly Reward</Text>
+          <Text style={styles.progressTitle}>This Week's Fruit</Text>
           {isWeeklyComplete && <Trophy size={16} color="#FFD700" />}
         </View>
         
         <Text style={styles.motivationalText}>
-          {getRarityChance()}
+          {getMotivationalMessage()}
         </Text>
         
         <View style={styles.progressBar}>
