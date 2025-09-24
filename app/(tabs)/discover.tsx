@@ -36,7 +36,7 @@ export default function DiscoverScreen() {
     >
       {/* <LinearGradient colors={['#2D1B69', '#1A0B3D']} style={styles.container}> */}
         <View style={styles.header}>
-          <Text style={styles.title}>Discover Yourself</Text>
+          <Text style={styles.headerTitle}>Discover Yourself</Text>
           <Text style={styles.subtitle}>Insights from your journey</Text>
         </View>
 
@@ -145,10 +145,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 60,
+    flexDirection: 'column',
+    paddingTop: 24,
     paddingBottom: 24,
   },
-  title: {
+  headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
