@@ -41,19 +41,23 @@ const scaleOptions = [
 export default function PersonalityTestPage() {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handleAnswer = (questionId: number, value: number) => {
+    if (isTransitioning) return; // Prevent answering during transition
+    
+    setIsTransitioning(true);
     setAnswers(prev => ({ ...prev, [questionId]: value }));
     
-    // Auto-advance to next question after a short delay, but only if not on the last question
+    // Auto-advance to next question after a short delay
     setTimeout(() => {
       setCurrentQuestion(prev => {
-        // Don't advance past the last question
         if (prev < questions.length - 1) {
           return prev + 1;
         }
         return prev;
       });
+      setIsTransitioning(false); // End transition
     }, 300);
   };
 
@@ -151,6 +155,7 @@ export default function PersonalityTestPage() {
                     answers[questions[currentQuestion]?.id] === option.value && styles.scaleOptionSelected
                   ]}
                   onPress={() => handleAnswer(questions[currentQuestion]?.id || 0, option.value)}
+                  disabled={isTransitioning} // Disable during transition
                 >
                   <Text style={[
                     styles.scaleValue,
