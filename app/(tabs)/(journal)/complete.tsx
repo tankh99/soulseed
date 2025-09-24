@@ -1,19 +1,62 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState, useMemo } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
 import Button from '../../../components/Button';
-import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
-import { SoulseedData } from '../../../constants/userData';
+import { mockApi } from '@/services/api';
+import { MockQuests } from '@/constants/userData';
+import { useAudioPlayer } from 'expo-audio';
+import { MockMoodEntries } from '@/constants/userData';
+import { getRollingWeekSummary } from '@/lib/fruitGenerator';
+import { generateFruitFromSummary } from '@/lib/fruitGenerator';
+
+const chimePlayerSource = require('../../../assets/sounds/chime.mp3');
 
 export default function JournalCompletePage() {
-  const { mood, text } = useLocalSearchParams();
+  const { mood, text } = useLocalSearchParams<{ mood?: string; text?: string }>();
+  const [coping, setCoping] = useState<Awaited<ReturnType<typeof mockApi.submitJournalEntry>>['coping']>();
+  const [isLoading, setIsLoading] = useState(false);
+  const chimePlayer = useAudioPlayer(chimePlayerSource);
 
-  
+  useEffect(() => {
+    chimePlayer.play();
+  }, []);
+
+  useEffect(() => {
+    if (!text) return;
+    const run = async () => {
+      setIsLoading(true);
+      try {
+        const response = await mockApi.submitJournalEntry({ text, mood: mood || '' });
+        if (response.coping) {
+          setCoping(response.coping);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch coping strategies', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    run();
+  }, [text, mood]);
+
+  const weeklySummary = useMemo(() => getRollingWeekSummary(MockMoodEntries), []);
+  const fruitPreview = useMemo(() => generateFruitFromSummary(weeklySummary), [weeklySummary]);
+
+  const handleQuestComplete = (questId: string) => {
+    setQuests(currentQuests => currentQuests.map(q => (q.id === questId ? { ...q, completed: true } : q)));
+  };
+
+  const refreshQuests = () => {
+    setQuests(MockQuests.map(q => ({ ...q })));
+  };
+
+  const handleCheckIn = () => {
+    router.push('/(tabs)/(journal)/mood' as any);
+  };
 
   return (
-    <ScreenLayout contentStyle={styles.container}>
-      <View style={styles.completeContainer}>
+    <ScreenLayout contentStyle={styles.completeContainer} disableBottomSafeArea>
         <Image
           source={require("../../../assets/images/reactions/openness/journal_submitted.png")}
           style={styles.submittedImage}
@@ -22,27 +65,40 @@ export default function JournalCompletePage() {
         <Text style={styles.completeSubtext}>
           Your soulseed grows stronger with each reflection
         </Text>
+
+        {coping && (
+          <View style={styles.copingCard}>
+            <Text style={styles.copingTitle}>Recommended coping strategies</Text>
+            <Text style={styles.copingTheme}>{coping.theme}</Text>
+            {coping.strategies.map((strategy, idx) => (
+              <Text key={idx} style={styles.copingItem}>• {strategy}</Text>
+            ))}
+            {coping.followUpQuest && (
+              <Text style={styles.followUp}>{coping.followUpQuest}</Text>
+            )}
+          </View>
+        )}
+
         <View style={styles.pointsEarned}>
           <Text style={styles.pointsText}>+25 XP earned</Text>
         </View>
-        <Button 
+
+        <Button
           style={styles.button}
-          
-          title="Back to Home" 
-          onPress={() => router.replace('/(tabs)/')} 
+          textStyle={{textAlign: "center"}}
+          title="Back to Home"
+          onPress={() => {
+            router.replace('/(tabs)/');
+            refreshQuests();
+          }}
           variant="secondary"
+          disabled={isLoading}
         />
-      </View>
     </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   completeContainer: {
     alignItems: 'center',
     padding: 24,
@@ -67,6 +123,36 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     lineHeight: 24,
   },
+  copingCard: {
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 123, 216, 0.2)',
+    marginBottom: 24,
+  },
+  copingTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 8,
+  },
+  copingTheme: {
+    fontSize: 14,
+    color: '#C3B4FF',
+    marginBottom: 12,
+  },
+  copingItem: {
+    fontSize: 14,
+    color: '#8B7BD8',
+    lineHeight: 20,
+  },
+  followUp: {
+    fontSize: 13,
+    color: '#FFB347',
+    marginTop: 12,
+  },
   pointsEarned: {
     backgroundColor: 'rgba(232, 201, 136, 0.2)',
     paddingHorizontal: 20,
@@ -83,5 +169,5 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-  }
+  },
 });

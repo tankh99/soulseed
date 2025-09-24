@@ -2,6 +2,7 @@
 // This file contains mock API functions that would be replaced with actual API calls
 
 import { getSoulseedByPersonality, SoulseedData as SoulseedDataType } from '../data/soulseeds';
+import { MockQuests } from '@/constants/userData';
 
 export interface PersonalityScores {
   openness: number;
@@ -22,6 +23,22 @@ export interface SoulseedData {
   variationSlots: string[];
   growthExpression: string[];
   palette: string[];
+}
+
+export interface CopingRecommendation {
+  theme: string;
+  strategies: string[];
+  followUpQuest?: string;
+}
+
+export interface JournalCompletionPayload {
+  text: string;
+  mood: string;
+}
+
+export interface JournalCompletionResponse {
+  success: boolean;
+  coping?: CopingRecommendation;
 }
 
 export interface RegistrationData {
@@ -230,6 +247,44 @@ export const mockApi = {
       data: {
         userId: `user-${Date.now()}`,
         token: `token-${Date.now()}`,
+      },
+    };
+  },
+
+  submitJournalEntry: async ({ text, mood }: JournalCompletionPayload): Promise<JournalCompletionResponse> => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const lower = text.toLowerCase();
+    const mentionsAcademics = ['exam', 'assignment', 'school', 'study', 'revision', 'grades'].some(word => lower.includes(word));
+    const mentionsStress = ['stress', 'stressful', 'overwhelmed', 'pressure'].some(word => lower.includes(word));
+
+    if (!mentionsAcademics && !mentionsStress) {
+      return { success: true };
+    }
+
+    const questId = 'study-buddy-quest';
+    const hasQuestAlready = MockQuests.some(q => q.id === questId);
+    if (!hasQuestAlready) {
+      MockQuests.push({
+        id: questId,
+        title: 'Find a study buddy',
+        description: 'Reach out to someone to co-work or revise together for 15 minutes.',
+        reward: { xp: 35 },
+        completed: false,
+        icon: '📚',
+        callbackUrl: '/(tabs)/(journal)/mood',
+      });
+    }
+
+    return {
+      success: true,
+      coping: {
+        theme: 'Academic Stress Support',
+        strategies: [
+          'Try the 25-5 method: study or work for 25 minutes, then take a 5-minute break to stretch or breathe.',
+          'Share one worry with a trusted friend or teacher—naming it usually makes it lighter.',
+        ],
+        followUpQuest: '“Find a study buddy” quest added to your checklist',
       },
     };
   },

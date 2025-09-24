@@ -123,8 +123,6 @@ export default function JournalEntryPage() {
       // );
     }
 
-    chimePlayer.play();
-
     // Navigate to complete page
     router.push({
       pathname: '/(journal)/complete' as any,
@@ -177,8 +175,6 @@ export default function JournalEntryPage() {
       setConversationStep(0);
       setIsWaitingForResponse(false);
       
-      chimePlayer.play();
-
       // Navigate to complete page
       router.push({
         pathname: '/(journal)/complete' as any,
@@ -201,8 +197,6 @@ export default function JournalEntryPage() {
     setCurrentAnswer('');
     setConversationStep(0);
     
-    chimePlayer.play();
-
     // Navigate to complete page
     router.push({
       pathname: '/(journal)/complete' as any,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { 
   View, 
   Text, 
@@ -10,6 +10,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Flame, PenTool } from 'lucide-react-native';
 import { router } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
@@ -46,6 +47,12 @@ export default function HomeScreen() {
 
     registerForPushNotificationsAsync();
   }, [fadeAnim]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setQuests(MockQuests.map(q => ({ ...q })));
+    }, [])
+  );
 
   const weeklySummary = useMemo(() => getRollingWeekSummary(MockMoodEntries), []);
   const fruitPreview = useMemo(() => generateFruitFromSummary(weeklySummary), [weeklySummary]);
