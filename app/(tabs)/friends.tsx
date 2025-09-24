@@ -152,7 +152,7 @@ export default function FriendsScreen() {
   );
 
   return (
-    <ScreenLayout>
+    <ScreenLayout disableBottomSafeArea>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>

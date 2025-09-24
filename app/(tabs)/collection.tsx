@@ -3,7 +3,7 @@ import ScreenLayout from '@/components/ScreenLayout';
 
 export default function CollectionScreen() {
   return (
-    <ScreenLayout>
+    <ScreenLayout disableBottomSafeArea>
       <FruitCollectionView />
     </ScreenLayout>
   );

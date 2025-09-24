@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Book, Heart, TrendingUp, Calendar, X } from 'lucide-react-native';
-import { WeeklySummary } from '../../components/WeeklySummary';
 import { TraitCard } from '../../components/TraitCard';
 import ScreenLayout from '@/components/ScreenLayout';
 import { WeeklyData, TraitInfo, PersonalityScores } from '../../constants/userData';
 import { Colors } from '@/constants/colors';
+import { WeeklySummary } from '@/components/WeeklySummary';
 
 const { width } = Dimensions.get('window');
 
