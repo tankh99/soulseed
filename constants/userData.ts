@@ -62,7 +62,7 @@ export const MockQuests = [
     reward: { xp: 50 },
     completed: false,
     icon: '👬',
-    callbackUrl: '/(tabs)/(journal)',
+    callbackUrl: '/(tabs)/friends',
   },
 ] as const;
 
@@ -222,4 +222,48 @@ export const MockMoodEntries: MoodEntry[] = [
   { id: 'm7', timestamp: daysAgo(6), mood: MoodType.CALM },
 ];
 
-export const MockHarvestedFruits: HarvestedFruit[] = [];
+export const MockHarvestedFruits: HarvestedFruit[] = [
+  {
+    id: 'demo-harvest-1',
+    harvestedAt: daysAgo(3),
+    fruit: {
+      speciesName: 'Sunstone Peach',
+      displayColor: '#FF8FA6',
+      growthStage: 'ripe',
+      dominantMood: MoodType.JOY,
+      intensity: 0.75,
+      image: require('@/assets/images/fruits/fruits_orange_full.png'),
+      summary: {
+        startDate: daysAgo(9),
+        endDate: daysAgo(3),
+        totalEntries: 6,
+        moodCounts: {
+          [MoodType.JOY]: 4,
+          [MoodType.CALM]: 1,
+          [MoodType.STRESS]: 1,
+        },
+      },
+    },
+  },
+  {
+    id: 'demo-harvest-2',
+    harvestedAt: daysAgo(10),
+    fruit: {
+      speciesName: 'Citrine Citrus',
+      displayColor: '#FFD24C',
+      growthStage: 'half_grown',
+      dominantMood: MoodType.STRESS,
+      intensity: 0.6,
+      image: require('@/assets/images/fruits/fruits_orange_full.png'),
+      summary: {
+        startDate: daysAgo(16),
+        endDate: daysAgo(10),
+        totalEntries: 4,
+        moodCounts: {
+          [MoodType.STRESS]: 3,
+          [MoodType.CALM]: 1,
+        },
+      },
+    },
+  },
+];
