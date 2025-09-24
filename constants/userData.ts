@@ -201,3 +201,25 @@ export const TraitInfo: Array<{
     ]
   }
 ];
+
+import { MoodEntry, MoodType, HarvestedFruit, WeeklyMoodSummary } from '@/data/moodFruits';
+
+const now = new Date();
+
+function daysAgo(days: number) {
+  const d = new Date(now);
+  d.setDate(d.getDate() - days);
+  return d.toISOString();
+}
+
+export const MockMoodEntries: MoodEntry[] = [
+  { id: 'm1', timestamp: daysAgo(0), mood: MoodType.JOY },
+  { id: 'm2', timestamp: daysAgo(1), mood: MoodType.JOY },
+  { id: 'm3', timestamp: daysAgo(1), mood: MoodType.CALM },
+  { id: 'm4', timestamp: daysAgo(2), mood: MoodType.STRESS },
+  { id: 'm5', timestamp: daysAgo(3), mood: MoodType.JOY },
+  { id: 'm6', timestamp: daysAgo(4), mood: MoodType.JOY },
+  { id: 'm7', timestamp: daysAgo(6), mood: MoodType.CALM },
+];
+
+export const MockHarvestedFruits: HarvestedFruit[] = [];

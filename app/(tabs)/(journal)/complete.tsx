@@ -23,7 +23,7 @@ export default function JournalCompletePage() {
           Your soulseed grows stronger with each reflection
         </Text>
         <View style={styles.pointsEarned}>
-          <Text style={styles.pointsText}>+25 points earned</Text>
+          <Text style={styles.pointsText}>+25 XP earned</Text>
         </View>
         <Button 
           style={styles.button}

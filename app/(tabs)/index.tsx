@@ -1,41 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   View, 
   Text, 
   StyleSheet, 
-  ScrollView, 
   TouchableOpacity, 
   Dimensions,
   Animated 
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Flame, Star, Gift, CircleCheck as CheckCircle, PenTool, BookHeart } from 'lucide-react-native';
+import { Flame, PenTool } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
-import { UserStats, SoulseedData, MockQuests, PersonalityScores } from '../../constants/userData';
+import { MockHarvestedFruits, MockMoodEntries, MockQuests, SoulseedData, UserStats, PersonalityScores } from '../../constants/userData';
 import ScreenLayout from '../../components/ScreenLayout';
 import { registerForPushNotificationsAsync } from '@/lib/notifications';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import { getRollingWeekSummary, generateFruitFromSummary, derivePlantStage } from '@/lib/fruitGenerator';
+import { HarvestModal } from '@/components/HarvestModal';
+import { MoodPlant } from '@/components/MoodPlant';
+import { GeneratedFruit, HarvestedFruit, MoodPlantStage } from '@/data/moodFruits';
 
 const { width } = Dimensions.get('window');
+const DEMO_XP_REWARD = 50;
 
 export default function HomeScreen() {
-  // Use global constants for consistent data
-  const streak = UserStats.currentStreak;
-  const totalXp = Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.currentXP, 0);
-  const weeklyProgress = UserStats.weeklyProgress;
-  const soulseedLevel = SoulseedData.level;
   const [quests, setQuests] = useState(MockQuests.map(q => ({ ...q })));
-  
-  // Compute overall growth progress across traits
-  const totalLevelUpXp = Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.levelUpXP, 0);
-  const growthProgress = Math.min(100, Math.round((totalXp / totalLevelUpXp) * 100));
-  
-  const fadeAnim = new Animated.Value(0);
+  const [harvestedFruits, setHarvestedFruits] = useState<HarvestedFruit[]>(MockHarvestedFruits);
+  const [pendingFruit, setPendingFruit] = useState<GeneratedFruit | null>(null);
+  const [harvestVisible, setHarvestVisible] = useState(false);
+  const [totalXp, setTotalXp] = useState(() => Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.currentXP, 0));
+  const [hasHarvestedThisCycle, setHasHarvestedThisCycle] = useState(false);
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -45,93 +45,110 @@ export default function HomeScreen() {
     }).start();
 
     registerForPushNotificationsAsync();
+  }, [fadeAnim]);
 
-    // (async() => {
-    //   const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-    //   const pushTokenString = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-    //   console.log(pushTokenString)
-    // })()
-  }, []);
+  const weeklySummary = useMemo(() => getRollingWeekSummary(MockMoodEntries), []);
+  const fruitPreview = useMemo(() => generateFruitFromSummary(weeklySummary), [weeklySummary]);
+  const plantStageDerived = derivePlantStage(weeklySummary);
+  const displayPlantStage: MoodPlantStage = hasHarvestedThisCycle ? 'seed' : plantStageDerived;
+  const isHarvestReady = !hasHarvestedThisCycle && plantStageDerived === 'bloom';
+
+  const totalLevelUpXp = Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.levelUpXP, 0);
+  const growthProgress = Math.min(100, Math.round((totalXp / totalLevelUpXp) * 100));
 
   const handleQuestComplete = (questId: string) => {
-    setQuests(currentQuests =>
-      currentQuests.map(q =>
-        q.id === questId ? { ...q, completed: true } : q
-      )
-    );
+    setQuests(currentQuests => currentQuests.map(q => (q.id === questId ? { ...q, completed: true } : q)));
   };
 
   const handleCheckIn = () => {
-    // Navigate to journal tab
     router.push('/(tabs)/(journal)/mood' as any);
-    
+  };
+
+  const handleHarvest = () => {
+    if (!fruitPreview) return;
+    setPendingFruit(fruitPreview);
+    setHarvestVisible(true);
+    setHasHarvestedThisCycle(true);
+    setTotalXp(prev => prev + DEMO_XP_REWARD);
+    setHarvestedFruits(prev => [
+      ...prev,
+      {
+        id: `fruit-${Date.now()}`,
+        harvestedAt: new Date().toISOString(),
+        fruit: fruitPreview,
+      },
+    ]);
+  };
+
+  const handleCloseHarvest = () => {
+    setHarvestVisible(false);
+    setPendingFruit(null);
   };
 
   return (
     <ScreenLayout disableBottomSafeArea>
-      <Animated.ScrollView 
-        style={[styles.scrollView, { opacity: fadeAnim }]}
+      <Animated.ScrollView
+        style={[styles.scrollView, { opacity: fadeAnim }]} 
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Good morning! ✨</Text>
-          {/* <View style={styles.headerActions}>
-            <View style={styles.pointsContainer}>
-              <Star size={16} color="#FFD700" />
-              <Text style={styles.points}>{totalXp.toLocaleString()} XP</Text>
-            </View>
-          </View> */}
+          <Text style={styles.headerTitle}>Cultivate your garden ✨</Text>
         </View>
 
-        {/* Soulseed Display */}
         <View style={styles.soulseedContainer}>
-          <SoulseedDisplay 
-            level={soulseedLevel} 
-            personality={SoulseedData.personality}
-          />
-          <Text style={styles.soulseedName}>{SoulseedData.name}</Text>
-          <Text style={styles.soulseedSubtext}>Level {soulseedLevel} • Evolving</Text>
-          <Text style={styles.tapHint}>Tap quickly to pet {SoulseedData.name} 💫</Text>
+          <View style={styles.soulseedColumn}>
+            <SoulseedDisplay level={SoulseedData.level} personality={SoulseedData.personality} />
+            <Text style={styles.soulseedName}>{SoulseedData.name}</Text>
+            <Text style={styles.soulseedSubtext}>Level {SoulseedData.level} • Evolving</Text>
+            <Text style={styles.tapHint}>Tap quickly to pet {SoulseedData.name} 💫</Text>
+            <View style={styles.growthContainer}>
+              <View style={styles.growthHeader}>
+                <Text style={styles.growthTitle}>Soulseed Growth</Text>
+                <Text style={styles.growthPercent}>{growthProgress}%</Text>
+              </View>
+              <View style={styles.growthBarTrack}>
+                <LinearGradient
+                  colors={[Colors.accent, Colors.secondary]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={[styles.growthBarFill, { width: `${growthProgress}%` }]}
+                />
+              </View>
+              <Text style={styles.growthSubtitle}>
+                {totalXp.toLocaleString()} / {totalLevelUpXp.toLocaleString()} XP to next evolution
+              </Text>
+            </View>
+            <View style={styles.inlineStreak}>
+              <StreakCounter currentStreak={UserStats.currentStreak} weeklyProgress={UserStats.weeklyProgress} />
+            </View>
+          </View>
 
-          {/* XP / Growth Progress */}
-          <View style={styles.growthContainer}>
-            <View style={styles.growthHeader}>
-              <Text style={styles.growthTitle}>Soulseed Growth</Text>
-              <Text style={styles.growthPercent}>{growthProgress}%</Text>
-            </View>
-            <View style={styles.growthBarTrack}>
-              <LinearGradient
-                colors={[Colors.accent, Colors.secondary]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={[styles.growthBarFill, { width: `${growthProgress}%` }]}
-              />
-            </View>
-            <Text style={styles.growthSubtitle}>{totalXp.toLocaleString()} / {totalLevelUpXp.toLocaleString()} XP to next evolution</Text>
+          <View style={styles.plantContainer}>
+            <MoodPlant stage={displayPlantStage} isHarvestReady={isHarvestReady} />
+            <Text style={styles.plantHint}>
+              {hasHarvestedThisCycle
+                ? 'A fresh sprout awaits next week.'
+                : weeklySummary.totalEntries === 0
+                  ? 'Journal to wake up your sprout!'
+                  : `${weeklySummary.totalEntries} journal entries nurtured this bud.`}
+            </Text>
+            {isHarvestReady && (
+              <TouchableOpacity style={styles.harvestButton} onPress={handleHarvest}>
+                <LinearGradient colors={[Colors.accent, Colors.secondary]} style={styles.harvestButtonGrad}>
+                  <Text style={styles.harvestButtonText}>Harvest</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
-        {/* Streak Counter */}
-        <View style={styles.streakSection}>
-          <StreakCounter 
-            currentStreak={streak} 
-            weeklyProgress={weeklyProgress} 
-          />
-        </View>
-
-        {/* Check In Button */}
         <TouchableOpacity style={styles.checkInButton} onPress={handleCheckIn}>
-          <LinearGradient 
-            colors={[Colors.secondary, Colors.secondary]} 
-            style={styles.checkInGradient}
-          >
+          <LinearGradient colors={[Colors.secondary, Colors.secondary]} style={styles.checkInGradient}>
             <PenTool size={24} color={Colors.primary} />
             <Text style={styles.checkInText}>Check In</Text>
           </LinearGradient>
         </TouchableOpacity>
 
-        {/* Daily Quests */}
         <View style={styles.questsSection}>
           <View style={styles.questsHeader}>
             <Text style={styles.questsTitle}>Today's Quests</Text>
@@ -141,71 +158,77 @@ export default function HomeScreen() {
               </Text>
             </View>
           </View>
-          
-          {quests.map((quest) => (
-            <QuestCard 
-              key={quest.id} 
-              quest={quest}
-              onComplete={handleQuestComplete} 
-            />
+          {quests.map(quest => (
+            <QuestCard key={quest.id} quest={quest} onComplete={handleQuestComplete} />
           ))}
         </View>
-
-        {/* Bottom Spacer */}
         <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
+      <HarvestModal visible={harvestVisible} fruit={pendingFruit} onClose={handleCloseHarvest} xpReward={DEMO_XP_REWARD} />
     </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollView: {
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingTop: 24,
-    paddingBottom: 24,
+    paddingBottom: 12,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: '700',
     color: '#FFFFFF',
   },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  soulseedContainer: {
+    marginVertical: 12,
     gap: 16,
   },
-  greeting: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  pointsContainer: {
-    flexDirection: 'row',
+  plantContainer: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    paddingVertical: 6,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderRadius: 20,
+    padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.3)',
-    paddingHorizontal: 12
+    borderColor: 'rgba(139,123,216,0.2)',
   },
-  points: {
+  plantText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFD700',
-    marginLeft: 6,
+    color: '#FFFFFF',
+    marginTop: 12,
   },
-  soulseedContainer: {
+  plantHint: {
+    fontSize: 12,
+    color: '#C3B4FF',
+    textAlign: 'center',
+    marginTop: 6,
+  },
+  harvestButton: {
+    marginTop: 16,
+    width: '80%',
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  harvestButtonGrad: {
+    paddingVertical: 12,
     alignItems: 'center',
-    marginVertical: 16,
+  },
+  harvestButtonText: {
+    color: '#1A103D',
+    fontWeight: '700',
+  },
+  soulseedColumn: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(139,123,216,0.2)',
+    gap: 12,
   },
   soulseedName: {
     fontSize: 20,
@@ -229,17 +252,12 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   streakSection: {
-    marginBottom: 32,
+    marginVertical: 24,
   },
   checkInButton: {
-    marginBottom: 32,
+    marginBottom: 24,
     borderRadius: 16,
     overflow: 'hidden',
-    elevation: 8,
-    shadowColor: '#FFD700',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
   },
   checkInGradient: {
     flexDirection: 'row',
@@ -253,13 +271,12 @@ const styles = StyleSheet.create({
     color: '#1A0B3D',
     marginLeft: 12,
   },
-  questsSection: {
-  },
+  questsSection: {},
   questsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16
+    marginBottom: 16,
   },
   questsTitle: {
     fontSize: 20,
@@ -277,21 +294,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#8B7BD8',
-    paddingHorizontal: 8 
+    paddingHorizontal: 8,
   },
   bottomSpacer: {
-    height: 100,
+    height: 120,
   },
   growthContainer: {
-    width: '90%',
-    alignSelf: 'center',
-    marginTop: 16,
+    width: '100%',
+    marginTop: 12,
   },
   growthHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   growthTitle: {
     fontSize: 14,
@@ -318,7 +334,11 @@ const styles = StyleSheet.create({
   growthSubtitle: {
     fontSize: 12,
     color: '#8B7BD8',
-    marginTop: 6,
+    marginTop: 4,
     textAlign: 'center',
+  },
+  inlineStreak: {
+    width: '100%',
+    marginTop: 8,
   },
 });
