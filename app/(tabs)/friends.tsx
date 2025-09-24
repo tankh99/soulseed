@@ -9,7 +9,7 @@ import {
   TextInput 
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Search, UserPlus, Users, Trophy, Flame, Star } from 'lucide-react-native';
+import { Search, UserPlus, Users, Trophy, Flame, Star, Signal } from 'lucide-react-native';
 import ScreenLayout from '../../components/ScreenLayout';
 import { Colors } from '../../constants/colors';
 
@@ -170,7 +170,7 @@ export default function FriendsScreen() {
             <Text style={styles.statLabel}>Total Friends</Text>
           </View>
           <View style={styles.statCard}>
-            <Flame size={20} color="#FFD700" />
+            <Signal size={20} color="#4ADE80" />
             <Text style={styles.statNumber}>{onlineFriends.length}</Text>
             <Text style={styles.statLabel}>Online Now</Text>
           </View>
