@@ -4,6 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { SoulseedDisplay } from '@/components/SoulseedDisplay';
 import { Colors } from '../../constants/colors';
+import ScreenLayout from '@/components/ScreenLayout';
+import Button from '@/components/Button';
 
 interface SoulseedData {
   name: string;
@@ -124,14 +126,13 @@ export default function SoulseedResultPage() {
         <View style={styles.errorContent}>
           <Text style={styles.errorText}>Failed to generate your Soulseed. Please try again.</Text>
         </View>
-      </LinearGradient>
+      </LinearGradient> 
     );
   }
 
   return (
-    <LinearGradient
-      colors={Colors.gradientPrimary}
-      style={styles.container}
+    <ScreenLayout
+      disableBottomSafeArea
     >
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
@@ -224,17 +225,15 @@ export default function SoulseedResultPage() {
           </View>
 
           {/* Continue Button */}
-          <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
-            <LinearGradient
-              colors={['#8B7BD8', '#6366F1']}
-              style={styles.buttonGradient}
-            >
-              <Text style={styles.buttonText}>Continue to Registration</Text>
-            </LinearGradient>
-          </TouchableOpacity>
+  
+          <Button
+            textStyle={{textAlign: "center"}}
+            title="Continue to Registration"
+            onPress={handleContinue}
+          />
         </View>
       </ScrollView>
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 
@@ -246,7 +245,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 20,
     paddingTop: 60,
     paddingBottom: 40,
   },

@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert 
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Colors } from '../../constants/colors';
+import ScreenLayout from '@/components/ScreenLayout';
+import Button from '@/components/Button';
 // import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface RegistrationData {
@@ -157,139 +159,128 @@ export default function RegisterPage() {
   };
 
   return (
-    <LinearGradient
-      colors={Colors.gradientPrimary}
-      style={styles.container}
+    <ScreenLayout
     >
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Create Your Account</Text>
-            <Text style={styles.subtitle}>Complete your profile to start your journey with {soulseedName}</Text>
-          </View>
-
-          {/* Form Fields */}
-          <View style={styles.formContainer}>
-            {/* Email */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Email Address *</Text>
-              <TextInput
-                style={styles.textInput}
-                value={formData.email}
-                onChangeText={(text) => updateFormData('email', text)}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            </View>
-
-            {/* Password */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Password *</Text>
-              <TextInput
-                style={styles.textInput}
-                value={formData.password}
-                onChangeText={(text) => updateFormData('password', text)}
-                placeholder="Create a password"
-                secureTextEntry
-                autoCapitalize="none"
-              />
-            </View>
-
-            {/* Confirm Password */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Confirm Password *</Text>
-              <TextInput
-                style={styles.textInput}
-                value={formData.confirmPassword}
-                onChangeText={(text) => updateFormData('confirmPassword', text)}
-                placeholder="Confirm your password"
-                secureTextEntry
-                autoCapitalize="none"
-              />
-            </View>
-
-            {/* Birthday */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Birthday *</Text>
-              <TouchableOpacity
-                style={styles.pickerButton}
-                onPress={() => setShowDatePicker(true)}
-              >
-                <Text style={styles.pickerButtonText}>
-                  {formatDate(formData.birthday)}
-                </Text>
-                <Text style={styles.pickerHint}>Tap to change</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* School Year */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>School Year *</Text>
-              <TouchableOpacity
-                style={styles.pickerButton}
-                onPress={() => setShowSchoolYearPicker(true)}
-              >
-                <Text style={styles.pickerButtonText}>
-                  {formData.schoolYear || 'Select your school year'}
-                </Text>
-                <Text style={styles.pickerHint}>Tap to select</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Ethnicity */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Ethnicity *</Text>
-              <TouchableOpacity
-                style={styles.pickerButton}
-                onPress={() => setShowEthnicityPicker(true)}
-              >
-                <Text style={styles.pickerButtonText}>
-                  {formData.ethnicity || 'Select your ethnicity'}
-                </Text>
-                <Text style={styles.pickerHint}>Tap to select</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Gender */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Gender *</Text>
-              <TouchableOpacity
-                style={styles.pickerButton}
-                onPress={() => setShowGenderPicker(true)}
-              >
-                <Text style={styles.pickerButtonText}>
-                  {formData.gender || 'Select your gender'}
-                </Text>
-                <Text style={styles.pickerHint}>Tap to select</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Submit Button */}
-          <TouchableOpacity 
-            style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]} 
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <LinearGradient
-              colors={['#8B7BD8', '#6366F1']}
-              style={styles.buttonGradient}
-            >
-              <Text style={styles.buttonText}>
-                {isSubmitting ? 'Creating Account...' : 'Create Account'}
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-
-          {/* Terms */}
-          <Text style={styles.termsText}>
-            By creating an account, you agree to our Terms of Service and Privacy Policy.
-          </Text>
+      <View style={styles.content}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Create Your Account</Text>
+          <Text style={styles.subtitle}>Complete your profile to start your journey with {soulseedName}</Text>
         </View>
-      </ScrollView>
+
+        {/* Form Fields */}
+        <View style={styles.formContainer}>
+          {/* Email */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Email Address *</Text>
+            <TextInput
+              style={styles.textInput}
+              value={formData.email}
+              onChangeText={(text) => updateFormData('email', text)}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
+
+          {/* Password */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Password *</Text>
+            <TextInput
+              style={styles.textInput}
+              value={formData.password}
+              onChangeText={(text) => updateFormData('password', text)}
+              placeholder="Create a password"
+              secureTextEntry
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* Confirm Password */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Confirm Password *</Text>
+            <TextInput
+              style={styles.textInput}
+              value={formData.confirmPassword}
+              onChangeText={(text) => updateFormData('confirmPassword', text)}
+              placeholder="Confirm your password"
+              secureTextEntry
+              autoCapitalize="none"
+            />
+          </View>
+
+          {/* Birthday */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Birthday *</Text>
+            <TouchableOpacity
+              style={styles.pickerButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Text style={styles.pickerButtonText}>
+                {formatDate(formData.birthday)}
+              </Text>
+              <Text style={styles.pickerHint}>Tap to change</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* School Year */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>School Year *</Text>
+            <TouchableOpacity
+              style={styles.pickerButton}
+              onPress={() => setShowSchoolYearPicker(true)}
+            >
+              <Text style={styles.pickerButtonText}>
+                {formData.schoolYear || 'Select your school year'}
+              </Text>
+              <Text style={styles.pickerHint}>Tap to select</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Ethnicity */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Ethnicity *</Text>
+            <TouchableOpacity
+              style={styles.pickerButton}
+              onPress={() => setShowEthnicityPicker(true)}
+            >
+              <Text style={styles.pickerButtonText}>
+                {formData.ethnicity || 'Select your ethnicity'}
+              </Text>
+              <Text style={styles.pickerHint}>Tap to select</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Gender */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Gender *</Text>
+            <TouchableOpacity
+              style={styles.pickerButton}
+              onPress={() => setShowGenderPicker(true)}
+            >
+              <Text style={styles.pickerButtonText}>
+                {formData.gender || 'Select your gender'}
+              </Text>
+              <Text style={styles.pickerHint}>Tap to select</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Submit Button */}
+          <Button
+            title={isSubmitting ? 'Creating Account...' : 'Create Account'}
+            onPress={handleSubmit}
+            style={{marginBottom: 20}}
+            textStyle={{textAlign: "center"}}
+            disabled={isSubmitting}
+          />
+
+        {/* Terms */}
+        <Text style={styles.termsText}>
+          By creating an account, you agree to our Terms of Service and Privacy Policy.
+        </Text>
+      </View>
 
       {/* Date Picker Modal - Simplified for now */}
       {showDatePicker && (
@@ -404,7 +395,7 @@ export default function RegisterPage() {
           </View>
         </View>
       )}
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 
@@ -416,7 +407,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 20,
     paddingTop: 60,
     paddingBottom: 40,
   },
@@ -438,7 +428,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   formContainer: {
-    marginBottom: 40,
+    marginBottom: 24,
   },
   inputContainer: {
     marginBottom: 24,

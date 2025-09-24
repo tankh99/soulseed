@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Colors } from '../../constants/colors';
+import ScreenLayout from '@/components/ScreenLayout';
 
 export default function PersonalitySubmitPage() {
   const { scores } = useLocalSearchParams();
@@ -77,11 +78,8 @@ export default function PersonalitySubmitPage() {
   }
 
   return (
-    <LinearGradient
-      colors={Colors.gradientBackground}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+    <ScreenLayout
+      disableBottomSafeArea
     >
       <View style={styles.content}>
         {/* Loading Animation */}
@@ -120,7 +118,7 @@ export default function PersonalitySubmitPage() {
           </View>
         </View>
       </View>
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 

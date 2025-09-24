@@ -9,9 +9,10 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   variant?: 'primary' | 'secondary';
+  disabled?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ title, onPress, style, textStyle, variant = 'primary' }) => {
+const Button: React.FC<ButtonProps> = ({ title, onPress, style, textStyle, variant = 'primary', disabled = false }) => {
   const gradientColors = variant === 'primary' 
     ? [Colors.accent, Colors.accent] 
     : [Colors.secondary, Colors.secondary];
@@ -19,7 +20,7 @@ const Button: React.FC<ButtonProps> = ({ title, onPress, style, textStyle, varia
   const textColor = variant === 'primary' ? Colors.primary : Colors.primary;
 
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.button, style]}>
+    <TouchableOpacity onPress={onPress} style={[styles.button, style]} disabled={disabled}>
         <Text style={[styles.text, { color: textColor }, textStyle]}>{title}</Text>
     </TouchableOpacity>
   );
