@@ -43,14 +43,6 @@ export default function JournalCompletePage() {
   const weeklySummary = useMemo(() => getRollingWeekSummary(MockMoodEntries), []);
   const fruitPreview = useMemo(() => generateFruitFromSummary(weeklySummary), [weeklySummary]);
 
-  const handleQuestComplete = (questId: string) => {
-    setQuests(currentQuests => currentQuests.map(q => (q.id === questId ? { ...q, completed: true } : q)));
-  };
-
-  const refreshQuests = () => {
-    setQuests(MockQuests.map(q => ({ ...q })));
-  };
-
   const handleCheckIn = () => {
     router.push('/(tabs)/(journal)/mood' as any);
   };
@@ -89,7 +81,6 @@ export default function JournalCompletePage() {
           title="Back to Home"
           onPress={() => {
             router.replace('/(tabs)/');
-            refreshQuests();
           }}
           variant="secondary"
           disabled={isLoading}
