@@ -34,7 +34,9 @@ export default function JournalEntryPage() {
   const [showUnpackIt, setShowUnpackIt] = useState(false);
   const [unpackSuggestions, setUnpackSuggestions] = useState<string[]>([]);
   const [conversationMode, setConversationMode] = useState(false);
-  const [conversationThread, setConversationThread] = useState<Array<{role: 'user' | 'assistant', content: string}>>([]);
+  const [conversationThread, setConversationThread] = useState<Array<{role: 'user' | 'assistant', content: string}>>([
+  
+  ]);
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
   const [currentAnswer, setCurrentAnswer] = useState<string>('');
   const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
@@ -149,6 +151,20 @@ export default function JournalEntryPage() {
     
     setCurrentQuestion(firstQuestion);
     setConversationThread(initialThread);
+
+    const thread =   [{
+      role: "user",
+      content: "I just got back my math exam results and I'm so disappointed in myself. I tried so hard and didn't get the result I wanted",
+    },
+    {
+      role: "assistant",
+      content: "That sounds really tough. It’s completely okay to feel disappointed, especially when you’ve worked so hard.",
+    },
+    {
+      role: "user",
+      content: "I'm not sure what to do next. I feel like I'm not good enough.",
+    }]
+    setConversationThread(thread);
   };
 
   const handleSendAnswer = async () => {
@@ -204,7 +220,7 @@ export default function JournalEntryPage() {
   };
 
   return (
-    <ScreenLayout showKeyboardAvoiding={false}>
+    <ScreenLayout showKeyboardAvoiding={false} disableBottomSafeArea>
       <Header
         showBackButton={true}
         onBackPress={() => {
@@ -369,6 +385,7 @@ const styles = StyleSheet.create({
   },
   journalSection: {
     flex: 1,
+    paddingBottom: 40
   },
   journalPrompt: {
     fontSize: 18,

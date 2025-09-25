@@ -1,5 +1,5 @@
+import { Mood } from './moods';
 import { MoodType } from '@/data/enums';
-import { MoodEntry } from './../data/moodFruits';
 import { Trait } from '@/constants/userData';
 import { Chapter } from '@/data/chapters';
 // Global user data constants
@@ -185,6 +185,12 @@ function daysAgo(days: number) {
   return d.toISOString();
 }
 
+export type MoodEntry = {
+  id: string,
+  timestamp: string,
+  mood: MoodType
+}
+
 export const MockMoodEntries: MoodEntry[] = [
   { id: 'm1', timestamp: daysAgo(0), mood: MoodType.JOY },
   { id: 'm2', timestamp: daysAgo(1), mood: MoodType.JOY },
@@ -195,51 +201,6 @@ export const MockMoodEntries: MoodEntry[] = [
   { id: 'm7', timestamp: daysAgo(6), mood: MoodType.CALM },
 ];
 
-export const MockHarvestedFruits: HarvestedFruit[] = [
-  {
-    id: 'demo-harvest-1',
-    harvestedAt: daysAgo(3),
-    fruit: {
-      speciesName: 'Sunstone Peach',
-      displayColor: '#FF8FA6',
-      growthStage: 'ripe',
-      dominantMood: MoodType.JOY,
-      intensity: 0.75,
-      image: require('@/assets/images/fruits/fruits_orange_full.png'),
-      summary: {
-        startDate: daysAgo(9),
-        endDate: daysAgo(3),
-        totalEntries: 6,
-        moodCounts: {
-          [MoodType.JOY]: 4,
-          [MoodType.CALM]: 1,
-          [MoodType.STRESS]: 1,
-        },
-      },
-    },
-  },
-  {
-    id: 'demo-harvest-2',
-    harvestedAt: daysAgo(10),
-    fruit: {
-      speciesName: 'Citrine Citrus',
-      displayColor: '#FFD24C',
-      growthStage: 'half_grown',
-      dominantMood: MoodType.STRESS,
-      intensity: 0.6,
-      image: require('@/assets/images/fruits/fruits_orange_full.png'),
-      summary: {
-        startDate: daysAgo(16),
-        endDate: daysAgo(10),
-        totalEntries: 4,
-        moodCounts: {
-          [MoodType.STRESS]: 3,
-          [MoodType.CALM]: 1,
-        },
-      },
-    },
-  },
-];
 
 export const mockLifeSummary = "Your story so far is one of quiet growth. You've navigated academic challenges with resilience, using moments of stress not as setbacks, but as catalysts for self-discovery. Through it all, your connections with friends have been a consistent source of strength and perspective, guiding you toward a path that feels more authentic to who you are becoming.";
 
