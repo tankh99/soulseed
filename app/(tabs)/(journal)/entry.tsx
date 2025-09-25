@@ -1,15 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TextInput, 
+  TouchableOpacity, 
   ScrollView,
+  FlatList,
+  Animated,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
-import { Sparkles, Send } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft, Sparkles, Send } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
 import Header from '../../../components/Header';
@@ -17,13 +22,8 @@ import { SoulseedDisplay } from '../../../components/SoulseedDisplay';
 import { SoulseedData } from '../../../constants/userData';
 import { getMoodData } from '../../../constants/moods';
 import { useAudioPlayer } from 'expo-audio';
-import { getNextUncollectedFruit, collectFruit } from "../../../data/userFruits";
+import { getUserFruits, getNextUncollectedFruit, collectFruit } from "../../../data/userFruits";
 import { Colors } from '../../../constants/colors';
-import {
-  fetchNextQuestion,
-  completeConversation,
-  type JournalConversationMessage,
-} from '@/services/journalApi';
 
 export default function JournalEntryPage() {
   const { mood } = useLocalSearchParams();
@@ -34,12 +34,11 @@ export default function JournalEntryPage() {
   const [showUnpackIt, setShowUnpackIt] = useState(false);
   const [unpackSuggestions, setUnpackSuggestions] = useState<string[]>([]);
   const [conversationMode, setConversationMode] = useState(false);
-  const [conversationThread, setConversationThread] = useState<JournalConversationMessage[]>([]);
+  const [conversationThread, setConversationThread] = useState<Array<{role: 'user' | 'assistant', content: string}>>([]);
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
   const [currentAnswer, setCurrentAnswer] = useState<string>('');
   const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
   const [conversationStep, setConversationStep] = useState(0);
-  const [isCurrentQuestionFinal, setIsCurrentQuestionFinal] = useState(false);
 
   const conversationScrollViewRef = useRef<ScrollView>(null);
 
@@ -51,21 +50,60 @@ export default function JournalEntryPage() {
 
   const chimePlayer = useAudioPlayer(require('../../../assets/sounds/chime.mp3'));
 
-  const navigateToCompletion = () => {
-    router.push({
-      pathname: '/(journal)/complete' as any,
-      params: { mood: selectedMood, text: journalText }
-    });
+  // Mock API functions
+  const mockGetNextQuestion = async (
+    mood: string, 
+    journalText: string, 
+    conversationHistory: Array<{role: 'user' | 'assistant', content: string}>,
+    step: number
+  ): Promise<string> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Mood-specific question templates for different conversation steps
+    const moodQuestions = {
+      happy: {
+        0: "What made this moment so special for you?",
+        1: "How can you recreate this feeling in other parts of your life?",
+        2: "What would you tell someone else who wants to feel this way?"
+      },
+      sad: {
+        0: "What's weighing on your heart right now?",
+        1: "What support do you need during this difficult time?",
+        2: "What small step could you take to care for yourself today?"
+      },
+      angry: {
+        0: "What triggered this feeling in you?",
+        1: "What boundaries might you need to set?",
+        2: "How can you channel this energy constructively?"
+      },
+      surprised: {
+        0: "What caught you off guard about this situation?",
+        1: "How does this change your perspective?",
+        2: "What new possibilities does this open up?"
+      },
+      neutral: {
+        0: "What's on your mind right now?",
+        1: "What would you like to explore or understand better?",
+        2: "How are you feeling about your current state?"
+      }
+    };
+
+    const questions = moodQuestions[mood as keyof typeof moodQuestions] || moodQuestions.neutral;
+    return questions[step as keyof typeof questions] || "Tell me more about what you're experiencing.";
   };
 
-  const resetConversationState = () => {
-    setConversationMode(false);
-    setShowUnpackIt(false);
-    setConversationThread([]);
-    setCurrentQuestion('');
-    setCurrentAnswer('');
-    setConversationStep(0);
-    setIsCurrentQuestionFinal(false);
+  const mockSendConversationToBackend = async (conversationThread: Array<{role: 'user' | 'assistant', content: string}>): Promise<boolean> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Convert conversation to string format
+    const conversationString = conversationThread
+      .map(msg => `${msg.role.toUpperCase()}: ${msg.content}`)
+      .join('\n');
+    
+    console.log('Sending conversation to backend:', conversationString);
+    return true;
   };
 
   const handleSave = () => {
@@ -101,129 +139,68 @@ export default function JournalEntryPage() {
     setConversationMode(true);
     setShowUnpackIt(true);
     
-    const trimmedEntry = journalText.trim();
-    const initialThread: JournalConversationMessage[] = [
-      { role: 'user', content: trimmedEntry }
+    // Initialize conversation with journal entry
+    const initialThread = [
+      { role: 'user' as const, content: journalText }
     ];
-
-    setIsWaitingForResponse(true);
+    
+    // Get first question from LLM
+    const firstQuestion = await mockGetNextQuestion(selectedMood, journalText, initialThread, 0);
+    
+    setCurrentQuestion(firstQuestion);
     setConversationThread(initialThread);
-    setConversationStep(0);
-    setIsCurrentQuestionFinal(false);
-
-    try {
-      const firstQuestion = await fetchNextQuestion({
-        mood: selectedMood,
-        journalText: trimmedEntry,
-        conversation: initialThread,
-        step: 0,
-      });
-
-      setCurrentQuestion(firstQuestion.question);
-      setIsCurrentQuestionFinal(firstQuestion.isFinalStep);
-    } catch (error) {
-      console.error('Failed to start guided reflection', error);
-      Alert.alert(
-        'Unable to start',
-        'We could not start the guided reflection right now. Please try again in a moment.'
-      );
-      resetConversationState();
-    } finally {
-      setIsWaitingForResponse(false);
-    }
   };
 
   const handleSendAnswer = async () => {
-    const trimmedAnswer = currentAnswer.trim();
-    if (!trimmedAnswer || !currentQuestion) return;
-
-    const previousThread = conversationThread;
-    const previousQuestion = currentQuestion;
-    const entryText = journalText.trim();
-
-    const updatedThread: JournalConversationMessage[] = [
+    if (!currentAnswer.trim()) return;
+    
+    setIsWaitingForResponse(true);
+    
+    // Add user's answer to conversation
+    const updatedThread = [
       ...conversationThread,
-      { role: 'assistant', content: currentQuestion },
-      { role: 'user', content: trimmedAnswer }
+      { role: 'assistant' as const, content: currentQuestion },
+      { role: 'user' as const, content: currentAnswer }
     ];
 
-    setIsWaitingForResponse(true);
     setConversationThread(updatedThread);
     setCurrentQuestion('');
     setCurrentAnswer('');
 
-    try {
-      if (isCurrentQuestionFinal) {
-        await completeConversation({
-          mood: selectedMood,
-          journalText: entryText,
-          conversation: updatedThread,
-        });
-        resetConversationState();
-        navigateToCompletion();
-      } else {
-        const nextStep = conversationStep + 1;
-        const nextQuestion = await fetchNextQuestion({
-          mood: selectedMood,
-          journalText: entryText,
-          conversation: updatedThread,
-          step: nextStep,
-        });
-
-        setCurrentQuestion(nextQuestion.question);
-        setIsCurrentQuestionFinal(nextQuestion.isFinalStep);
-        setConversationStep(nextStep);
-      }
-    } catch (error) {
-      console.error('Failed to progress guided reflection', error);
-      Alert.alert(
-        'Something went wrong',
-        'We could not send your response. Please try again.'
-      );
-      setConversationThread(previousThread);
-      setCurrentQuestion(previousQuestion);
-      setCurrentAnswer(trimmedAnswer);
-    } finally {
+    // Check if we should end conversation (after 3 questions)
+    if (conversationStep >= 2) {
+      // End conversation and send to backend
+      await mockSendConversationToBackend(updatedThread);
+      setConversationMode(false);
+      setConversationStep(0);
+      setIsWaitingForResponse(false);
+      
+      // Navigate to complete page
+      router.push({
+        pathname: '/(journal)/complete' as any,
+        params: { mood: selectedMood, text: journalText }
+      });
+    } else {
+      // Get next question
+      const nextQuestion = await mockGetNextQuestion(selectedMood, journalText, updatedThread, conversationStep + 1);
+      setCurrentQuestion(nextQuestion);
+      setConversationStep(prev => prev + 1);
       setIsWaitingForResponse(false);
     }
   };
 
   const handleEndConversation = async () => {
-    const trimmedAnswer = currentAnswer.trim();
-    const entryText = journalText.trim();
-    const finalThread: JournalConversationMessage[] = [...conversationThread];
-
-    if (currentQuestion) {
-      finalThread.push({ role: 'assistant', content: currentQuestion });
-    }
-
-    if (trimmedAnswer) {
-      finalThread.push({ role: 'user', content: trimmedAnswer });
-    }
-
-    if (finalThread.length === 0) {
-      resetConversationState();
-      return;
-    }
-
-    try {
-      setIsWaitingForResponse(true);
-      await completeConversation({
-        mood: selectedMood,
-        journalText: entryText,
-        conversation: finalThread,
-      });
-      resetConversationState();
-      navigateToCompletion();
-    } catch (error) {
-      console.error('Failed to finish guided reflection', error);
-      Alert.alert(
-        'Something went wrong',
-        'We could not finish the guided reflection right now. Please try again.'
-      );
-    } finally {
-      setIsWaitingForResponse(false);
-    }
+    await mockSendConversationToBackend(conversationThread);
+    setConversationMode(false);
+    setCurrentQuestion('');
+    setCurrentAnswer('');
+    setConversationStep(0);
+    
+    // Navigate to complete page
+    router.push({
+      pathname: '/(journal)/complete' as any,
+      params: { mood: selectedMood, text: journalText }
+    });
   };
 
   return (
@@ -232,7 +209,10 @@ export default function JournalEntryPage() {
         showBackButton={true}
         onBackPress={() => {
           if (conversationMode) {
-            resetConversationState();
+            setConversationMode(false);
+            setCurrentQuestion('');
+            setCurrentAnswer('');
+            setConversationStep(0);
           } else {
             router.back()
             // router.replace('/(tabs)/(journal)/mood' as any);
