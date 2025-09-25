@@ -83,8 +83,8 @@ export default function ProfileScreen() {
           <Text style={styles.sectionSubtitle}>
             Understanding your natural tendencies and how they shape your daily life
           </Text>
-          {TraitInfo.map((trait, index) => {
-            const traitName = trait.name.toLowerCase() as keyof typeof personalityScores;
+          {Object.entries(TraitInfo).map(([name, trait], index) => {
+            const traitName = name.toLowerCase() as keyof typeof personalityScores;
             const scoreData = personalityScores[traitName];
             if (!scoreData) return null;
 

@@ -2,6 +2,7 @@
 // Primary color scheme with complementary colors
 
 export const Colors = {
+  text :"#fff",
   // Primary Colors
   primary: '#2A2F45',        // Dark blue-gray background
   secondary: '#B6A4E2',      // Light purple for buttons

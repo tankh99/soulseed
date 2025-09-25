@@ -28,7 +28,7 @@ export default function DiscoverScreen() {
   const personalityScores = PersonalityScores;
   const weeklyData = WeeklyData;
 
-  const conscientiousTrait = traitInfo.find(t => t.name === 'Conscientiousness');
+  const conscientiousTrait = traitInfo.conscientiousness;
 
   return (
     <ScreenLayout disableBottomSafeArea>
@@ -108,15 +108,14 @@ export default function DiscoverScreen() {
             )}
 
             <Text style={[styles.sectionTitle, { marginTop: 24 }]}>Other traits to explore</Text>
-            {traitInfo.map((trait, index) => {
-              const traitName = trait.name.toLowerCase() as keyof typeof personalityScores;
-              const scoreData = personalityScores[traitName];
+            {Object.entries(traitInfo).map(([traitName, trait], index) => {
+              const scoreData = personalityScores[traitName as keyof typeof personalityScores];
               if (!scoreData) return null;
               return (
                 <TraitCard
                   key={index}
                   trait={{ ...trait, scoreData }}
-                  onPress={() => setSelectedTrait(trait.name)}
+                  onPress={() => setSelectedTrait(traitName)}
                 />
               );
             })}
@@ -134,10 +133,14 @@ export default function DiscoverScreen() {
       >
         <Pressable style={styles.modalOverlay} onPress={() => setSelectedTrait(null)}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{selectedTrait}</Text>
+            {selectedTrait 
+            ? <Text style={styles.modalTitle}>{traitInfo[selectedTrait as keyof typeof traitInfo].name}</Text>
+            : null
+            }
             {(() => {
-              const trait = traitInfo.find(t => t.name === selectedTrait);
+              const trait = traitInfo[selectedTrait as keyof typeof traitInfo];
               if (!trait) return null;
+              console.log(trait.name)
               const isConscientiousness = trait.name === 'Conscientiousness';
               if (isConscientiousness) {
                 return (

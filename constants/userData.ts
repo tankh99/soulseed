@@ -1,3 +1,5 @@
+import { MoodType } from '@/data/enums';
+import { MoodEntry } from './../data/moodFruits';
 // Global user data constants
 // This file contains mock user data that can be shared across all screens
 
@@ -19,10 +21,47 @@ export const PersonalityScores = {
   neuroticism: { currentXP: 300, levelUpXP: 1000 },
 } as const;
 
-// Soulseed display data
-export const SoulseedData = {
+export interface Soulseed {
+  name: string;
+  level: number;
+  personality: {
+    openness: number;
+    conscientiousness: number;
+    extroversion: number;
+    agreeableness: number;
+    neuroticism: number;
+  };
+}
+
+export interface Quest {
+  id: string;
+  title: string;
+  description: string;
+  xp: number;
+  type: 'core' | 'bonus';
+  completed: boolean;
+  relatedTrait?: keyof PersonalityScores;
+  cta: string;
+  callbackUrl?: string;
+}
+
+export interface Trait {
+  name: string;
+  score: number;
+  description: string;
+  color: string;
+  icon: any;
+  pros: string[];
+  cons: string[];
+  scoreData: {
+    currentXP: number;
+    levelUpXP: number;
+  };
+}
+
+export const SoulseedData: Soulseed = {
+  name: 'Astra',
   level: 2,
-  name: "Astra",
   personality: PersonalityScores,
 } as const;
 
@@ -96,113 +135,59 @@ export const WeeklyData: {
 };
 
 // Trait information for discover screen
-export const TraitInfo: Array<{
-  name: string;
-  score: number;
-  description: string;
-  color: string;
-  icon: string;
-  pros: string[];
-  cons: string[];
-}> = [
-  {
+export const TraitInfo: Record<keyof typeof PersonalityScores, Trait> = {
+  openness: {
     name: 'Openness',
     score: PersonalityScores.openness.currentXP / PersonalityScores.openness.levelUpXP,
-    description: 'Your imagination and curiosity about the world',
-    color: '#8B7BD8',
+    description: 'Curious, imaginative, and open to new experiences.',
+    color: '#3498db',
     icon: '🎨',
-    pros: [
-      'Highly creative and imaginative',
-      'Open to new experiences and ideas',
-      'Flexible and adaptable to change',
-      'Good at thinking outside the box'
-    ],
-    cons: [
-      'May struggle with routine and structure',
-      'Can be easily distracted by new ideas',
-      'Sometimes impractical or unrealistic',
-      'May have difficulty with detailed planning'
-    ]
+    pros: ['Highly creative', 'Intellectually curious', 'Appreciates art and beauty'],
+    cons: ['Prone to risky behavior', 'Can be seen as unpredictable', 'May struggle with routine'],
+    scoreData: PersonalityScores.openness,
   },
-  {
+  conscientiousness: {
     name: 'Conscientiousness',
     score: PersonalityScores.conscientiousness.currentXP / PersonalityScores.conscientiousness.levelUpXP,
-    description: 'Your organization and goal-oriented nature',
-    color: '#4CAF50',
+    description: 'Organized, dependable, and self-disciplined.',
+    color: '#2ecc71',
     icon: '📋',
-    pros: [
-      'Highly organized and reliable',
-      'Strong work ethic and self-discipline',
-      'Good at planning and following through',
-      'Detail-oriented and thorough'
-    ],
-    cons: [
-      'May be overly rigid or inflexible',
-      'Can be perfectionistic and self-critical',
-      'May struggle with spontaneity',
-      'Can be too focused on work over play'
-    ]
+    pros: ['Reliable and responsible', 'Strong sense of duty', 'Good at planning and organizing'],
+    cons: ['Can be inflexible', 'May struggle with spontaneity', 'Prone to perfectionism'],
+    scoreData: PersonalityScores.conscientiousness,
   },
-  {
+  extroversion: {
     name: 'Extroversion',
     score: PersonalityScores.extroversion.currentXP / PersonalityScores.extroversion.levelUpXP,
-    description: 'Your social energy and outgoing nature',
-    color: '#FF9800',
+    description: 'Outgoing, energetic, and sociable.',
+    color: '#f1c40f',
     icon: '🌟',
-    pros: [
-      'Energized by social interactions',
-      'Natural leadership and communication skills',
-      'Comfortable in group settings',
-      'Good at networking and building relationships'
-    ],
-    cons: [
-      'May struggle with solitude and quiet time',
-      'Can be impulsive or speak without thinking',
-      'May have difficulty with deep, focused work',
-      'Can be overwhelming for more introverted people'
-    ]
+    pros: ['Enjoys social situations', 'Makes friends easily', 'Often optimistic and enthusiastic'],
+    cons: ['May be impulsive', 'Can be seen as attention-seeking', 'May dislike spending time alone'],
+    scoreData: PersonalityScores.extroversion,
   },
-  {
+  agreeableness: {
     name: 'Agreeableness',
     score: PersonalityScores.agreeableness.currentXP / PersonalityScores.agreeableness.levelUpXP,
-    description: 'Your compassion and cooperation with others',
-    color: '#E91E63',
+    description: 'Compassionate, cooperative, and trusting.',
+    color: '#e74c3c',
     icon: '❤️',
-    pros: [
-      'Highly empathetic and compassionate',
-      'Great at building and maintaining relationships',
-      'Natural peacemaker and team player',
-      'Trustworthy and cooperative'
-    ],
-    cons: [
-      'May struggle to say no or set boundaries',
-      'Can be taken advantage of by others',
-      'May avoid necessary conflicts',
-      'Can be overly trusting or naive'
-    ]
+    pros: ['Cooperative and helpful', 'Empathetic and considerate', 'Good at resolving conflicts'],
+    cons: ['May avoid confrontation', 'Can be taken advantage of', 'May struggle to assert own needs'],
+    scoreData: PersonalityScores.agreeableness,
   },
-  {
+  neuroticism: {
     name: 'Neuroticism',
     score: PersonalityScores.neuroticism.currentXP / PersonalityScores.neuroticism.levelUpXP,
-    description: 'Your emotional stability and tendency toward negative emotions',
-    color: '#9C27B0',
+    description: 'Experiences a range of emotions, can be sensitive to stress.',
+    color: '#9b59b6',
     icon: '🧠',
-    pros: [
-      'Highly sensitive and emotionally aware',
-      'Good at detecting potential problems early',
-      'Can be very creative when channeled positively',
-      'Often very caring and empathetic'
-    ],
-    cons: [
-      'Prone to anxiety and worry',
-      'May overreact to minor stressors',
-      'Can be emotionally volatile',
-      'May struggle with self-confidence'
-    ]
-  }
-];
+    pros: ['In touch with their emotions', 'Can be highly empathetic', 'Often prepared for worst-case scenarios'],
+    cons: ['Prone to anxiety and worry', 'Can be emotionally reactive', 'May struggle with stress'],
+    scoreData: PersonalityScores.neuroticism,
+  },
+};
 
-import { MoodEntry, MoodType, HarvestedFruit, WeeklyMoodSummary } from '@/data/moodFruits';
 
 const now = new Date();
 

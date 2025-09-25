@@ -7,8 +7,6 @@ import { mockApi } from '@/services/api';
 import { MockQuests } from '@/constants/userData';
 import { useAudioPlayer } from 'expo-audio';
 import { MockMoodEntries } from '@/constants/userData';
-import { getRollingWeekSummary } from '@/lib/fruitGenerator';
-import { generateFruitFromSummary } from '@/lib/fruitGenerator';
 
 const chimePlayerSource = require('../../../assets/sounds/chime.mp3');
 
@@ -40,8 +38,6 @@ export default function JournalCompletePage() {
     run();
   }, [text, mood]);
 
-  const weeklySummary = useMemo(() => getRollingWeekSummary(MockMoodEntries), []);
-  const fruitPreview = useMemo(() => generateFruitFromSummary(weeklySummary), [weeklySummary]);
 
   const handleCheckIn = () => {
     router.push('/(tabs)/(journal)/mood' as any);

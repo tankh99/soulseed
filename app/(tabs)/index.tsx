@@ -8,7 +8,7 @@ import {
   Animated 
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Flame, PenTool } from 'lucide-react-native';
+import { PenTool } from 'lucide-react-native';
 import { router } from 'expo-router';
 import { useFocusEffect } from 'expo-router';
 import { Colors } from '../../constants/colors';
@@ -30,11 +30,7 @@ const DEMO_XP_REWARD = 50;
 
 export default function HomeScreen() {
   const [quests, setQuests] = useState(MockQuests.map(q => ({ ...q })));
-  const [harvestedFruits, setHarvestedFruits] = useState<HarvestedFruit[]>(MockHarvestedFruits);
-  const [pendingFruit, setPendingFruit] = useState<GeneratedFruit | null>(null);
-  const [harvestVisible, setHarvestVisible] = useState(false);
-  const [totalXp, setTotalXp] = useState(() => Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.currentXP, 0));
-  const [hasHarvestedThisCycle, setHasHarvestedThisCycle] = useState(false);
+  const [totalXp, setTotalXp] = useState(() => Object.values(Personalit yScores).reduce((acc, trait) => acc + trait.currentXP, 0));
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -54,12 +50,6 @@ export default function HomeScreen() {
     }, [])
   );
 
-  const weeklySummary = useMemo(() => getRollingWeekSummary(MockMoodEntries), []);
-  const fruitPreview = useMemo(() => generateFruitFromSummary(weeklySummary), [weeklySummary]);
-  const plantStageDerived = derivePlantStage(weeklySummary);
-  const displayPlantStage: MoodPlantStage = hasHarvestedThisCycle ? 'seed' : plantStageDerived;
-  const isHarvestReady = !hasHarvestedThisCycle && plantStageDerived === 'bloom';
-
   const totalLevelUpXp = Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.levelUpXP, 0);
   const growthProgress = Math.min(100, Math.round((totalXp / totalLevelUpXp) * 100));
 
@@ -69,27 +59,6 @@ export default function HomeScreen() {
 
   const handleCheckIn = () => {
     router.push('/(tabs)/(journal)/mood' as any);
-  };
-
-  const handleHarvest = () => {
-    if (!fruitPreview) return;
-    setPendingFruit(fruitPreview);
-    setHarvestVisible(true);
-    setHasHarvestedThisCycle(true);
-    setTotalXp(prev => prev + DEMO_XP_REWARD);
-    setHarvestedFruits(prev => [
-      ...prev,
-      {
-        id: `fruit-${Date.now()}`,
-        harvestedAt: new Date().toISOString(),
-        fruit: fruitPreview,
-      },
-    ]);
-  };
-
-  const handleCloseHarvest = () => {
-    setHarvestVisible(false);
-    setPendingFruit(null);
   };
 
   return (
@@ -129,49 +98,26 @@ export default function HomeScreen() {
               <StreakCounter currentStreak={UserStats.currentStreak} weeklyProgress={UserStats.weeklyProgress} />
             </View>
           </View>
-
-          <View style={styles.plantContainer}>
-            <MoodPlant stage={displayPlantStage} isHarvestReady={isHarvestReady} />
-            <Text style={styles.plantHint}>
-              {hasHarvestedThisCycle
-                ? 'A fresh sprout awaits next week.'
-                : weeklySummary.totalEntries === 0
-                  ? 'Journal to wake up your sprout!'
-                  : `${weeklySummary.totalEntries} journal entries nurtured this bud.`}
-            </Text>
-            {isHarvestReady && (
-              <TouchableOpacity style={styles.harvestButton} onPress={handleHarvest}>
-                <LinearGradient colors={[Colors.accent, Colors.secondary]} style={styles.harvestButtonGrad}>
-                  <Text style={styles.harvestButtonText}>Harvest</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
-          </View>
         </View>
 
         <TouchableOpacity style={styles.checkInButton} onPress={handleCheckIn}>
           <LinearGradient colors={[Colors.secondary, Colors.secondary]} style={styles.checkInGradient}>
             <PenTool size={24} color={Colors.primary} />
-            <Text style={styles.checkInText}>Check In</Text>
+            <Text style={styles.checkInText}>Daily Check-in</Text>
           </LinearGradient>
         </TouchableOpacity>
 
-        <View style={styles.questsSection}>
-          <View style={styles.questsHeader}>
-            <Text style={styles.questsTitle}>Today's Quests</Text>
-            <View style={styles.questsBadge}>
-              <Text style={styles.questsBadgeText}>
-                {quests.filter(q => q.completed).length}/{quests.length}
-              </Text>
-            </View>
-          </View>
-          {quests.map(quest => (
-            <QuestCard key={quest.id} quest={quest} onComplete={handleQuestComplete} />
+        <View style={styles.questsContainer}>
+          <Text style={styles.questsTitle}>Today's Quests</Text>
+          {quests.filter(q => !q.completed).map(quest => (
+            <QuestCard
+              key={quest.id}
+              quest={quest}
+              onComplete={() => handleQuestComplete(quest.id)}
+            />
           ))}
         </View>
-        <View style={styles.bottomSpacer} />
       </Animated.ScrollView>
-      <HarvestModal visible={harvestVisible} fruit={pendingFruit} onClose={handleCloseHarvest} xpReward={DEMO_XP_REWARD} />
     </ScreenLayout>
   );
 }
@@ -181,6 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
+    
     paddingTop: 24,
     paddingBottom: 12,
   },
@@ -230,122 +177,103 @@ const styles = StyleSheet.create({
   },
   soulseedColumn: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.05)',
-    borderRadius: 20,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(139,123,216,0.2)',
-    gap: 12,
+    flex: 1,
   },
   soulseedName: {
-    fontSize: 20,
-    paddingVertical: 10,
-    fontWeight: '600',
-    color: '#FFFFFF',
-    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginTop: 12,
   },
   soulseedSubtext: {
-    fontSize: 14,
-    color: '#8B7BD8',
+    fontSize: 16,
+    color: Colors.secondary,
     marginTop: 4,
-    textAlign: 'center',
   },
   tapHint: {
-    fontSize: 12,
-    color: '#8B7BD8',
-    marginTop: 8,
-    textAlign: 'center',
-    fontStyle: 'italic',
-    opacity: 0.8,
-  },
-  streakSection: {
-    marginVertical: 24,
-  },
-  checkInButton: {
-    marginBottom: 24,
-    borderRadius: 16,
-    overflow: 'hidden',
-  },
-  checkInGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18,
-  },
-  checkInText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1A0B3D',
-    marginLeft: 12,
-  },
-  questsSection: {},
-  questsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  questsTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  questsBadge: {
-    backgroundColor: 'rgba(139, 123, 216, 0.2)',
-    paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(139, 123, 216, 0.3)',
-  },
-  questsBadgeText: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#8B7BD8',
-    paddingHorizontal: 8,
-  },
-  bottomSpacer: {
-    height: 120,
+    color: Colors.accent,
+    marginTop: 8,
+    fontStyle: 'italic',
   },
   growthContainer: {
     width: '100%',
-    marginTop: 12,
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.secondary,
   },
   growthHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   growthTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
   },
   growthPercent: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.accent,
   },
   growthBarTrack: {
     height: 10,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderRadius: 6,
+    backgroundColor: Colors.background,
+    borderRadius: 5,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(139, 123, 216, 0.25)',
   },
   growthBarFill: {
     height: '100%',
-    borderRadius: 6,
+    borderRadius: 5,
   },
   growthSubtitle: {
     fontSize: 12,
-    color: '#8B7BD8',
-    marginTop: 4,
+    color: Colors.secondary,
+    marginTop: 8,
     textAlign: 'center',
   },
   inlineStreak: {
+    marginTop: 20,
     width: '100%',
-    marginTop: 8,
+  },
+  checkInButton: {
+    marginTop: 12,
+    marginBottom: 24,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+  checkInGradient: {
+    padding: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkInText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.primary,
+    marginLeft: 12,
+  },
+  questsContainer: {
+    paddingBottom: 40,
+  },
+  questsTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: Colors.text,
+    marginBottom: 16,
   },
 });
