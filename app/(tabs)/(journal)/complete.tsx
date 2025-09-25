@@ -1,18 +1,19 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
 import Button from '../../../components/Button';
-import { mockApi } from '@/services/api';
-import { MockQuests } from '@/constants/userData';
 import { useAudioPlayer } from 'expo-audio';
-import { MockMoodEntries } from '@/constants/userData';
+import {
+  submitJournalEntry,
+  type SubmitJournalEntryResponse,
+} from '@/services/journalApi';
 
 const chimePlayerSource = require('../../../assets/sounds/chime.mp3');
 
 export default function JournalCompletePage() {
   const { mood, text } = useLocalSearchParams<{ mood?: string; text?: string }>();
-  const [coping, setCoping] = useState<Awaited<ReturnType<typeof mockApi.submitJournalEntry>>['coping']>();
+  const [coping, setCoping] = useState<SubmitJournalEntryResponse['coping']>();
   const [isLoading, setIsLoading] = useState(false);
   const chimePlayer = useAudioPlayer(chimePlayerSource);
 
@@ -25,7 +26,7 @@ export default function JournalCompletePage() {
     const run = async () => {
       setIsLoading(true);
       try {
-        const response = await mockApi.submitJournalEntry({ text, mood: mood || '' });
+        const response = await submitJournalEntry({ text, mood: mood || '' });
         if (response.coping) {
           setCoping(response.coping);
         }
@@ -37,12 +38,6 @@ export default function JournalCompletePage() {
     };
     run();
   }, [text, mood]);
-
-
-  const handleCheckIn = () => {
-    router.push('/(tabs)/(journal)/mood' as any);
-  };
-
   return (
     <ScreenLayout contentStyle={styles.completeContainer} disableBottomSafeArea>
         <Image
