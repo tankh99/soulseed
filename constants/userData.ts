@@ -1,5 +1,7 @@
 import { MoodType } from '@/data/enums';
 import { MoodEntry } from './../data/moodFruits';
+import { Trait } from '@/constants/userData';
+import { Chapter } from '@/data/chapters';
 // Global user data constants
 // This file contains mock user data that can be shared across all screens
 
@@ -43,20 +45,6 @@ export interface Quest {
   relatedTrait?: keyof PersonalityScores;
   cta: string;
   callbackUrl?: string;
-}
-
-export interface Trait {
-  name: string;
-  score: number;
-  description: string;
-  color: string;
-  icon: any;
-  pros: string[];
-  cons: string[];
-  scoreData: {
-    currentXP: number;
-    levelUpXP: number;
-  };
 }
 
 export const SoulseedData: Soulseed = {
@@ -251,4 +239,33 @@ export const MockHarvestedFruits: HarvestedFruit[] = [
       },
     },
   },
+];
+
+export const mockLifeSummary = "Your story so far is one of quiet growth. You've navigated academic challenges with resilience, using moments of stress not as setbacks, but as catalysts for self-discovery. Through it all, your connections with friends have been a consistent source of strength and perspective, guiding you toward a path that feels more authentic to who you are becoming.";
+
+export const mockChapterData: Chapter[] = [
+  {
+    id: '1',
+    title: "The Start of a New Journey",
+    status: 'completed',
+    story: "The year began with a quiet determination. You were focused on your studies, navigating the familiar landscape of lectures and assignments. Journal entries from this time are filled with reflections on academic goals, meticulous planning, and the steady hum of a predictable routine. It was a period of laying foundations, brick by brick, for the future you envisioned.",
+    summary: "This chapter was marked by discipline and a strong focus on academic responsibilities. Your narrative was centered around building a stable foundation for your future.",
+    insights: [
+      "You often use journaling to organize your thoughts and plan your academic tasks.",
+      "A structured routine provides you with a sense of stability and control.",
+      "Your early entries show a pattern of prioritizing long-term goals over immediate gratification."
+    ]
+  },
+  {
+    id: '2',
+    title: "A Fork in the Road",
+    status: 'in_progress',
+    story: "Lately, the familiar rhythm of your routine has felt... different. A current of unease has begun to surface in your journal entries. You've started questioning the path you're on, wondering if the future you were so carefully building is the one you truly want. A recent conversation with a friend sparked a new idea, a path untraveled, both exciting and terrifying. Your recent entries are filled with this tension—doubt, hope, and the thrill of the unknown. You're exploring new hobbies, reaching out to different people, and for the first time, truly asking what you want, not just what's expected.",
+    summary: "This chapter is defined by a period of significant introspection and the courage to question your established path. You're actively exploring new interests and social circles, moving from a state of academic stress towards self-discovery.",
+    insights: [
+      "You tend to journal most consistently when facing uncertainty, using it as a tool for clarification.",
+      "Conversations with close friends are often a catalyst for major life decisions.",
+      "When feeling stressed about academics, you proactively seek out new, unrelated activities to find balance."
+    ]
+  }
 ];

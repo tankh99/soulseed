@@ -21,16 +21,13 @@ import { registerForPushNotificationsAsync } from '@/lib/notifications';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { getRollingWeekSummary, generateFruitFromSummary, derivePlantStage } from '@/lib/fruitGenerator';
-import { HarvestModal } from '@/components/HarvestModal';
-import { MoodPlant } from '@/components/MoodPlant';
-import { GeneratedFruit, HarvestedFruit, MoodPlantStage } from '@/data/moodFruits';
 
 const { width } = Dimensions.get('window');
 const DEMO_XP_REWARD = 50;
 
 export default function HomeScreen() {
   const [quests, setQuests] = useState(MockQuests.map(q => ({ ...q })));
-  const [totalXp, setTotalXp] = useState(() => Object.values(Personalit yScores).reduce((acc, trait) => acc + trait.currentXP, 0));
+  const [totalXp, setTotalXp] = useState(() => Object.values(PersonalityScores).reduce((acc, trait) => acc + trait.currentXP, 0));
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
 

@@ -1,6 +1,6 @@
 import { Colors } from '@/constants/colors';
 import { Tabs } from 'expo-router';
-import { Home, PenTool, User, Compass, History as HistoryIcon, Users } from 'lucide-react-native';
+import { Home, PenTool, User, Compass, BookOpen, Users } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -35,18 +35,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="discover"
         options={{
-          title: 'Discover',
+          title: 'Traits',
           tabBarIcon: ({ size, color }) => (
             <Compass size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="history"
+        name="chapters"
         options={{
-          title: 'History',
+          title: 'Chapters',
           tabBarIcon: ({ size, color }) => (
-            <HistoryIcon size={size} color={color} />
+            <BookOpen size={size} color={color} />
           ),
         }}
       />
@@ -71,7 +71,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(journal)"
         options={{
-          href: null, // This hides the tab from the tab bar
+          href: null,
         }}
       />
     </Tabs>
