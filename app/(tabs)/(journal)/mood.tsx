@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
   },
   moodSection: {
     justifyContent: 'center',
-    paddingHorizontal: 24,
     paddingTop: 48
   },
   moodPrompt: {

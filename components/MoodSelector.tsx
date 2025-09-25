@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView } from 'react-native';
-
+import { View, Text, StyleSheet, TouchableOpacity, Animated, ScrollView, ImageSourcePropType } from 'react-native';
+import {Image} from 'expo-image'
+import { Colors } from '@/constants/colors';
 interface Mood {
   id: string;
   emoji: string;
   label: string;
   color: string;
+  image: ImageSourcePropType;
 }
 
 interface MoodSelectorProps {
@@ -32,13 +34,16 @@ export function MoodSelector({ moods, selectedMood, onSelect }: MoodSelectorProp
           onPress={() => onSelect(mood.id)}
           activeOpacity={0.7}
         >
-          <Text style={styles.emoji}>{mood.emoji}</Text>
+          <Image
+            style={styles.moodImage}
+            source={mood.image}
+          />
           <Text style={[
             styles.label,
             selectedMood === mood.id && styles.selectedLabel
           ]}>
             {mood.label}
-          </Text>
+          </Text> 
         </TouchableOpacity>
       ))}
       </View>
@@ -56,13 +61,12 @@ const styles = StyleSheet.create({
   moodButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 80,
-    height: 80,
     borderRadius: 90,
     // padding: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 2,
-    borderColor: 'rgba(20, 10, 72, 0.3)',
+  },
+  moodImage: {
+    width: 48,
+    height: 48
   },
   selectedMood: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -75,8 +79,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
+    marginTop: 4,
     fontWeight: '600',
-    color: '#8B7BD8',
+    color: Colors.accent,
   },
   selectedLabel: {
     color: '#FFFFFF',

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Colors } from '../../constants/colors';
+import Button from '@/components/Button';
 
 const { width } = Dimensions.get('window');
 
@@ -107,6 +108,7 @@ export default function PersonalityTestPage() {
 
   const isComplete = Object.keys(answers).length === questions.length;
 
+  console.log(currentQuestion, isComplete)
   return (
     <LinearGradient
       colors={Colors.gradientBackground}
@@ -176,6 +178,9 @@ export default function PersonalityTestPage() {
             {/* Navigation */}
             <View style={styles.navigationContainer}>
               {currentQuestion > 0 && (
+                // <Button
+                //   onPress={() => setCurrentQuestion(prev => prev-1)}
+                //   title='Previous'/>
                 <TouchableOpacity
                   style={styles.navButton}
                   onPress={() => setCurrentQuestion(prev => prev - 1)}
@@ -184,28 +189,31 @@ export default function PersonalityTestPage() {
                 </TouchableOpacity>
               )}
               
-              {currentQuestion < questions.length - 1 && (
-                <TouchableOpacity
-                  style={[styles.navButton, styles.navButtonPrimary]}
-                  onPress={() => setCurrentQuestion(prev => prev + 1)}
-                  disabled={!answers[questions[currentQuestion]?.id]}
-                >
-                  <Text style={[styles.navButtonText, styles.navButtonTextPrimary]}>Next</Text>
-                </TouchableOpacity>
-              )}
+              {currentQuestion < questions.length - 1 ? (
+
+                <Button
+                title="Next"
+                style={{...styles.navButton, ...styles.navButtonPrimary}}
+                textStyle={{alignItems: "center"}}
+                onPress={() => setCurrentQuestion(prev => prev + 1)}
+                />
+                // <TouchableOpacity
+                //   style={[styles.navButton, styles.navButtonPrimary]}
+                //   onPress={() => setCurrentQuestion(prev => prev + 1)}
+                //   disabled={!answers[questions[currentQuestion]?.id]}
+                // >
+                //   <Text style={[styles.navButtonText, styles.navButtonTextPrimary]}>Next</Text>
+                // </TouchableOpacity>
+              ) : isComplete && (
+                <Button
+                  style={{...styles.navButton, ...styles.navButtonPrimary}}
+                  textStyle={{textAlign: "center"}}
+                  title="Submit"
+                  onPress={handleSubmit}/>
+              )
+            }
             </View>
 
-            {/* Submit Button */}
-            {isComplete && (
-              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-                <LinearGradient
-                  colors={['#8B7BD8', '#6366F1']}
-                  style={styles.submitGradient}
-                >
-                  <Text style={styles.submitButtonText}>Submit Assessment</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
           </View>
         </View>
       </ScrollView>
@@ -320,6 +328,7 @@ const styles = StyleSheet.create({
   navigationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    gap: 10,
     marginBottom: 20,
   },
   navButton: {

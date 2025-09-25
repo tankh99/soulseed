@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Colors } from '../../constants/colors';
+import ScreenLayout from '@/components/ScreenLayout';
 
 const { width, height } = Dimensions.get('window');
 
@@ -17,12 +18,7 @@ export default function IntroPage() {
   };
 
   return (
-    <LinearGradient
-      colors={Colors.gradientBackground}
-      style={styles.container}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-    >
+    <ScreenLayout>
       <View style={styles.content}>
         {/* Soulseed Placeholder */}
         <View style={styles.soulseedContainer}>
@@ -30,7 +26,7 @@ export default function IntroPage() {
             {/* <Text style={styles.soulseedEmoji}>🌱</Text> */}
             <Image 
               resizeMode='contain'
-              source={require('../../assets/images/base_form.png')} style={styles.soulseedImage} />
+              source={require('../../assets/images/variations.png')} style={styles.soulseedImage} />
           </View>
         </View>
 
@@ -63,7 +59,7 @@ export default function IntroPage() {
           </TouchableOpacity>
         </View>
       </View>
-    </LinearGradient>
+    </ScreenLayout>
   );
 }
 
@@ -77,26 +73,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 40,
-    paddingVertical: 60,
   },
   soulseedContainer: {
-    marginBottom: 60,
   },
   soulseedPlaceholder: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: Colors.secondaryAlpha20,
+    width: 300,
+    height: 300,
+    borderRadius: 1000,
+    // backgroundColor: Colors.secondaryAlpha20,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 4,
-    borderColor: Colors.secondaryAlpha30,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    // borderWidth: 4,
+    // borderColor: Colors.secondaryAlpha30,
+    // shadowColor: Colors.shadow,
+    // shadowOffset: { width: 0, height: 8 },
+    // shadowOpacity: 0.3,
+    // shadowRadius: 16,
+    // elevation: 8,
   },
   soulseedEmoji: {
     fontSize: 80,
