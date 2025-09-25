@@ -164,14 +164,14 @@ export default function JournalEntryPage() {
     ];
 
     setConversationThread(updatedThread);
+    setCurrentQuestion('');
+    setCurrentAnswer('');
 
     // Check if we should end conversation (after 3 questions)
     if (conversationStep >= 2) {
       // End conversation and send to backend
       await mockSendConversationToBackend(updatedThread);
       setConversationMode(false);
-      setCurrentQuestion('');
-      setCurrentAnswer('');
       setConversationStep(0);
       setIsWaitingForResponse(false);
       
@@ -184,7 +184,6 @@ export default function JournalEntryPage() {
       // Get next question
       const nextQuestion = await mockGetNextQuestion(selectedMood, journalText, updatedThread, conversationStep + 1);
       setCurrentQuestion(nextQuestion);
-      setCurrentAnswer('');
       setConversationStep(prev => prev + 1);
       setIsWaitingForResponse(false);
     }
@@ -215,7 +214,8 @@ export default function JournalEntryPage() {
             setCurrentAnswer('');
             setConversationStep(0);
           } else {
-            router.replace('/(tabs)/');
+            router.back()
+            // router.replace('/(tabs)/(journal)/mood' as any);
           }
         }}
         title={conversationMode ? 'Reflection' : 'Journal'}
