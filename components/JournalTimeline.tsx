@@ -3,6 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { JournalEntry } from '@/data/journal';
 import { getMoodData } from '@/constants/moods';
 import { Colors } from '@/constants/colors';
+import {Image} from 'expo-image'
 
 interface JournalTimelineProps {
   entries: JournalEntry[];
@@ -30,7 +31,8 @@ export default function JournalTimeline({ entries }: JournalTimelineProps) {
           <View key={entry.id} style={styles.timelineItem}>
             <View style={styles.timelineIconContainer}>
               <View style={styles.timelineIcon}>
-                <Text style={styles.moodEmoji}>{moodData?.emoji}</Text>
+                <Image source={moodData?.image} style={styles.moodImage} />
+                {/* <Text style={styles.moodEmoji}>{moodData?.emoji}</Text> */}
               </View>
               {!isLastItem && <View style={styles.timelineConnector} />}
             </View>
@@ -82,6 +84,10 @@ const styles = StyleSheet.create({
   },
   moodEmoji: {
     fontSize: 20,
+  },
+  moodImage: {
+    width: 40,
+    height: 40,
   },
   timelineConnector: {
     width: 2,

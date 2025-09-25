@@ -207,26 +207,38 @@ export const mockLifeSummary = "Your story so far is one of quiet growth. You've
 export const mockChapterData: Chapter[] = [
   {
     id: '1',
-    title: "The Start of a New Journey",
+    title: "The Weight of Expectations",
     status: 'completed',
-    story: "The year began with a quiet determination. You were focused on your studies, navigating the familiar landscape of lectures and assignments. Journal entries from this time are filled with reflections on academic goals, meticulous planning, and the steady hum of a predictable routine. It was a period of laying foundations, brick by brick, for the future you envisioned.",
-    summary: "This chapter was marked by discipline and a strong focus on academic responsibilities. Your narrative was centered around building a stable foundation for your future.",
+    story: "The semester began under a sky heavy with expectations. My days were a blur of textbooks and lecture halls, each journal entry a testament to the pressure I felt. I wrote about the sinking feeling after an exam, the quiet disappointment that felt too heavy to share. But in that space, a shift began. A conversation with a teacher, a new study plan—slowly, the words in my journal started to change. They became less about the fear of failing and more about the quiet strength I was discovering in myself. It wasn't about the grades anymore; it was about learning that a single result didn't define me.",
+    summary: "From the sting of academic disappointment to the empowerment of self-acceptance, this chapter traces a journey of resilience and shifting perspectives.",
     insights: [
-      "You often use journaling to organize your thoughts and plan your academic tasks.",
-      "A structured routine provides you with a sense of stability and control.",
-      "Your early entries show a pattern of prioritizing long-term goals over immediate gratification."
+      "You found that reaching out for help was a turning point in overcoming challenges.",
+      "Journaling helped you process feelings of disappointment and reframe your definition of success.",
+      "A structured plan gave you a sense of control and renewed your motivation."
     ]
   },
   {
     id: '2',
-    title: "A Fork in the Road",
+    title: "A Canvas of My Own",
     status: 'in_progress',
-    story: "Lately, the familiar rhythm of your routine has felt... different. A current of unease has begun to surface in your journal entries. You've started questioning the path you're on, wondering if the future you were so carefully building is the one you truly want. A recent conversation with a friend sparked a new idea, a path untraveled, both exciting and terrifying. Your recent entries are filled with this tension—doubt, hope, and the thrill of the unknown. You're exploring new hobbies, reaching out to different people, and for the first time, truly asking what you want, not just what's expected.",
-    summary: "This chapter is defined by a period of significant introspection and the courage to question your established path. You're actively exploring new interests and social circles, moving from a state of academic stress towards self-discovery.",
+    story: "Away from the rigid lines of academic life, I found a different kind of canvas. It started with a splash of color, a spontaneous urge to create. My journal entries from this time are filled with a newfound energy, descriptions of watching watercolors bleed across paper, the joy of creating something just for myself. There were moments of frustration, of feeling stuck, but they were different from the pressures of school. This was a creative struggle, a puzzle I was excited to solve. Each brushstroke felt like a step closer to a part of myself I hadn't realized was missing.",
+    summary: "This chapter is about embracing creativity as a form of self-discovery and finding a new, personal outlet for expression and growth.",
     insights: [
-      "You tend to journal most consistently when facing uncertainty, using it as a tool for clarification.",
-      "Conversations with close friends are often a catalyst for major life decisions.",
-      "When feeling stressed about academics, you proactively seek out new, unrelated activities to find balance."
+      "Creative pursuits offer you an effective way to de-stress from academic pressures.",
+      "You've learned that it's okay to step away and return to a challenge with a fresh perspective.",
+      "Embracing imperfections and 'happy accidents' has been a source of unexpected joy."
+    ]
+  },
+  {
+    id: '3',
+    title: "The Space Between Us",
+    status: 'in_progress',
+    story: "The silence between us was deafening. After our argument, my journal became a space to untangle the knot of anger and hurt in my chest. I wrote down everything I couldn't say out loud, the frustration, the sadness, the fear of losing a friendship that meant so much. Rereading my own words, I realized how much of it came from a place of caring. It gave me the clarity I needed to reach out, not with blame, but with a desire to understand. The conversation was hard, but it was honest, and with each word, I felt the space between us shrink, replaced by the warmth of reconciliation.",
+    summary: "This chapter navigates the difficult terrain of conflict and resolution in a close friendship, highlighting the power of introspection and honest communication.",
+    insights: [
+      "Writing down your feelings before a difficult conversation helps you communicate more clearly and calmly.",
+      "You value your friendships deeply and are willing to work through challenges to maintain them.",
+      "Understanding your own emotions is the first step toward understanding someone else's perspective."
     ]
   }
 ];
