@@ -36,7 +36,6 @@ export default function ChapterDetailScreen() {
 
   return (
     <ScreenLayout>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         <Animated.View style={{ opacity: fadeAnim }}>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -65,16 +64,11 @@ export default function ChapterDetailScreen() {
           </View>
 
         </Animated.View>
-      </ScrollView>
     </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollContent: {
-    paddingBottom: 40,
-    paddingHorizontal: 20,
-  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -83,7 +77,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 60,
+    paddingTop: 24,
     marginBottom: 16,
   },
   backButton: {

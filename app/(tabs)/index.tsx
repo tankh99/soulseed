@@ -65,7 +65,8 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Cultivate your garden ✨</Text>
+          <Text style={styles.headerTitle}>Welcome back, {SoulseedData.name}</Text>
+          <StreakCounter currentStreak={UserStats.currentStreak} />
         </View>
 
         <View style={styles.soulseedContainer}>
@@ -90,9 +91,6 @@ export default function HomeScreen() {
               <Text style={styles.growthSubtitle}>
                 {totalXp.toLocaleString()} / {totalLevelUpXp.toLocaleString()} XP to next evolution
               </Text>
-            </View>
-            <View style={styles.inlineStreak}>
-              <StreakCounter currentStreak={UserStats.currentStreak} weeklyProgress={UserStats.weeklyProgress} />
             </View>
           </View>
         </View>
@@ -124,9 +122,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    
     paddingTop: 24,
-    paddingBottom: 12,
+    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 24,

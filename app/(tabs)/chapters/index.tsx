@@ -74,8 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 24,
-    paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 24,
   },
   headerTitle: {
     fontSize: 26,
@@ -87,7 +86,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 16,
     padding: 20,
-    marginHorizontal: 20,
     marginBottom: 24,
     borderWidth: 1,
     borderColor: Colors.secondary,
@@ -104,7 +102,6 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   tocContainer: {
-    marginHorizontal: 20,
   },
   chapterItem: {
     flexDirection: 'row',
