@@ -249,6 +249,11 @@ export default function JournalEntryPage() {
 
         {!conversationMode ? (
           <View style={styles.journalSection}>
+            <View style={styles.selectedMoodContainer}>
+              <Text style={styles.selectedMoodText}>
+                You're feeling: <Text style={{fontWeight: 'bold'}}>{moodData?.emoji} {moodData?.label}</Text>
+              </Text>
+            </View>
             <Text style={styles.journalPrompt}>
               {selectedMood === 'happy' && "What's bringing you joy right now?"}
               {selectedMood === 'sad' && "What's on your heart today?"}

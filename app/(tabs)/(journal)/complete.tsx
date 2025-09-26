@@ -87,7 +87,6 @@ export default function JournalCompletePage() {
 
 const styles = StyleSheet.create({
   completeContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
