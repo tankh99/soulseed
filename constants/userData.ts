@@ -39,12 +39,11 @@ export interface Quest {
   id: string;
   title: string;
   description: string;
-  xp: number;
-  type: 'core' | 'bonus';
+  reward: { xp: number };
   completed: boolean;
-  relatedTrait?: keyof PersonalityScores;
-  cta: string;
+  icon?: string;
   callbackUrl?: string;
+  justification?: string;
 }
 
 export const SoulseedData: Soulseed = {
@@ -54,24 +53,25 @@ export const SoulseedData: Soulseed = {
 } as const;
 
 // Quest data
-export const MockQuests = [
+export const MockQuests: Quest[] = [
   {
     id: '1',
     title: 'Morning Reflection',
     description: 'Journal about your goals for today',
     reward: { xp: 25 },
     completed: true,
-    icon: '🌅',
     callbackUrl: '/(tabs)/(journal)/entry',
+    justification: 'Based on your reflective nature, this is a great way to start your day.',
   },
   {
     id: '2',
     title: 'Gratitude Check',
-    description: 'Write down 3 things you\'re grateful for',
+    description: "Write down 3 things you're grateful for",
     reward: { xp: 20 },
     completed: false,
     icon: '🙏',
     callbackUrl: '/(tabs)/(journal)',
+    // justification: 'You often focus on personal growth; gratitude is a key part of that.',
   },
   {
     id: '3',
@@ -81,6 +81,7 @@ export const MockQuests = [
     completed: false,
     icon: '😊',
     callbackUrl: 'https://www.samhealth.org.sg/',
+    // justification: 'Your high agreeableness suggests you care about community and support.',
   },
   {
     id: '4',
@@ -90,6 +91,7 @@ export const MockQuests = [
     completed: false,
     icon: '👬',
     callbackUrl: '/(tabs)/friends',
+    justification: 'Your extroversion thrives on social connection. Keep those bonds strong!',
   },
 ] as const;
 
