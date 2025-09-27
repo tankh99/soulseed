@@ -1,34 +1,60 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Animated, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Colors } from '@/constants/colors';
 import ScreenLayout from '@/components/ScreenLayout';
 import { mockChapterData } from '@/constants/userData';
 import { Chapter } from '@/data/chapters';
 import { Feather, ArrowLeft } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { JournalEntry, mockJournalEntries } from '@/data/journal';
 import JournalTimeline from '@/components/JournalTimeline';
+import { fetchJournalEntries, JournalEntryRecord } from '@/services/api';
 
 export default function ChapterDetailScreen() {
   const { chapterId } = useLocalSearchParams<{ chapterId: string }>();
   const [chapter, setChapter] = useState<Chapter | null>(null);
-  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+  const [journalEntries, setJournalEntries] = useState<JournalEntryRecord[]>([]);
+  const [isLoadingEntries, setIsLoadingEntries] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const foundChapter = mockChapterData.find(c => c.id === chapterId);
-    if (foundChapter) {
-      setChapter(foundChapter);
+    let isMounted = true;
+    const foundChapter = mockChapterData.find(c => c.id === chapterId) ?? null;
+    setChapter(foundChapter);
 
-      const entries = mockJournalEntries.filter(entry => entry.chapterId === chapterId);
-      setJournalEntries(entries);
-
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 800,
-        useNativeDriver: true,
-      }).start();
+    if (!foundChapter) {
+      setJournalEntries([]);
+      setIsLoadingEntries(false);
+      return () => {
+        isMounted = false;
+      };
     }
+
+    const loadEntries = async () => {
+      setIsLoadingEntries(true);
+      try {
+        const response = await fetchJournalEntries();
+        if (isMounted && response.success) {
+          setJournalEntries(response.entries);
+        }
+      } catch (error) {
+        console.warn('Failed to load journal entries', error);
+      } finally {
+        if (isMounted) {
+          setIsLoadingEntries(false);
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 800,
+            useNativeDriver: true,
+          }).start();
+        }
+      }
+    };
+
+    loadEntries();
+
+    return () => {
+      isMounted = false;
+    };
   }, [chapterId, fadeAnim]);
 
   if (!chapter) {
@@ -70,7 +96,13 @@ export default function ChapterDetailScreen() {
             ))}
           </View>
 
-          <JournalTimeline entries={journalEntries} />
+          {isLoadingEntries ? (
+            <View style={{ paddingVertical: 24 }}>
+              <ActivityIndicator color={Colors.accent} />
+            </View>
+          ) : (
+            <JournalTimeline entries={journalEntries} />
+          )}
 
         </Animated.View>
     </ScreenLayout>

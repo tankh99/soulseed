@@ -3,11 +3,13 @@
 
 import { getSoulseedByPersonality, SoulseedData as SoulseedDataType } from '../data/soulseeds';
 import { MockQuests } from '@/constants/userData';
+import { mockJournalEntries as legacyMockJournalEntries } from '@/data/journal';
 
 // ---------- Global config ----------
 const USE_MOCK_API = false; // set to true to enable mock API for ALL functions
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'http://localhost:3000'; // your API gateway if any
 const AI_BASE_URL  = process.env.EXPO_PUBLIC_AI_BASE_URL  ?? 'http://localhost:3002/api/ai'; // ai-service base
+const JOURNAL_BASE_URL = process.env.EXPO_PUBLIC_JOURNAL_BASE_URL ?? 'http://localhost:3003/api/journal';
 
 // ---------- AI Unpack types ----------
 export type Mood = 1 | 2 | 3 | 4 | 5;
@@ -88,6 +90,24 @@ export interface CopingRecommendation {
   followUpQuest?: string;
 }
 
+export interface JournalQuest {
+  id: string;
+  title: string;
+  description: string;
+  reward?: { xp: number };
+  icon?: string;
+  callbackUrl?: string;
+}
+
+export interface JournalEntryRecord {
+  id: string;
+  mood: string;
+  text: string;
+  createdAt: string;
+  coping?: CopingRecommendation;
+  questId?: string;
+}
+
 export interface JournalCompletionPayload {
   text: string;
   mood: string;
@@ -95,7 +115,250 @@ export interface JournalCompletionPayload {
 
 export interface JournalCompletionResponse {
   success: boolean;
+  entry?: JournalEntryRecord;
   coping?: CopingRecommendation;
+  quest?: JournalQuest;
+  error?: string;
+}
+
+export interface JournalEntriesResponse {
+  success: boolean;
+  entries: JournalEntryRecord[];
+  error?: string;
+}
+
+export interface ConversationMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface JournalQuestionResponse {
+  success: boolean;
+  question?: string;
+  isFinalStep?: boolean;
+  error?: string;
+}
+
+export interface JournalConversationCompleteResponse {
+  success: boolean;
+  transcript?: {
+    id: string;
+    mood?: string;
+    journalText?: string;
+    messages: ConversationMessage[];
+    createdAt: string;
+  };
+  error?: string;
+}
+
+const MOCK_MOOD_QUESTIONS: Record<string, string[]> = {
+  happy: [
+    "What made this moment so special for you?",
+    "How can you recreate this feeling in other parts of your life?",
+    "What would you tell someone else who wants to feel this way?",
+  ],
+  sad: [
+    "What's weighing on your heart right now?",
+    "What support do you need during this difficult time?",
+    "What small step could you take to care for yourself today?",
+  ],
+  angry: [
+    "What triggered this feeling in you?",
+    "What boundaries might you need to set?",
+    "How can you channel this energy constructively?",
+  ],
+  surprised: [
+    "What caught you off guard about this situation?",
+    "How does this change your perspective?",
+    "What new possibilities does this open up?",
+  ],
+  neutral: [
+    "What's on your mind right now?",
+    "What would you like to explore or understand better?",
+    "How are you feeling about your current state?",
+  ],
+};
+
+function mapLegacyEntries(): JournalEntryRecord[] {
+  return legacyMockJournalEntries.map((entry) => ({
+    id: entry.id,
+    mood: entry.mood,
+    text: entry.content,
+    createdAt: entry.date,
+    questId: entry.chapterId,
+  }));
+}
+
+function syncQuestWithMock(quest?: JournalQuest) {
+  if (!quest) return;
+  const exists = MockQuests.some((q) => q.id === quest.id);
+  if (exists) return;
+  MockQuests.push({
+    id: quest.id,
+    title: quest.title,
+    description: quest.description,
+    reward: { xp: quest.reward?.xp ?? 0 },
+    completed: false,
+    icon: quest.icon,
+    callbackUrl: quest.callbackUrl,
+  });
+}
+
+export async function fetchJournalEntries(): Promise<JournalEntriesResponse> {
+  if (USE_MOCK_API) {
+    return { success: true, entries: mapLegacyEntries() };
+  }
+
+  try {
+    const response = await fetch(`${JOURNAL_BASE_URL}/entries`);
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => '');
+      return {
+        success: false,
+        entries: [],
+        error: `Failed to fetch journal entries: ${response.status} ${errorText}`.trim(),
+      };
+    }
+
+    const data = await response.json();
+    const entries = Array.isArray(data.entries)
+      ? (data.entries as JournalEntryRecord[])
+      : [];
+
+    return { success: true, entries };
+  } catch (error) {
+    return {
+      success: false,
+      entries: [],
+      error: error instanceof Error ? error.message : 'Unknown error fetching journal entries',
+    };
+  }
+}
+
+export async function submitJournalEntry(
+  payload: JournalCompletionPayload
+): Promise<JournalCompletionResponse> {
+  if (USE_MOCK_API) {
+    return mockApi.submitJournalEntry(payload);
+  }
+
+  try {
+    const response = await fetch(`${JOURNAL_BASE_URL}/entries`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => '');
+      return {
+        success: false,
+        error: `Failed to submit journal entry: ${response.status} ${errorText}`.trim(),
+      };
+    }
+
+    const data = await response.json();
+    const result: JournalCompletionResponse = {
+      success: Boolean(data.success),
+      entry: data.entry as JournalEntryRecord | undefined,
+      coping: data.coping as CopingRecommendation | undefined,
+      quest: data.quest as JournalQuest | undefined,
+    };
+
+    if (!result.success) {
+      result.error = data.message ?? 'Journal entry submission failed';
+      return result;
+    }
+
+    syncQuestWithMock(result.quest);
+
+    return result;
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error submitting journal entry',
+    };
+  }
+}
+
+export async function getNextJournalQuestion(
+  payload: {
+    mood: string;
+    journalText: string;
+    step: number;
+    conversation: ConversationMessage[];
+  }
+): Promise<JournalQuestionResponse> {
+  if (USE_MOCK_API) {
+    return mockApi.getNextJournalQuestion(payload);
+  }
+
+  try {
+    const response = await fetch(`${JOURNAL_BASE_URL}/conversation/next`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => '');
+      return {
+        success: false,
+        error: `Failed to fetch next question: ${response.status} ${errorText}`.trim(),
+      };
+    }
+
+    const data = await response.json();
+    return {
+      success: true,
+      question: data.question as string,
+      isFinalStep: Boolean(data.isFinalStep),
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error fetching next question',
+    };
+  }
+}
+
+export async function completeJournalConversation(
+  payload: {
+    mood?: string;
+    journalText?: string;
+    conversation: ConversationMessage[];
+  }
+): Promise<JournalConversationCompleteResponse> {
+  if (USE_MOCK_API) {
+    return mockApi.completeJournalConversation(payload);
+  }
+
+  try {
+    const response = await fetch(`${JOURNAL_BASE_URL}/conversation/complete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => '');
+      return {
+        success: false,
+        error: `Failed to complete conversation: ${response.status} ${errorText}`.trim(),
+      };
+    }
+
+    const data = await response.json();
+    return {
+      success: Boolean(data.success),
+      transcript: data.transcript,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error completing conversation',
+    };
+  }
 }
 
 export interface RegistrationData {
@@ -283,6 +546,11 @@ export const mockApi = {
     };
   },
 
+  fetchJournalEntries: async (): Promise<JournalEntriesResponse> => {
+    await new Promise(resolve => setTimeout(resolve, 600));
+    return { success: true, entries: mapLegacyEntries() };
+  },
+
   submitJournalEntry: async ({ text, mood }: JournalCompletionPayload): Promise<JournalCompletionResponse> => {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -290,27 +558,32 @@ export const mockApi = {
     const mentionsAcademics = ['exam', 'assignment', 'school', 'study', 'revision', 'grades'].some(word => lower.includes(word));
     const mentionsStress = ['stress', 'stressful', 'overwhelmed', 'pressure'].some(word => lower.includes(word));
 
+    const entry: JournalEntryRecord = {
+      id: `mock-${Date.now()}`,
+      mood,
+      text,
+      createdAt: new Date().toISOString(),
+    };
+
     if (!mentionsAcademics && !mentionsStress) {
-      return { success: true };
+      return { success: true, entry };
     }
 
-    const questId = 'study-buddy-quest';
-    const hasQuestAlready = MockQuests.some(q => q.id === questId);
-    if (!hasQuestAlready) {
-      MockQuests.push({
-        id: questId,
-        title: 'Find a study buddy',
-        description: 'Reach out to someone to co-work or revise together for 15 minutes.',
-        reward: { xp: 35 },
-        completed: false,
-        icon: '📚',
-        callbackUrl: '/(tabs)/(journal)/mood',
-        justification: 'You mentioned academic stress, and due to your extroverted nature, collaborating with a friend can help.',
-      });
-    }
+    const quest: JournalQuest = {
+      id: 'study-buddy-quest',
+      title: 'Find a study buddy',
+      description: 'Reach out to someone to co-work or revise together for 15 minutes.',
+      reward: { xp: 35 },
+      icon: '📚',
+      callbackUrl: '/(tabs)/(journal)/mood',
+    };
+
+    syncQuestWithMock(quest);
 
     return {
       success: true,
+      entry,
+      quest,
       coping: {
         theme: 'Academic Stress Support',
         strategies: [
@@ -318,6 +591,33 @@ export const mockApi = {
           'Share one worry with a trusted friend or teacher—naming it usually makes it lighter.',
         ],
         followUpQuest: '“Find a study buddy” quest added to your checklist',
+      },
+    };
+  },
+
+  getNextJournalQuestion: async ({ mood, step }: { mood: string; step: number }): Promise<JournalQuestionResponse> => {
+    await new Promise(resolve => setTimeout(resolve, 600));
+    const questions = MOCK_MOOD_QUESTIONS[mood as keyof typeof MOCK_MOOD_QUESTIONS] ?? MOCK_MOOD_QUESTIONS.neutral;
+    const index = Math.min(step, questions.length - 1);
+    return {
+      success: true,
+      question: questions[index] ?? "Tell me more about what you're experiencing.",
+      isFinalStep: index >= questions.length - 1,
+    };
+  },
+
+  completeJournalConversation: async (
+    payload: { mood?: string; journalText?: string; conversation: ConversationMessage[] }
+  ): Promise<JournalConversationCompleteResponse> => {
+    await new Promise(resolve => setTimeout(resolve, 800));
+    return {
+      success: true,
+      transcript: {
+        id: `mock-transcript-${Date.now()}`,
+        mood: payload.mood,
+        journalText: payload.journalText,
+        messages: payload.conversation,
+        createdAt: new Date().toISOString(),
       },
     };
   },

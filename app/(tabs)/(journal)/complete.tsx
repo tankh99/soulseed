@@ -3,16 +3,14 @@ import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import ScreenLayout from '../../../components/ScreenLayout';
 import Button from '../../../components/Button';
-import { mockApi } from '@/services/api';
-import { MockQuests } from '@/constants/userData';
+import { submitJournalEntry, JournalCompletionResponse } from '@/services/api';
 import { useAudioPlayer } from 'expo-audio';
-import { MockMoodEntries } from '@/constants/userData';
 
 const chimePlayerSource = require('../../../assets/sounds/chime.mp3');
 
 export default function JournalCompletePage() {
   const { mood, text } = useLocalSearchParams<{ mood?: string; text?: string }>();
-  const [coping, setCoping] = useState<Awaited<ReturnType<typeof mockApi.submitJournalEntry>>['coping']>();
+  const [coping, setCoping] = useState<JournalCompletionResponse['coping']>();
   const [isLoading, setIsLoading] = useState(false);
   const chimePlayer = useAudioPlayer(chimePlayerSource);
 
@@ -25,9 +23,11 @@ export default function JournalCompletePage() {
     const run = async () => {
       setIsLoading(true);
       try {
-        const response = await mockApi.submitJournalEntry({ text, mood: mood || '' });
+        const response = await submitJournalEntry({ text, mood: mood || '' });
         if (response.coping) {
           setCoping(response.coping);
+        } else if (!response.success && response.error) {
+          console.warn('Journal submission failed:', response.error);
         }
       } catch (error) {
         console.warn('Failed to fetch coping strategies', error);

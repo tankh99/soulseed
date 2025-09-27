@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { JournalEntry } from '@/data/journal';
 import { getMoodData } from '@/constants/moods';
 import { Colors } from '@/constants/colors';
-import {Image} from 'expo-image'
+import { Image } from 'expo-image';
+import { JournalEntryRecord } from '@/services/api';
 
 interface JournalTimelineProps {
-  entries: JournalEntry[];
+  entries: JournalEntryRecord[];
 }
 
 export default function JournalTimeline({ entries }: JournalTimelineProps) {
@@ -19,7 +19,7 @@ export default function JournalTimeline({ entries }: JournalTimelineProps) {
   }
 
   // Sort entries by date, descending
-  const sortedEntries = [...entries].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const sortedEntries = [...entries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   return (
     <View style={styles.container}>
@@ -38,9 +38,9 @@ export default function JournalTimeline({ entries }: JournalTimelineProps) {
             </View>
             <View style={styles.timelineContent}>
               <Text style={styles.entryDate}>
-                {new Date(entry.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                {new Date(entry.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </Text>
-              <Text style={styles.entryContent}>{entry.content}</Text>
+              <Text style={styles.entryContent}>{entry.text}</Text>
             </View>
           </View>
         );
