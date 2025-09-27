@@ -5,9 +5,11 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  Modal,
+  Alert,
 } from 'react-native';
-import { Search, UserPlus, HeartPulse, Frown, Smile } from 'lucide-react-native';
+import { Search, UserPlus, HeartPulse, Frown, Smile, X } from 'lucide-react-native';
 import ScreenLayout from '../../components/ScreenLayout';
 import { Colors } from '../../constants/colors';
 import { formatDistanceToNow } from 'date-fns';
@@ -24,7 +26,6 @@ const MOOD_SWATCHES: Record<'joyful' | 'calm' | 'stressed' | 'sad' | 'angry' | '
 interface FriendMood {
   state: keyof typeof MOOD_SWATCHES;
   updatedAt: string;
-  note: string;
 }
 
 interface Friend {
@@ -33,7 +34,6 @@ interface Friend {
   username: string;
   mood: FriendMood;
   isOnline: boolean;
-  lastEntry: string;
 }
 
 const mockFriends: Friend[] = [
@@ -41,41 +41,36 @@ const mockFriends: Friend[] = [
     id: '1',
     name: 'Alex Chen',
     username: '@alexchen',
-    mood: { state: 'joyful', updatedAt: new Date().toISOString(), note: 'Excited about the school musical!' },
+    mood: { state: 'joyful', updatedAt: new Date().toISOString() },
     isOnline: true,
-    lastEntry: new Date().toISOString(),
   },
   {
     id: '2',
     name: 'Sarah Johnson',
     username: '@sarahj',
-    mood: { state: 'stressed', updatedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(), note: 'Feeling overwhelmed with finals.' },
+    mood: { state: 'stressed', updatedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
     isOnline: false,
-    lastEntry: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
   },
   {
     id: '3',
     name: 'Mike Rodriguez',
     username: '@miker',
-    mood: { state: 'calm', updatedAt: new Date(Date.now() - 1000 * 60 * 90).toISOString(), note: 'Taking it easy after a long week.' },
+    mood: { state: 'calm', updatedAt: new Date(Date.now() - 1000 * 60 * 90).toISOString() },
     isOnline: true,
-    lastEntry: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
   },
   {
     id: '4',
     name: 'Emma Wilson',
     username: '@emmaw',
-    mood: { state: 'sad', updatedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(), note: 'Missing grandpa lately.' },
+    mood: { state: 'sad', updatedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString() },
     isOnline: false,
-    lastEntry: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
   },
   {
     id: '5',
     name: 'David Kim',
     username: '@davidk',
-    mood: { state: 'mixed', updatedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), note: 'Grateful for friends, worried about exams.' },
+    mood: { state: 'mixed', updatedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString() },
     isOnline: true,
-    lastEntry: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
   },
 ];
 
@@ -90,8 +85,37 @@ function useMoodStats(friends: Friend[]) {
 export default function FriendsScreen() {
   const [friends] = useState<Friend[]>(mockFriends);
   const [searchQuery, setSearchQuery] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
+  const [noteText, setNoteText] = useState('');
 
   const stats = useMoodStats(friends);
+
+  const handleOpenModal = (friend: Friend, isCheckIn = false) => {
+    setSelectedFriend(friend);
+    if (isCheckIn) {
+      setNoteText("Hey, just checking in. Hope you're doing okay!");
+    } else {
+      setNoteText('');
+    }
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedFriend(null);
+    setNoteText('');
+  };
+
+  const handleSendNote = () => {
+    if (!noteText.trim() || !selectedFriend) return;
+    
+    Alert.alert(
+      "Note Sent",
+      `Your note to ${selectedFriend.name} has been sent.`,
+      [{ text: "OK", onPress: handleCloseModal }]
+    );
+  };
 
   const filteredFriends = friends.filter(friend =>
     friend.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -114,15 +138,18 @@ export default function FriendsScreen() {
         <Text style={styles.friendName}>{friend.name}</Text>
         <Text style={styles.friendHandle}>{friend.username}</Text>
 
-        <Text style={styles.moodNote} numberOfLines={2}>{friend.mood.note}</Text>
-
         <View style={styles.cardActions}>
-          <TouchableOpacity style={[styles.actionButton, { borderColor: swatch.color }]}
+          <TouchableOpacity 
+            style={[styles.actionButton, { borderColor: swatch.color }]}
+            onPress={() => handleOpenModal(friend)}
           >
             <Text style={[styles.actionButtonText, { color: swatch.color }]}>Send a note</Text>
           </TouchableOpacity>
           {swatch.tone === 'concern' && (
-            <TouchableOpacity style={styles.primaryButton}>
+            <TouchableOpacity 
+              style={styles.primaryButton}
+              onPress={() => handleOpenModal(friend, true)}
+            >
               <Text style={styles.primaryButtonText}>Check in</Text>
             </TouchableOpacity>
           )}
@@ -133,6 +160,40 @@ export default function FriendsScreen() {
 
   return (
     <ScreenLayout disableBottomSafeArea>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Send a note to {selectedFriend?.name}</Text>
+              <TouchableOpacity onPress={handleCloseModal} style={styles.closeButton}>
+                <X size={24} color={Colors.text} />
+              </TouchableOpacity>
+            </View>
+            <TextInput
+              style={styles.noteInput}
+              placeholder="Type your message..."
+              placeholderTextColor="rgba(255, 255, 255, 0.4)"
+              value={noteText}
+              onChangeText={setNoteText}
+              multiline
+              autoFocus
+            />
+            <TouchableOpacity 
+              style={[styles.sendButton, !noteText.trim() && styles.sendButtonDisabled]}
+              onPress={handleSendNote}
+              disabled={!noteText.trim()}
+            >
+              <Text style={styles.sendButtonText}>Send Note</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Friend Pulse</Text>
@@ -328,5 +389,60 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 32,
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalContent: {
+    width: '100%',
+    backgroundColor: '#2A2F45',
+    borderRadius: 18,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 123, 216, 0.2)',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: Colors.text,
+    flex: 1,
+  },
+  closeButton: {
+    padding: 4,
+  },
+  noteInput: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: Colors.text,
+    minHeight: 100,
+    textAlignVertical: 'top',
+    marginBottom: 16,
+  },
+  sendButton: {
+    backgroundColor: Colors.accent,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  sendButtonDisabled: {
+    backgroundColor: 'rgba(139, 123, 216, 0.5)',
+  },
+  sendButtonText: {
+    color: '#1A103D',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

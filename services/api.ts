@@ -305,6 +305,7 @@ export const mockApi = {
         completed: false,
         icon: '📚',
         callbackUrl: '/(tabs)/(journal)/mood',
+        justification: 'You mentioned academic stress, and due to your extroverted nature, collaborating with a friend can help.',
       });
     }
 

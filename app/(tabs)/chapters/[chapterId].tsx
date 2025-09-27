@@ -6,16 +6,23 @@ import { mockChapterData } from '@/constants/userData';
 import { Chapter } from '@/data/chapters';
 import { Feather, ArrowLeft } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { JournalEntry, mockJournalEntries } from '@/data/journal';
+import JournalTimeline from '@/components/JournalTimeline';
 
 export default function ChapterDetailScreen() {
   const { chapterId } = useLocalSearchParams<{ chapterId: string }>();
   const [chapter, setChapter] = useState<Chapter | null>(null);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const foundChapter = mockChapterData.find(c => c.id === chapterId);
     if (foundChapter) {
       setChapter(foundChapter);
+
+      const entries = mockJournalEntries.filter(entry => entry.chapterId === chapterId);
+      setJournalEntries(entries);
+
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: 800,
@@ -35,7 +42,7 @@ export default function ChapterDetailScreen() {
   }
 
   return (
-    <ScreenLayout>
+    <ScreenLayout disableBottomSafeArea contentStyle={{ paddingBottom: 40 }}>
         <Animated.View style={{ opacity: fadeAnim }}>
           <View style={styles.header}>
             <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
@@ -62,6 +69,8 @@ export default function ChapterDetailScreen() {
               </View>
             ))}
           </View>
+
+          <JournalTimeline entries={journalEntries} />
 
         </Animated.View>
     </ScreenLayout>

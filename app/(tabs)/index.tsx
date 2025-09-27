@@ -15,12 +15,9 @@ import { Colors } from '../../constants/colors';
 import { SoulseedDisplay } from '../../components/SoulseedDisplay';
 import { StreakCounter } from '../../components/StreakCounter';
 import { QuestCard } from '../../components/QuestCard';
-import { MockHarvestedFruits, MockMoodEntries, MockQuests, SoulseedData, UserStats, PersonalityScores } from '../../constants/userData';
+import { MockQuests, SoulseedData, UserStats, PersonalityScores } from '../../constants/userData';
 import ScreenLayout from '../../components/ScreenLayout';
 import { registerForPushNotificationsAsync } from '@/lib/notifications';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
-import { getRollingWeekSummary, generateFruitFromSummary, derivePlantStage } from '@/lib/fruitGenerator';
 
 const { width } = Dimensions.get('window');
 const DEMO_XP_REWARD = 50;
