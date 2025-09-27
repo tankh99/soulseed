@@ -4,6 +4,63 @@
 import { getSoulseedByPersonality, SoulseedData as SoulseedDataType } from '../data/soulseeds';
 import { MockQuests } from '@/constants/userData';
 
+// ---------- Global config ----------
+const USE_MOCK_API = false; // set to true to enable mock API for ALL functions
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'http://localhost:3000'; // your API gateway if any
+const AI_BASE_URL  = process.env.EXPO_PUBLIC_AI_BASE_URL  ?? 'http://localhost:3002/api/ai'; // ai-service base
+
+// ---------- AI Unpack types ----------
+export type Mood = 1 | 2 | 3 | 4 | 5;
+
+export interface UnpackResult {
+  summary: string;
+  signals: { mood: Mood; stressors: string[]; risk_flags: string[] };
+  suggestions: string[];
+  questions: string[];
+}
+
+// AI Unpack (aligned with ApiResponse<T> pattern)
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  sessionId?: string;
+}
+
+export async function aiUnpack(text: string): Promise<ApiResponse<UnpackResult>> {
+  if (USE_MOCK_API) {
+    return mockApi.aiUnpack(text);
+  }
+
+  try {
+    const res = await fetch(`${AI_BASE_URL}/unpack`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      return {
+        success: false,
+        error: `unpack failed: ${res.status} ${errText}`.trim(),
+      };
+    }
+
+    const data = await res.json();
+    return {
+      success: true,
+      data: data.result as UnpackResult,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}
+
+// ---------- Existing types/services (unchanged) ----------
 export interface PersonalityScores {
   openness: number;
   conscientiousness: number;
@@ -53,22 +110,7 @@ export interface RegistrationData {
   sessionId: string;
 }
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  sessionId?: string;
-}
-
-// Mock API Base URL - replace with actual API endpoint
-const API_BASE_URL = 'https://api.soulseed.com';
-
-// Set to true to use mock functions, false for real API calls
-const USE_MOCK_API = true;
-
-/**
- * Submit personality assessment results
- */
+// Submit personality assessment
 export async function submitPersonalityAssessment(
   personality: PersonalityScores
 ): Promise<ApiResponse<{ sessionId: string }>> {
@@ -94,7 +136,7 @@ export async function submitPersonalityAssessment(
     }
 
     const data = await response.json();
-    
+
     return {
       success: true,
       data: { sessionId: data.sessionId || 'temp-session-123' },
@@ -109,9 +151,7 @@ export async function submitPersonalityAssessment(
   }
 }
 
-/**
- * Generate soulseed based on personality scores
- */
+// Generate soulseed based on personality scores
 export async function generateSoulseed(
   personality: PersonalityScores,
   sessionId: string
@@ -138,7 +178,7 @@ export async function generateSoulseed(
     }
 
     const data = await response.json();
-    
+
     return {
       success: true,
       data: data.soulseed,
@@ -152,9 +192,7 @@ export async function generateSoulseed(
   }
 }
 
-/**
- * Register user account
- */
+// Register user account
 export async function registerUser(
   registrationData: RegistrationData
 ): Promise<ApiResponse<{ userId: string; token: string }>> {
@@ -177,7 +215,7 @@ export async function registerUser(
     }
 
     const data = await response.json();
-    
+
     return {
       success: true,
       data: {
@@ -194,14 +232,12 @@ export async function registerUser(
   }
 }
 
-/**
- * Generate mock soulseed based on personality traits
- * Uses the soulseed data from the data file
- */
+// Generate mock soulseed based on personality traits
+// Uses the soulseed data from the data file
 function generateMockSoulseed(personality: PersonalityScores): SoulseedData {
   // Get soulseed data based on personality scores
   const soulseedData = getSoulseedByPersonality(personality);
-  
+
   // Convert to API format
   const soulseed: SoulseedData = {
     name: soulseedData.name,
@@ -214,14 +250,10 @@ function generateMockSoulseed(personality: PersonalityScores): SoulseedData {
     growthExpression: soulseedData.growthExpression,
     palette: soulseedData.palette,
   };
-  
+
   return soulseed;
 }
 
-/**
- * Mock API functions for development
- * These simulate network delays and can be used for testing
- */
 export const mockApi = {
   submitPersonalityAssessment: async (personality: PersonalityScores) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -231,7 +263,7 @@ export const mockApi = {
       sessionId: `session-${Date.now()}`,
     };
   },
-  
+
   generateSoulseed: async (personality: PersonalityScores, sessionId: string) => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     return {
@@ -239,7 +271,7 @@ export const mockApi = {
       data: generateMockSoulseed(personality),
     };
   },
-  
+
   registerUser: async (registrationData: RegistrationData) => {
     await new Promise(resolve => setTimeout(resolve, 1500));
     return {
@@ -286,6 +318,27 @@ export const mockApi = {
         ],
         followUpQuest: '“Find a study buddy” quest added to your checklist',
       },
+    };
+  },
+
+  // ---- NEW: mock for AI unpack ----
+  aiUnpack: async (text: string): Promise<ApiResponse<UnpackResult>> => {
+    await new Promise(r => setTimeout(r, 600));
+    return {
+      success: true,
+      data: {
+        summary: "You mentioned school stress and uncertainty about deadlines.",
+        signals: { mood: 3 as Mood, stressors: ["school"], risk_flags: [] },
+        suggestions: [
+          "Try a 25–5 focus block.",
+          "Write down the single most urgent task for tomorrow morning."
+        ],
+        questions: [
+          "What specific task feels heaviest right now?",
+          "When is the next concrete deadline?",
+          "What would make this 1% easier?"
+        ],
+      }
     };
   },
 };
