@@ -258,19 +258,90 @@ export const Api = {
 // Mock API (for offline/dev demos)
 // -----------------------------
 export const mockApi = {
-  submitJournalEntry: async (text: string, mood?: string) => ({
-    summary: text.length > 120 ? text.slice(0, 117) + '...' : text,
-    strengths: ['You acknowledged how you feel', 'You identified at least one cause or trigger'],
-    suggestions: ['Try a 2-minute breathing exercise', 'Write one actionable step for tomorrow'],
-    immediateCoping: ['Box breathing', '5-4-3-2-1 grounding'],
-    riskFlags: [],
-    mood: mood ?? 'neutral',
-    pointsAwarded: 5,
-    coping: [
-      { title: 'Deep Breathing', description: 'Inhale 4s, hold 4s, exhale 4s, hold 4s — repeat 4 times.' },
-      { title: 'Name it to tame it', description: 'Label what you feel in 3 words.' },
-    ],
-  }),
-};
+  submitPersonalityAssessment: async (personality: PersonalityScores) => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return {
+      success: true,
+      data: { sessionId: `session-${Date.now()}` },
+      sessionId: `session-${Date.now()}`,
+    };
+  },
 
-export default Api;
+  generateSoulseed: async (personality: PersonalityScores, sessionId: string) => {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return {
+      success: true,
+      data: generateMockSoulseed(personality),
+    };
+  },
+
+  registerUser: async (registrationData: RegistrationData) => {
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return {
+      success: true,
+      data: {
+        userId: `user-${Date.now()}`,
+        token: `token-${Date.now()}`,
+      },
+    };
+  },
+
+  submitJournalEntry: async ({ text, mood }: JournalCompletionPayload): Promise<JournalCompletionResponse> => {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const lower = text.toLowerCase();
+    const mentionsAcademics = ['exam', 'assignment', 'school', 'study', 'revision', 'grades'].some(word => lower.includes(word));
+    const mentionsStress = ['stress', 'stressful', 'overwhelmed', 'pressure'].some(word => lower.includes(word));
+
+    if (!mentionsAcademics && !mentionsStress) {
+      return { success: true };
+    }
+
+    const questId = 'study-buddy-quest';
+    const hasQuestAlready = MockQuests.some(q => q.id === questId);
+    if (!hasQuestAlready) {
+      MockQuests.push({
+        id: questId,
+        title: 'Find a study buddy',
+        description: 'Reach out to someone to co-work or revise together for 15 minutes.',
+        reward: { xp: 35 },
+        completed: false,
+        icon: '📚',
+        callbackUrl: '/(tabs)/(journal)/mood',
+      });
+    }
+
+    return {
+      success: true,
+      coping: {
+        theme: 'Academic Stress Support',
+        strategies: [
+          'Try the 25-5 method: study or work for 25 minutes, then take a 5-minute break to stretch or breathe.',
+          'Share one worry with a trusted friend or teacher—naming it usually makes it lighter.',
+        ],
+        followUpQuest: '“Find a study buddy” quest added to your checklist',
+      },
+    };
+  },
+
+  // ---- NEW: mock for AI unpack ----
+  aiUnpack: async (text: string): Promise<ApiResponse<UnpackResult>> => {
+    await new Promise(r => setTimeout(r, 600));
+    return {
+      success: true,
+      data: {
+        summary: "You mentioned school stress and uncertainty about deadlines.",
+        signals: { mood: 3 as Mood, stressors: ["school"], risk_flags: [] },
+        suggestions: [
+          "Try a 25–5 focus block.",
+          "Write down the single most urgent task for tomorrow morning."
+        ],
+        questions: [
+          "What specific task feels heaviest right now?",
+          "When is the next concrete deadline?",
+          "What would make this 1% easier?"
+        ],
+      }
+    };
+  },
+};

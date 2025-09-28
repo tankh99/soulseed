@@ -3,18 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { CircleCheck as CheckCircle, Circle, Star } from 'lucide-react-native';
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
+import { Quest } from '@/constants/userData';
+import { Colors } from '@/constants/colors';
 
-interface Quest {
-  id: string;
-  title: string;
-  description: string;
-  reward: {
-    xp: number;
-  };
-  completed: boolean;
-  icon: string;
-  callbackUrl: string;
-}
 
 interface QuestCardProps {
   quest: Quest;
@@ -51,6 +42,9 @@ export function QuestCard({ quest, onComplete }: QuestCardProps) {
         </Text>
         <Text style={[styles.description, quest.completed && styles.completedDescription]}>
           {quest.description}
+        </Text>
+        <Text style={{color: Colors.accent}}>
+          {quest.justification}
         </Text>
       </View>
 
