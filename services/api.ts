@@ -1,259 +1,262 @@
-// API Service for Soulseed App
-// This file contains mock API functions that would be replaced with actual API calls
+// services/api.ts
+// Unified API service for the SoulSeed app.
+// - Uses EXPO_PUBLIC_AI_BASE_URL for the AI backend.
+// - Provides AI.unpack + AI.getGuidance (mapped to a stable UI shape).
+// - Keeps Quests and Soulseed helpers.
+// - Includes a small mock for offline/dev.
 
-import { getSoulseedByPersonality, SoulseedData as SoulseedDataType } from '../data/soulseeds';
+import {
+  getSoulseedByPersonality,
+  SoulseedData as SoulseedDataType,
+  SOULSEEDS,
+} from '../data/soulseeds';
 import { MockQuests } from '@/constants/userData';
 
-// ---------- Global config ----------
-const USE_MOCK_API = false; // set to true to enable mock API for ALL functions
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? 'http://localhost:3000'; // your API gateway if any
-const AI_BASE_URL  = process.env.EXPO_PUBLIC_AI_BASE_URL  ?? 'http://localhost:3002/api/ai'; // ai-service base
+// -----------------------------
+// Env & config
+// -----------------------------
+const AI_BASE_URL = process.env.EXPO_PUBLIC_AI_BASE_URL?.replace(/\/+$/, '') ?? '';
+const TIMEOUT_MS = Number(process.env.EXPO_PUBLIC_API_TIMEOUT_MS ?? 15000);
 
-// ---------- AI Unpack types ----------
-export type Mood = 1 | 2 | 3 | 4 | 5;
-
-export interface UnpackResult {
-  summary: string;
-  signals: { mood: Mood; stressors: string[]; risk_flags: string[] };
-  suggestions: string[];
-  questions: string[];
-}
-
-// AI Unpack (aligned with ApiResponse<T> pattern)
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  sessionId?: string;
-}
-
-export async function aiUnpack(text: string): Promise<ApiResponse<UnpackResult>> {
-  if (USE_MOCK_API) {
-    return mockApi.aiUnpack(text);
-  }
-
-  try {
-    const res = await fetch(`${AI_BASE_URL}/unpack`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text }),
-    });
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      return {
-        success: false,
-        error: `unpack failed: ${res.status} ${errText}`.trim(),
-      };
-    }
-
-    const data = await res.json();
-    return {
-      success: true,
-      data: data.result as UnpackResult,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
+// -----------------------------
+// Helpers
+// -----------------------------
+class ApiError extends Error {
+  status?: number;
+  code?: string;
+  constructor(message: string, opts?: { status?: number; code?: string }) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = opts?.status;
+    this.code = opts?.code;
   }
 }
 
-// ---------- Existing types/services (unchanged) ----------
-export interface PersonalityScores {
-  openness: number;
-  conscientiousness: number;
-  extroversion: number;
-  agreeableness: number;
-  neuroticism: number;
+async function withTimeout<T>(p: Promise<T>, ms = TIMEOUT_MS): Promise<T> {
+  return await Promise.race([
+    p,
+    new Promise<T>((_, rej) =>
+      setTimeout(() => rej(new ApiError('Request timed out', { code: 'TIMEOUT' })), ms),
+    ),
+  ]);
 }
 
-export interface SoulseedData {
-  name: string;
-  statement: string;
-  level: number;
-  personality: PersonalityScores;
-  imageUrl?: string;
-  trait: string;
-  scar: string;
-  variationSlots: string[];
-  growthExpression: string[];
-  palette: string[];
-}
-
-export interface CopingRecommendation {
-  theme: string;
-  strategies: string[];
-  followUpQuest?: string;
-}
-
-export interface JournalCompletionPayload {
-  text: string;
-  mood: string;
-}
-
-export interface JournalCompletionResponse {
-  success: boolean;
-  coping?: CopingRecommendation;
-}
-
-export interface RegistrationData {
-  email: string;
-  password: string;
-  birthday: string;
-  schoolYear: string;
-  ethnicity: string;
-  gender: string;
-  soulseedName: string;
-  soulseedTagline: string;
-  sessionId: string;
-}
-
-// Submit personality assessment
-export async function submitPersonalityAssessment(
-  personality: PersonalityScores
-): Promise<ApiResponse<{ sessionId: string }>> {
-  if (USE_MOCK_API) {
-    return mockApi.submitPersonalityAssessment(personality);
+async function request<T>(
+  path: string,
+  opts: RequestInit & { base?: string } = {},
+): Promise<T> {
+  if (!AI_BASE_URL && !opts.base) {
+    throw new ApiError('EXPO_PUBLIC_AI_BASE_URL is not set');
   }
-
-  try {
-    // Real API call - replace with actual fetch
-    const response = await fetch(`${API_BASE_URL}/submit-personality`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        personality,
-        timestamp: new Date().toISOString(),
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return {
-      success: true,
-      data: { sessionId: data.sessionId || 'temp-session-123' },
-      sessionId: data.sessionId || 'temp-session-123',
-    };
-  } catch (error) {
-    console.error('Error submitting personality assessment:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    };
-  }
-}
-
-// Generate soulseed based on personality scores
-export async function generateSoulseed(
-  personality: PersonalityScores,
-  sessionId: string
-): Promise<ApiResponse<SoulseedData>> {
-  if (USE_MOCK_API) {
-    return mockApi.generateSoulseed(personality, sessionId);
-  }
-
-  try {
-    // Real API call - replace with actual fetch
-    const response = await fetch(`${API_BASE_URL}/generate-soulseed`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        personality,
-        sessionId,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return {
-      success: true,
-      data: data.soulseed,
-    };
-  } catch (error) {
-    console.error('Error generating soulseed:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    };
-  }
-}
-
-// Register user account
-export async function registerUser(
-  registrationData: RegistrationData
-): Promise<ApiResponse<{ userId: string; token: string }>> {
-  if (USE_MOCK_API) {
-    return mockApi.registerUser(registrationData);
-  }
-
-  try {
-    // Real API call - replace with actual fetch
-    const response = await fetch(`${API_BASE_URL}/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(registrationData),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    return {
-      success: true,
-      data: {
-        userId: data.userId || 'user-123',
-        token: data.token || 'mock-jwt-token',
-      },
-    };
-  } catch (error) {
-    console.error('Error registering user:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    };
-  }
-}
-
-// Generate mock soulseed based on personality traits
-// Uses the soulseed data from the data file
-function generateMockSoulseed(personality: PersonalityScores): SoulseedData {
-  // Get soulseed data based on personality scores
-  const soulseedData = getSoulseedByPersonality(personality);
-
-  // Convert to API format
-  const soulseed: SoulseedData = {
-    name: soulseedData.name,
-    statement: soulseedData.statement,
-    level: 1,
-    personality,
-    trait: soulseedData.trait,
-    scar: soulseedData.scar,
-    variationSlots: soulseedData.variationSlots,
-    growthExpression: soulseedData.growthExpression,
-    palette: soulseedData.palette,
+  const base = (opts.base ?? AI_BASE_URL).replace(/\/+$/, '');
+  const url = `${base}${path.startsWith('/') ? '' : '/'}${path}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(opts.headers ?? {}),
   };
+  const res = await withTimeout(fetch(url, { ...opts, headers }));
 
-  return soulseed;
+  if (!res.ok) {
+    let detail: any = null;
+    try {
+      detail = await res.json();
+    } catch {}
+    const msg = detail?.message || detail?.error || `HTTP ${res.status}`;
+    throw new ApiError(`API error: ${msg}`, { status: res.status });
+  }
+
+  if (res.status === 204) return undefined as unknown as T;
+
+  const text = await res.text();
+  if (!text) return undefined as unknown as T;
+
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return text as unknown as T;
+  }
 }
 
+// -----------------------------
+// AI endpoints (server contract)
+// -----------------------------
+export type UnpackResult = unknown;
+
+type UnpackRequest = { text: string; mood?: string };
+
+export type JournalGuidance = {
+  summary: string;
+  strengths: string[];
+  suggestions: string[];
+  immediateCoping?: string[];
+  riskFlags?: string[];
+};
+
+// tiny utils
+const asString = (v: any) => (typeof v === 'string' ? v.trim() : null);
+const asStrArr = (v: any) =>
+  Array.isArray(v)
+    ? (v.map((x) => (typeof x === 'string' ? x.trim() : null)).filter(Boolean) as string[])
+    : null;
+
+// mood-aware defaults (used only if backend omits a field)
+const MOOD_PRESETS: Record<string, { coping: string[]; suggestions: string[] }> = {
+  stressed: {
+    coping: ['Box breathing (4-4-4-4)', '5-4-3-2-1 grounding'],
+    suggestions: ['Write 1 next step for tomorrow', 'Schedule a 10-min break'],
+  },
+  anxious: {
+    coping: ['4-7-8 breathing', 'Name-label-reframe (CBT)'],
+    suggestions: ['List 3 things in your control', 'Two tiny tasks to start'],
+  },
+  sad: {
+    coping: ['Reach out to a friend', '5-minute walk outside'],
+    suggestions: ['Write 2 gratitudes', 'Plan one pleasant activity'],
+  },
+  angry: {
+    coping: ['Physiological sigh ×3', '10-minute walk'],
+    suggestions: ['Write but don’t send the message', 'Wait 20 minutes, then decide'],
+  },
+  neutral: {
+    coping: ['1-minute mindful breathing'],
+    suggestions: ['Set one achievable goal today'],
+  },
+};
+const PRESET = (m?: string) => MOOD_PRESETS[(m ?? 'neutral').toLowerCase()] ?? MOOD_PRESETS.neutral;
+
+function defaultSummary(text?: string) {
+  if (!text) return 'You wrote a short reflection. Here’s a concise summary and some next steps.';
+  return text.length > 220 ? text.slice(0, 217) + '…' : text;
+}
+function defaultStrengths(text?: string) {
+  const s = ['You acknowledged how you feel', 'You identified at least one cause or trigger'];
+  if (text && /plan|next step|schedule/i.test(text)) s.push('You hinted at actionability');
+  return s;
+}
+
+/**
+ * Map your backend’s /unpack result into the stable UI shape.
+ * Backend payload example:
+ * {
+ *   "result": {
+ *     "guidance": "free text …",
+ *     "summary": "Hello AI (neutral)",
+ *     "signals": { "mood": "neutral", "stressors": [], "risk_flags": [] },
+ *     "suggestions": ["...", "..."]
+ *   }
+ * }
+ */
+function mapFromBackendResult(result: any, input: UnpackRequest): JournalGuidance {
+  // direct fields
+  const summary = asString(result?.summary) ?? defaultSummary(input.text);
+  const baseSuggestions = asStrArr(result?.suggestions) ?? [];
+
+  // optionally split free-text "guidance" into a few extra short lines
+  const guidanceText = asString(result?.guidance);
+  const extraFromGuidance =
+    guidanceText
+      ?.split(/(?<=[.!?])\s+/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 3)
+      .slice(0, 3) ?? [];
+
+  const strengths = asStrArr(result?.strengths) ?? defaultStrengths(input.text);
+  const riskFlags = asStrArr(result?.signals?.risk_flags) ?? undefined;
+
+  // merge + de-dupe suggestions
+  const suggestions = Array.from(new Set([...extraFromGuidance, ...baseSuggestions]));
+
+  // immediate coping mirrors first couple of concrete actions
+  const immediateCoping =
+    suggestions.length ? suggestions.slice(0, 2) : PRESET(input.mood).coping;
+
+  return { summary, strengths, suggestions, immediateCoping, riskFlags };
+}
+
+/** GET /ping -> { status: string } */
+async function aiPing() {
+  return await request<{ status: string }>('/ping');
+}
+
+/** POST /unpack -> { result: UnpackResult } */
+async function aiUnpack(req: UnpackRequest) {
+  return await request<{ result: UnpackResult }>('/unpack', {
+    method: 'POST',
+    body: JSON.stringify(req),
+  });
+}
+
+/** Single entry for screens: always call /unpack then map to UI shape */
+async function aiGetGuidance(input: UnpackRequest): Promise<JournalGuidance> {
+  try {
+    const { result } = await aiUnpack(input);
+    const mapped = mapFromBackendResult(result, input);
+    // Debug: comment out in prod if noisy
+    console.log('[AI] guidance source: backend /unpack (mapped)');
+    return mapped;
+  } catch (err) {
+    console.warn('[AI] /unpack failed; using fallback:', err);
+    const preset = PRESET(input.mood);
+    return {
+      summary: defaultSummary(input.text),
+      strengths: defaultStrengths(input.text),
+      suggestions: Array.from(new Set([...preset.suggestions, 'Timebox one 10–15 min action'])),
+      immediateCoping: preset.coping,
+      riskFlags: undefined,
+    };
+  }
+}
+
+// -----------------------------
+// Other (existing) app services
+// -----------------------------
+type PersonalityVector =
+  | {
+      openness: number;
+      conscientiousness: number;
+      extroversion: number;
+      agreeableness: number;
+      neuroticism: number;
+    }
+  | string;
+
+async function getSoulseed(personality: PersonalityVector): Promise<SoulseedDataType> {
+  if (typeof personality === 'string') {
+    // If a trait name is passed, resolve directly from SOULSEEDS
+    return SOULSEEDS[personality] ?? SOULSEEDS.openness;
+  }
+  return getSoulseedByPersonality(personality);
+}
+
+async function getQuests() {
+  return MockQuests;
+}
+
+async function completeQuest(id: string) {
+  return { ok: true as const, id };
+}
+
+// -----------------------------
+// Public API surface
+// -----------------------------
+export const Api = {
+  AI: {
+    ping: aiPing,
+    unpack: aiUnpack,
+    getGuidance: aiGetGuidance,
+  },
+  Quests: {
+    list: getQuests,
+    complete: completeQuest,
+  },
+  Soulseed: {
+    getByPersonality: getSoulseed,
+  },
+};
+
+// -----------------------------
+// Mock API (for offline/dev demos)
+// -----------------------------
 export const mockApi = {
   submitPersonalityAssessment: async (personality: PersonalityScores) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -305,7 +308,6 @@ export const mockApi = {
         completed: false,
         icon: '📚',
         callbackUrl: '/(tabs)/(journal)/mood',
-        justification: 'You mentioned academic stress, and due to your extroverted nature, collaborating with a friend can help.',
       });
     }
 
