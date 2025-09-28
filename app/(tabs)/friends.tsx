@@ -9,18 +9,18 @@ import {
   Modal,
   Alert,
 } from 'react-native';
-import { Search, UserPlus, HeartPulse, Frown, Smile, X } from 'lucide-react-native';
+import { Search, UserPlus, AlertCircle, PartyPopper, Frown, X, PersonStanding, HeartPulse } from 'lucide-react-native';
 import ScreenLayout from '../../components/ScreenLayout';
 import { Colors } from '../../constants/colors';
 import { formatDistanceToNow } from 'date-fns';
 
 const MOOD_SWATCHES: Record<'joyful' | 'calm' | 'stressed' | 'sad' | 'angry' | 'mixed', { color: string; label: string; emoji: string; tone: 'positive' | 'neutral' | 'concern'; } > = {
-  joyful:   { color: '#FF8FA6', label: 'Joyful', emoji: '🌼', tone: 'positive' },
-  calm:     { color: '#8FBFE0', label: 'Calm', emoji: '🌙', tone: 'neutral' },
-  stressed: { color: '#FFD24C', label: 'Stressed', emoji: '⚡️', tone: 'concern' },
-  sad:      { color: '#6A78FF', label: 'Low', emoji: '💧', tone: 'concern' },
+  joyful:   { color: '#E8C988', label: 'Joyful', emoji: '🌼', tone: 'positive' },
+  calm:     { color: Colors.secondary, label: 'Calm', emoji: '🌙', tone: 'neutral' },
+  stressed: { color: '#8FBFE0', label: 'Stressed', emoji: '⚡️', tone: 'concern' },
+  sad:      { color: '#8FBFE0', label: 'Low', emoji: '💧', tone: 'concern' },
   angry:    { color: '#FF6A3A', label: 'Fiery', emoji: '🔥', tone: 'concern' },
-  mixed:    { color: '#B89CFF', label: 'Mixed', emoji: '🌈', tone: 'neutral' },
+  mixed:    { color: Colors.secondary, label: 'Mixed', emoji: '🌈', tone: 'neutral' },
 };
 
 interface FriendMood {
@@ -46,8 +46,8 @@ const mockFriends: Friend[] = [
   },
   {
     id: '2',
-    name: 'Sarah Johnson',
-    username: '@sarahj',
+    name: 'Wen Ling',
+    username: '@wll',
     mood: { state: 'stressed', updatedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString() },
     isOnline: false,
   },
@@ -124,11 +124,29 @@ export default function FriendsScreen() {
 
   const renderFriendCard = (friend: Friend) => {
     const swatch = MOOD_SWATCHES[friend.mood.state];
+
+    const badgeStyle = [
+      styles.moodBadge,
+      swatch.tone !== 'neutral' && { 
+        backgroundColor: `${swatch.color}33`, 
+        borderColor: swatch.color,
+        borderRadius: 12,
+        borderWidth: 1,
+      },
+      swatch.tone === 'concern' && friend.mood.state !== 'stressed' && { 
+        borderColor: '#8FBFE0',
+        backgroundColor: '#8FBFE033'
+      },
+      swatch.tone === 'positive' && { 
+        borderColor: '#E8C988',
+        backgroundColor: '#E8C98833'
+      },
+    ];
+
     return (
       <TouchableOpacity key={friend.id} style={styles.friendCard}>
         <View style={styles.cardHeader}>
-          <View style={[styles.moodBadge, { backgroundColor: `${swatch.color}33`, borderColor: swatch.color }]}
-          >
+          <View style={badgeStyle}>
             <Text style={styles.moodEmoji}>{swatch.emoji}</Text>
             <Text style={styles.moodLabel}>{swatch.label}</Text>
           </View>
@@ -204,17 +222,17 @@ export default function FriendsScreen() {
 
         <View style={styles.statsRow}>
           <View style={styles.statCard}> 
-            <HeartPulse size={20} color="#FF8FA6" />
+            <HeartPulse size={20} color="#8FBFE0" />
             <Text style={styles.statNumber}>{stats.needingCheckIn}</Text>
             <Text style={styles.statLabel}>Need check-in</Text>
           </View>
           <View style={styles.statCard}>
-            <Smile size={20} color="#8FBFE0" />
+            <PartyPopper size={20} color="#E8C988" />
             <Text style={styles.statNumber}>{stats.celebrating}</Text>
             <Text style={styles.statLabel}>Celebrating wins</Text>
           </View>
           <View style={styles.statCard}>
-            <Frown size={20} color="#FFD24C" />
+            <PersonStanding size={20} color="#FFD24C" />
             <Text style={styles.statNumber}>{friends.length}</Text>
             <Text style={styles.statLabel}>Total friends</Text>
           </View>
@@ -321,6 +339,12 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(139, 123, 216, 0.2)',
     gap: 12,
   },
+  concernCard: {
+    borderColor: '#FF6A3A',
+  },
+  positiveCard: {
+    borderColor: '#E8C988',
+  },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -331,8 +355,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: 12,
-    borderWidth: 1,
+    
     gap: 6,
   },
   moodEmoji: {

@@ -146,25 +146,30 @@ export default function JournalEntryPage() {
       { role: 'user' as const, content: journalText }
     ];
     
+    setConversationThread([
+      ...initialThread,
+    ])
     // Get first question from LLM
     const firstQuestion = await mockGetNextQuestion(selectedMood, journalText, initialThread, 0);
     
     setCurrentQuestion(firstQuestion);
-    setConversationThread(initialThread);
 
-    const thread =   [{
-      role: "user",
-      content: "I just got back my math exam results and I'm so disappointed in myself. I tried so hard and didn't get the result I wanted",
-    },
-    {
-      role: "assistant",
-      content: "That sounds really tough. It’s completely okay to feel disappointed, especially when you’ve worked so hard.",
-    },
-    {
-      role: "user",
-      content: "I'm not sure what to do next. I feel like I'm not good enough.",
-    }]
-    setConversationThread(thread);
+    // const thread =   [{
+    //   role: "user",
+    //   content: "I just got back my math exam results and I'm so disappointed in myself. I tried so hard and didn't get the result I wanted",
+    // },
+    // {
+    //   role: "assistant",
+    //   content: "That sounds really tough. It’s completely okay to feel disappointed, especially when you’ve worked so hard.",
+    // },
+    // {
+    //   role: "user",
+    //   content: "I'm not sure what to do next. I feel like I'm not good enough.",
+    // }]
+    // const thread = [
+    //   ...initialThread,
+    // ]
+    // setConversationThread(thread);
   };
 
   const handleSendAnswer = async () => {
@@ -236,7 +241,7 @@ export default function JournalEntryPage() {
         }}
         title={conversationMode ? 'Reflection' : 'Journal'}
       />
-      <View style={{ flex: 1 }}>
+      <View style={{paddingBottom: 20, flex: 1 }}>
         {/* Always visible soulseed at the top */}
         <View style={styles.topSoulseedContainer}>
           <SoulseedDisplay 
